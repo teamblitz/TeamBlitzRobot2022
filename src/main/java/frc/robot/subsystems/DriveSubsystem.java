@@ -25,13 +25,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+// import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 // import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.networktables.NetworkTableEntry;
+// import edu.wpi.first.networktables.NetworkTableEntry;
 
-//import frc.robot.Constants.DriveConstants;
+// import frc.robot.Constants.DriveConstants;
 
 public class DriveSubsystem extends SubsystemBase {
   /* Gyro configuration*/
@@ -90,11 +90,6 @@ public class DriveSubsystem extends SubsystemBase {
     m_leftSlave.setNeutralMode(NeutralMode.Coast);
     m_rightSlave.setNeutralMode(NeutralMode.Coast);
 
-    // Make the motors ramp up slowly. *** THIS IS BORKEN! USE AT OWN RISK! ***
-    //m_leftMaster.configOpenloopRamp(1.0, 0); //Fisrt numer is the number of seconds it takes to ramp up and don't touch the second
-    //m_rightMaster.configOpenloopRamp(1.0, 0);
-    
-
     // *********** PUT NON-TUNABLE PARAMETERS BELOW THIS LINE **********
 
     /**
@@ -135,7 +130,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_odometry.update(Rotation2d.fromDegrees(getHeading()), m_leftMaster.getSelectedSensorPosition() * Constants.DriveConstants.kEncoderDistancePerPulse,
     m_rightMaster.getSelectedSensorPosition() * Constants.DriveConstants.kEncoderDistancePerPulse);
    
-    var translation = m_odometry.getPoseMeters().getTranslation();
+    // var translation = m_odometry.getPoseMeters().getTranslation();
     //m_xEntry.setNumber(translation.getX());
     //m_yEntry.setNumber(translation.getY());
   }
@@ -164,7 +159,6 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void tankDrive(final double leftSpeed, final double rightSpeed) {
-    System.out.println("i am speed");
     // Instead of calling tankDrive, call set(ControlMode.Velocity, ...) on each master motor directly.
     m_drive.tankDrive(leftSpeed, rightSpeed);
   }

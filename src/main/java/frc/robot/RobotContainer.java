@@ -73,7 +73,7 @@ public class RobotContainer {
     }
 
     else { //arcadeDrive
-      m_robotDrive.setMaxOutput(0.50);
+      // m_robotDrive.setMaxOutput(0.50);
       m_robotDrive.setDefaultCommand(
       new RunCommand(() -> m_robotDrive
       .arcadeDrive(-m_driveController.getLeftY(),

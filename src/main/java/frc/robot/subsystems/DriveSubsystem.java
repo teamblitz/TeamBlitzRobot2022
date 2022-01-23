@@ -116,7 +116,7 @@ public class DriveSubsystem extends SubsystemBase {
       right side must be negative to move forward.
       Change to 'false' so positive/green-LEDs moves robot forward
     */
-    m_rightMaster.setInverted(false); // do not change this
+    m_rightMaster.setInverted(false); // do not change this <<<>>> THIS LOOKS SUS -CXH
 
     // Sets the distance per pulse for the encoders
     //m_leftEncoder.setDistancePerPulse(Constants.DriveConstants.kEncoderDistancePerPulse);
@@ -158,7 +158,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     m_leftMaster.setVoltage(leftVolts);
-    m_rightMaster.setVoltage(-rightVolts);
+    m_rightMaster.setVoltage(rightVolts);
     m_drive.feed();
   }
 

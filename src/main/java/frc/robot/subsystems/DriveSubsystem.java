@@ -90,9 +90,10 @@ public class DriveSubsystem extends SubsystemBase {
     m_leftSlave.setNeutralMode(NeutralMode.Coast);
     m_rightSlave.setNeutralMode(NeutralMode.Coast);
 
-    //Ramping Motor Speed
-    m_leftMaster.configOpenloopRamp(0.25); // Best set to .25 or .3
-    m_rightMaster.configOpenloopRamp(0.25); //Best set to .25 or .3
+    //Ramping Motor Speed (this is sketchy and should still be looked into... should be easier on sparkmax controllers)
+    //RevRobotics app has a ramp configuration in motor controller settings.
+    // m_leftMaster.configOpenloopRamp(0.25); // Best set to .25 or .3
+    // m_rightMaster.configOpenloopRamp(0.25); //Best set to .25 or .3
 
     // *********** PUT NON-TUNABLE PARAMETERS BELOW THIS LINE **********
 

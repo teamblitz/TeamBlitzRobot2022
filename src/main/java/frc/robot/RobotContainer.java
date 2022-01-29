@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -47,28 +48,38 @@ public class RobotContainer {
   // Controller Constants:
   private final boolean kUseTankDrive = false;
 
+  private final double kLowSpeed = 0.5;
+  private final double kFullSpeed = 1.0;
+
   public RobotContainer() {
 
     configureSubsystems();
     configureButtonBindings();
+    /** SlewRateLimiter
+    * Creates a SlewRateLimiter that limits the rate of change of the signal to 1.75 units per second for forward and backword
+    * Essemtaly stoping jerking of the robot durring arcade drive
+    * Do Not deleate unless removed below
+    */
+    // Drive SlewRateLimiter
+    SlewRateLimiter filter = new SlewRateLimiter(1.75);
+    // Turn SlewRateLimiter
+    SlewRateLimiter filterRotation = new SlewRateLimiter(1.75);
     // Tank drive
     if (kUseTankDrive) {
-      /* m_robotDrive.setDefaultCommand(
+      m_robotDrive.setDefaultCommand(
       new RunCommand(() -> m_robotDrive
       .tankDrive(m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed),
       //Get y value of left analog stick. Then set the motor speed to a max of 50% when the left trigger is less then half pulled otherwise set the max speed to 100%
       m_driveController.getRightY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
       m_robotDrive));
       //Get y value of right analog stick. Then set the mmotor speed to a max of 50% when the left trigger is less than half pulled otherwise set the max speed to 100%
-      */
-
-      m_robotDrive.setDefaultCommand(
-      new RunCommand(() -> m_robotDrive
-      .tankDrive((m_driveController.getRawAxis(1)),
-      //Get y value of left analog stick. Then set the motor speed to a max of 50% when the left trigger is less then half pulled otherwise set the max speed to 100%
-      m_driveController.getRawAxis(5)),
-      m_robotDrive));
-      // .tankDrive(m_driveController.getRawAxis(1), m_driveController.getRawAxis(2));
+      // m_robotDrive.setDefaultCommand(
+      // new RunCommand(() -> m_robotDrive
+      // .tankDrive((m_driveController.getRawAxis(1)),
+      // //Get y value of left analog stick. Then set the motor speed to a max of 50% when the left trigger is less then half pulled otherwise set the max speed to 100%
+      // m_driveController.getRawAxis(5)),
+      // m_robotDrive));
+      // // .tankDrive(m_driveController.getRawAxis(1), m_driveController.getRawAxis(2));
 
     }
 
@@ -76,9 +87,17 @@ public class RobotContainer {
       // m_robotDrive.setMaxOutput(0.50);
       m_robotDrive.setDefaultCommand(
       new RunCommand(() -> m_robotDrive
-      .arcadeDrive(-m_driveController.getLeftY(),
-      -m_driveController.getRightX()),
+      // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
+      .arcadeDrive(filter.calculate(-m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
+      filterRotation.calculate(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed))),
       m_robotDrive));
+
+      // // m_robotDrive.setMaxOutput(0.50);
+      // m_robotDrive.setDefaultCommand(
+      // new RunCommand(() -> m_robotDrive
+      // .arcadeDrive(-m_driveController.getLeftY(),
+      // -m_driveController.getRightX()),
+      // m_robotDrive));
     }
   }
 

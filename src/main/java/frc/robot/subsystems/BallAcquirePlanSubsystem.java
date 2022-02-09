@@ -12,6 +12,8 @@ public class BallAcquirePlanSubsystem extends SubsystemBase {
     private double m_maxAreaFraction = 25.0;
     private double m_maxDriveSpeedFraction = 0.45; // how fast we allow the autodrive code to dictate we want to go
 
+    private LimelightSubsystem m_LimelightSubsystem;
+
     // these are the calculated movement directives for autodrive
     private double m_fwd = 0;
     private double m_rot = 0;
@@ -24,9 +26,9 @@ public class BallAcquirePlanSubsystem extends SubsystemBase {
 
         m_rot = 0.0;
         m_fwd = 0.0;
-        // TODO <<<>>> acquire tx and area and valid from LimelightSubsystem
-        double tx = 0.0;
-        double area = 0.0;
+        // acquire tx and area and valid from LimelightSubsystem
+        double tx = m_LimelightSubsystem.getX();
+        double area = m_LimelightSubsystem.getArea();
 
         boolean valid = false;
 
@@ -64,8 +66,8 @@ public class BallAcquirePlanSubsystem extends SubsystemBase {
 
     }
 
-    public BallAcquirePlanSubsystem() {
-
+    public BallAcquirePlanSubsystem(LimelightSubsystem lSub) {
+        m_LimelightSubsystem = lSub;
     }
     
 }

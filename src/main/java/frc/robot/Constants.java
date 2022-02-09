@@ -32,7 +32,6 @@ public final class Constants {
         // Xbox buttons:
         public static final int kOverdriveLeftTriggerAxis = 2;
         public static final int kOverdriveRightTriggerAxis = 3;
-
         
     }
 }

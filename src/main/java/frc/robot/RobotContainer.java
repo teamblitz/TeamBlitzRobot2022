@@ -15,6 +15,7 @@ import frc.robot.Constants.OIConstants;
 
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.BallAcquirePlanSubsystem;
 
 /**
 * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -29,6 +30,8 @@ public class RobotContainer {
 
   // Limelight subsystem:
   private LimelightSubsystem m_limelight;
+
+  private BallAcquirePlanSubsystem m_ballAcquirePlanSubsystem;
 
   // Controllers:
   private XboxController m_driveController;
@@ -79,7 +82,9 @@ public class RobotContainer {
     m_driveController = new XboxController(OIConstants.kDriveControllerPort);
 
     m_limelight = new LimelightSubsystem();
-  
+
+    m_ballAcquirePlanSubsystem = new BallAcquirePlanSubsystem();
+
   }
 
 

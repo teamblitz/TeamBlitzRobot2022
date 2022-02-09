@@ -24,7 +24,7 @@ public class BallAcquirePlanSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // TODO <<<>>> acquire tx and area
+        // TODO <<<>>> acquire tx and area from LimelightSubsystem
         double tx = 0.0;
         double area = 0.0;
 

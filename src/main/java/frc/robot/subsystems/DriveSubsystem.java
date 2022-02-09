@@ -81,6 +81,27 @@ public class DriveSubsystem extends SubsystemBase {
     
     }
 
+
+  /**
+   * Drives the robot using one of several control methods.
+   *
+   * @param fwd the commanded forward movement
+   * @param rot the commanded rotation
+   */
+  public void performDrive(final double fwd, final double rot, final boolean semiAutonomousState) {
+  
+    // decide who is in control and execute their drive operations
+    if(semiAutonomousState)
+    {
+      arcadeDrive(fwd, rot); // TODO <<<>>> placeholder
+    }
+    else
+    {
+      arcadeDrive(fwd, rot);
+    }
+  }
+
+
   /**
    * Drives the robot using arcade controls.
    *

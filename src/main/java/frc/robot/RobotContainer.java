@@ -31,7 +31,7 @@ public class RobotContainer {
   // Limelight subsystem:
   private LimelightSubsystem m_limelight;
 
-  private BallAcquirePlanSubsystem m_ballAcquirePlanSubsystem;
+  private BallAcquirePlanSubsystem m_ballAcquire;
 
   // Controllers:
   private XboxController m_driveController;
@@ -69,23 +69,21 @@ public class RobotContainer {
       m_robotDrive.setDefaultCommand(
       new RunCommand(() -> m_robotDrive
       // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
-
-      // TODO <<<>>> we need to fetch from Limelight and pass to acquire planning and fetch fwd and rot from there to pass to performDrive
-      .performDrive(filter.calculate(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
-      filterRotation.calculate(-m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)), m_driveController.getLeftBumper()),
-      m_robotDrive));
+        .performDrive(filter.calculate(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
+        filterRotation.calculate(-m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)), m_driveController.getLeftBumper()),
+        m_robotDrive));
     }
   }
 
   private void configureSubsystems() {
 
-    m_robotDrive = new DriveSubsystem();
-
     m_driveController = new XboxController(OIConstants.kDriveControllerPort);
 
     m_limelight = new LimelightSubsystem();
 
-    m_ballAcquirePlanSubsystem = new BallAcquirePlanSubsystem();
+    m_ballAcquire = new BallAcquirePlanSubsystem(m_limelight);
+    
+    m_robotDrive = new DriveSubsystem(m_ballAcquire);
 
   }
 

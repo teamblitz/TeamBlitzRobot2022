@@ -26,13 +26,15 @@ public class DriveSubsystem extends SubsystemBase {
   rightSlaveDeviceID = Constants.DriveConstants.kRightSlavePort;  // Should be 4 master, 3 slave
   private CANSparkMax m_leftMotor, m_leftMotorSlave;
   private CANSparkMax m_rightMotor, m_rightMotorSlave;
+  private BallAcquirePlanSubsystem m_ballAcquire;
 
   private DifferentialDrive m_drive;
  
   /**
    * Creates a new DriveSubsystem.
    */
-  public DriveSubsystem() {
+  public DriveSubsystem(BallAcquirePlanSubsystem ballAcquire) {
+    m_ballAcquire = ballAcquire;
     // *********** PUT NON-TUNABLE PARAMETERS BELOW THIS LINE **********
     /**
    * SPARK MAX controllers are intialized over CAN by constructing a CANSparkMax object
@@ -93,7 +95,7 @@ public class DriveSubsystem extends SubsystemBase {
     // decide who is in control and execute their drive operations
     if(semiAutonomousState)
     {
-      arcadeDrive(fwd, rot); // TODO <<<>>> placeholder
+      arcadeDrive(m_ballAcquire.getRot(), m_ballAcquire.getFwd());
     }
     else
     {

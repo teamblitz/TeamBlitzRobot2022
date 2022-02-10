@@ -1,4 +1,5 @@
 package frc.robot.subsystems;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class BallAcquirePlanSubsystem extends SubsystemBase {
@@ -23,16 +24,15 @@ public class BallAcquirePlanSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-
         m_rot = 0.0;
         m_fwd = 0.0;
         // acquire tx and area and valid from LimelightSubsystem
         double tx = m_LimelightSubsystem.getX();
         double area = m_LimelightSubsystem.getArea();
 
-        boolean valid = false;
+        // boolean valid = false;
 
-        if(valid)
+        if(m_LimelightSubsystem.getValid() > 0)
         {
             double heading_error = -tx; // there's a negative here that's negated again later in arcadeDrive()
 
@@ -60,7 +60,7 @@ public class BallAcquirePlanSubsystem extends SubsystemBase {
             m_fwd = m_autoMoveScaleFactor * driveSpeedFraction;
             
             // we could post the debug info to the Shuffleboard if we wanted
-            //SmartDashboard.putNumber("AutoMove", (m_autoRotationScaleFactor * driveSpeedFraction));
+            SmartDashboard.putNumber("AutoMove", (m_autoRotationScaleFactor * driveSpeedFraction));
     
         }
 

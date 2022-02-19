@@ -95,7 +95,7 @@ public class DriveSubsystem extends SubsystemBase {
     // decide who is in control and execute their drive operations
     if(semiAutonomousState)
     {
-      arcadeDrive(m_ballAcquire.getRot(), m_ballAcquire.getFwd());
+      arcadeDrive(m_ballAcquire.getRot(), m_ballAcquire.getFwd()); // Again, our arcade drive is reversed for some reason, so we reverse this.
     }
     else
     {

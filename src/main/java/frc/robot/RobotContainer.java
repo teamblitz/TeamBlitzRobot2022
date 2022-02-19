@@ -10,10 +10,13 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.OIConstants;
 
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.BallAcquirePlanSubsystem;
 
@@ -31,7 +34,11 @@ public class RobotContainer {
   // Limelight subsystem:
   private LimelightSubsystem m_limelight;
 
+  // Ball Acquire subsystem:
   private BallAcquirePlanSubsystem m_ballAcquire;
+
+  // Elevator Subsystem:
+  private ElevatorSubsystem m_elevator;
 
   // Controllers:
   private XboxController m_driveController;
@@ -46,15 +53,18 @@ public class RobotContainer {
 
     configureSubsystems();
     configureButtonBindings();
+    
     /** SlewRateLimiter
-    * Creates a SlewRateLimiter that limits the rate of change of the signal to 1.75 units per second for forward and backword
-    * Essemtaly stoping jerking of the robot durring arcade drive
-    * Do Not deleate unless removed below
+    * Creates a SlewRateLimiter that limits the rate of change of the signal to 1.75 units per second for forward and backward
+    * Essemtaly stoping jerking of the robot during arcade drive
+    * Do Not delete unless removed below
     */
+
     // Drive SlewRateLimiter
     SlewRateLimiter filter = new SlewRateLimiter(1.75);
     // Turn SlewRateLimiter
     SlewRateLimiter filterRotation = new SlewRateLimiter(1.75);
+
     // Tank drive
     if (kUseTankDrive) {
       m_robotDrive.setDefaultCommand(
@@ -68,6 +78,7 @@ public class RobotContainer {
     else { //perform driving using one of several methods
       m_robotDrive.setDefaultCommand(
       new RunCommand(() -> m_robotDrive
+
       // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
         .performDrive(filter.calculate(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
         filterRotation.calculate(-m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)), m_driveController.getLeftBumper()),
@@ -85,6 +96,8 @@ public class RobotContainer {
     
     m_robotDrive = new DriveSubsystem(m_ballAcquire);
 
+    m_elevator = new ElevatorSubsystem();
+
   }
 
 
@@ -95,7 +108,22 @@ public class RobotContainer {
     * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
     */
     private void configureButtonBindings() {
-     
+      /* ***** --- Elevator Subsystem --- ***** */
+      // Using the driver station, we know that "A" is button 1 and "Y" is button 4 (see constants)
+      
+      // Raise elevator
+      new JoystickButton(m_driveController, OIConstants.kUpElevator)
+      .whenPressed(new InstantCommand(m_elevator::upElevator, m_elevator));
+      // Stop raising elevator when button is released
+      new JoystickButton(m_driveController, OIConstants.kUpElevator)
+      .whenReleased(new InstantCommand(m_elevator::stopElevator, m_elevator));
+
+      // Lower elevator
+      new JoystickButton(m_driveController, OIConstants.kDownElevator)
+      .whenPressed(new InstantCommand(m_elevator::downElevator, m_elevator));
+      // Stop lowering elevator when button is released
+      new JoystickButton(m_driveController, OIConstants.kDownElevator)
+      .whenReleased(new InstantCommand(m_elevator::stopElevator, m_elevator));
     }
   }
 

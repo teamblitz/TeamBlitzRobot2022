@@ -26,12 +26,20 @@ public final class Constants {
         public static final int kLeftSlavePort = 6;
     }
 
+    public static final class ElevatorConstants {
+        public static final int kMasterPort = 7;
+        public static final int kSlavePort = 8;
+    }
+
     public static final class OIConstants {
         public static final int kDriveControllerPort = 0;
         
         // Xbox buttons:
         public static final int kOverdriveLeftTriggerAxis = 2;
         public static final int kOverdriveRightTriggerAxis = 3;
+
+        public static final int kUpElevator = 4; // Should be the Y button
+        public static final int kDownElevator = 1; // Should be the A button
         
     }
 }

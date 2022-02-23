@@ -10,13 +10,13 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.FeederSubsystemConstants;
+import frc.robot.Constants.IntakeSubsystemConstants;;
 
 /**
  * Add your docs here.
   */
 public class IntakeSubsystem extends SubsystemBase {
-  CANSparkMax m_intakeMotor = new CANSparkMax(FeederSubsystemConstants.kSparkMotorPortIntakeArm, MotorType.kBrushless);
+  CANSparkMax m_intakeMotor = new CANSparkMax(IntakeSubsystemConstants.kSparkMotorPortIntake, MotorType.kBrushless);
 
   public IntakeSubsystem() {
 
@@ -41,12 +41,12 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
 
-  public void startIntake() {
+  public void start() {
     System.out.println("IntakeSubsystem::startIntake");
     m_intakeMotor.set(1.0);
   }
 
-  public void stopIntake() {
+  public void stop() {
     System.out.println("IntakeSubsystem::stopIntake");
     m_intakeMotor.stopMotor();
   }

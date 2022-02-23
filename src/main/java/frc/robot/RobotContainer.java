@@ -118,35 +118,43 @@ public class RobotContainer {
     */
     private void configureButtonBindings() {
       /* ***** --- Elevator Subsystem --- ***** */
-      // Using the driver station, we know that "A" is button 1 and "Y" is button 4 (see constants)
+
+
+      boolean kUseTwoControllers = false;
+      if (OIConstants.kUseAuxController) {
+        // TODO - if we decide to use an aux controller then set that up
+      }
+      else {
+        // Using the driver station, we know that "A" is button 1 and "Y" is button 4 (see constants)
       
-      // Raise elevator
-      new JoystickButton(m_driveController, OIConstants.kUpElevator)
-      .whenPressed(new InstantCommand(m_elevator::upElevator, m_elevator));
-      // Stop raising elevator when button is released
-      new JoystickButton(m_driveController, OIConstants.kUpElevator)
-      .whenReleased(new InstantCommand(m_elevator::stopElevator, m_elevator));
+        // Raise elevator
+        new JoystickButton(m_driveController, OIConstants.kUpElevator)
+        .whenPressed(new InstantCommand(m_elevator::upElevator, m_elevator));
+        // Stop raising elevator when button is released
+        new JoystickButton(m_driveController, OIConstants.kUpElevator)
+        .whenReleased(new InstantCommand(m_elevator::stopElevator, m_elevator));
 
-      // Lower elevator
-      new JoystickButton(m_driveController, OIConstants.kDownElevator)
-      .whenPressed(new InstantCommand(m_elevator::downElevator, m_elevator));
-      // Stop lowering elevator when button is released
-      new JoystickButton(m_driveController, OIConstants.kDownElevator)
-      .whenReleased(new InstantCommand(m_elevator::stopElevator, m_elevator));
+        // Lower elevator
+        new JoystickButton(m_driveController, OIConstants.kDownElevator)
+        .whenPressed(new InstantCommand(m_elevator::downElevator, m_elevator));
+        // Stop lowering elevator when button is released
+        new JoystickButton(m_driveController, OIConstants.kDownElevator)
+        .whenReleased(new InstantCommand(m_elevator::stopElevator, m_elevator));
 
-      new JoystickButton(m_auxiliaryController, OIConstants.kFeederArmDownButton)
-      .whenPressed(new InstantCommand(m_intakeRoller::downFeeder, m_intakeRoller).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kFeederArmDownButton + " Pressed")));
-      // When button (11) on the joystick is held, the feeder arm will be lowered. Before lowering it will say "Joystick Button (11) Pressed"
-      new JoystickButton(m_auxiliaryController, OIConstants.kFeederArmDownButton)
-      .whenReleased(new InstantCommand(m_intakeRoller::stopFeeder, m_intakeRoller).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kFeederArmDownButton + " Released")));
-      // When button (11) on the joystick is released, the feeder arm will stop lowering. Before stopping it will say "Joystick Button (11) Released"
-      new JoystickButton(m_auxiliaryController, OIConstants.kFeederArmUpButton)
-      .whenPressed(new InstantCommand(m_intakeRoller::upFeeder, m_intakeRoller).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kFeederArmUpButton + " Pressed")));
-     // When button (10) on the joystick is held, the feeder arm will be raised. Before raising it will say "Joystick Button (10) Pressed"
-     new JoystickButton(m_auxiliaryController, OIConstants.kFeederArmUpButton)
-     .whenReleased(new InstantCommand(m_intakeRoller::stopFeeder, m_intakeRoller).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kFeederArmUpButton + " Released")));
-     // When button (10) on the joystick is released, the feeder arm will stop raising. Before stopping it will say "Joystick Button (10) Released"
-
+        new JoystickButton(m_driveController, OIConstants.kIntake)
+        .whenPressed(new InstantCommand(m_intakeRoller::start, m_intakeRoller).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kIntake + " Pressed")));
+        // When button (B) on the joystick is held, the intake motor will start. Before lowering it will say "Joystick Button (2) Pressed"
+        new JoystickButton(m_driveController, OIConstants.kIntake)
+        .whenReleased(new InstantCommand(m_intakeRoller::stop, m_intakeRoller).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kIntake + " Released")));
+        // When button (B) on the joystick is released, the intake motor will stop. Before stopping it will say "Joystick Button (2) Released"
+        new JoystickButton(m_driveController, OIConstants.kBallMover)
+        .whenPressed(new InstantCommand(m_ballMover::start, m_ballMover).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kBallMover + " Pressed")));
+       // When button (X) on the joystick is held, the ball mover will start. Before raising it will say "Joystick Button (3) Pressed"
+       new JoystickButton(m_driveController, OIConstants.kBallMover)
+       .whenReleased(new InstantCommand(m_ballMover::stop, m_ballMover).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kBallMover + " Released")));
+       // When button (10) on the joystick is released, the feeder arm will stop raising. Before stopping it will say "Joystick Button (10) Released"
+  
+      }
     }
   }
 

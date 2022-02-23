@@ -120,7 +120,6 @@ public class RobotContainer {
       /* ***** --- Elevator Subsystem --- ***** */
 
 
-      boolean kUseTwoControllers = false;
       if (OIConstants.kUseAuxController) {
         // TODO - if we decide to use an aux controller then set that up
       }

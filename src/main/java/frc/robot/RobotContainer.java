@@ -17,8 +17,10 @@ import frc.robot.Constants.OIConstants;
 
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.BallAcquirePlanSubsystem;
+import frc.robot.subsystems.BallMoverSubsystem;
 
 /**
 * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -43,8 +45,12 @@ public class RobotContainer {
   // Controllers:
   private XboxController m_driveController;
 
+
   // Controller Constants:
   private final boolean kUseTankDrive = false;
+
+  private IntakeSubsystem m_intakeRoller;
+  private BallMoverSubsystem m_ballMover;
 
   private final double kLowSpeed = 0.5;
   private final double kFullSpeed = 1.0;
@@ -98,6 +104,9 @@ public class RobotContainer {
 
     m_elevator = new ElevatorSubsystem();
 
+    m_intakeRoller = new IntakeSubsystem();
+    m_ballMover = new BallMoverSubsystem();
+
   }
 
 
@@ -124,6 +133,20 @@ public class RobotContainer {
       // Stop lowering elevator when button is released
       new JoystickButton(m_driveController, OIConstants.kDownElevator)
       .whenReleased(new InstantCommand(m_elevator::stopElevator, m_elevator));
+
+      new JoystickButton(m_auxiliaryController, OIConstants.kFeederArmDownButton)
+      .whenPressed(new InstantCommand(m_intakeRoller::downFeeder, m_intakeRoller).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kFeederArmDownButton + " Pressed")));
+      // When button (11) on the joystick is held, the feeder arm will be lowered. Before lowering it will say "Joystick Button (11) Pressed"
+      new JoystickButton(m_auxiliaryController, OIConstants.kFeederArmDownButton)
+      .whenReleased(new InstantCommand(m_intakeRoller::stopFeeder, m_intakeRoller).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kFeederArmDownButton + " Released")));
+      // When button (11) on the joystick is released, the feeder arm will stop lowering. Before stopping it will say "Joystick Button (11) Released"
+      new JoystickButton(m_auxiliaryController, OIConstants.kFeederArmUpButton)
+      .whenPressed(new InstantCommand(m_intakeRoller::upFeeder, m_intakeRoller).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kFeederArmUpButton + " Pressed")));
+     // When button (10) on the joystick is held, the feeder arm will be raised. Before raising it will say "Joystick Button (10) Pressed"
+     new JoystickButton(m_auxiliaryController, OIConstants.kFeederArmUpButton)
+     .whenReleased(new InstantCommand(m_intakeRoller::stopFeeder, m_intakeRoller).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kFeederArmUpButton + " Released")));
+     // When button (10) on the joystick is released, the feeder arm will stop raising. Before stopping it will say "Joystick Button (10) Released"
+
     }
   }
 

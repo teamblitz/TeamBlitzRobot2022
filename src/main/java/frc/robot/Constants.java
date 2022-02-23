@@ -42,4 +42,10 @@ public final class Constants {
         public static final int kDownElevator = 1; // Should be the A button
         
     }
+    public static final class FeederWheelsSubsystemConstants {
+        public static final int kSparkMotorPortIntakeRoller = 10;
+    }
+    public static final class FeederSubsystemConstants {
+        public static final int kSparkMotorPortIntakeArm = 11;
+    }
 }

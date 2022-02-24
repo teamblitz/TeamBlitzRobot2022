@@ -19,6 +19,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.BallAcquirePlanSubsystem;
 import frc.robot.subsystems.BallMoverSubsystem;
 
@@ -41,6 +42,9 @@ public class RobotContainer {
 
   // Elevator Subsystem:
   private ElevatorSubsystem m_elevator;
+
+  // Shooter Subsystem
+  private ShooterSubsystem m_shooter;
 
   // Controllers:
   private XboxController m_driveController;
@@ -106,6 +110,7 @@ public class RobotContainer {
 
     m_intakeRoller = new IntakeSubsystem();
     m_ballMover = new BallMoverSubsystem();
+    m_shooter = new ShooterSubsystem();
 
   }
 
@@ -148,10 +153,15 @@ public class RobotContainer {
         // When button (B) on the joystick is released, the intake motor will stop. Before stopping it will say "Joystick Button (2) Released"
         new JoystickButton(m_driveController, OIConstants.kBallMover)
         .whenPressed(new InstantCommand(m_ballMover::start, m_ballMover).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kBallMover + " Pressed")));
-       // When button (X) on the joystick is held, the ball mover will start. Before raising it will say "Joystick Button (3) Pressed"
-       new JoystickButton(m_driveController, OIConstants.kBallMover)
-       .whenReleased(new InstantCommand(m_ballMover::stop, m_ballMover).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kBallMover + " Released")));
-       // When button (10) on the joystick is released, the feeder arm will stop raising. Before stopping it will say "Joystick Button (10) Released"
+        // When button (X) on the joystick is held, the ball mover will start. Before raising it will say "Joystick Button (3) Pressed"
+        new JoystickButton(m_driveController, OIConstants.kBallMover)
+        .whenReleased(new InstantCommand(m_ballMover::stop, m_ballMover).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kBallMover + " Released")));
+        // When button (X) on the joystick is released, the feeder arm will stop raising. Before stopping it will say "Joystick Button (10) Released"
+  
+        new JoystickButton(m_driveController, OIConstants.kShooter)
+        .whenPressed(new InstantCommand(m_shooter::start, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooter + " Pressed")));
+        new JoystickButton(m_driveController, OIConstants.kShooter)
+        .whenReleased(new InstantCommand(m_shooter::stop, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooter + " Released")));
   
       }
     }

@@ -44,12 +44,15 @@ public final class Constants {
         
         public static final int kIntake = 2; // Should be the B button
         public static final int kBallMover = 3; // Should be the X button
-        
+        public static final int kShooter = 6;  // Should be right bumper  
     }
     public static final class BallMoverSubsystemConstants {
         public static final int kSparkMotorPortBallMover = 10;
     }
     public static final class IntakeSubsystemConstants {
         public static final int kSparkMotorPortIntake = 11;
+    }
+    public static final class ShooterSubsystemConstants {
+        public static final int kSparkMotorPortShooter = 12;
     }
 }

@@ -10,9 +10,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+// import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
 import frc.robot.Constants.OIConstants;
 
 import frc.robot.subsystems.DriveSubsystem;
@@ -56,7 +59,7 @@ public class RobotContainer {
   private IntakeSubsystem m_intakeRoller;
   private BallMoverSubsystem m_ballMover;
 
-  private final double kLowSpeed = 0.5;
+  private final double kLowSpeed = 0.6;
   private final double kFullSpeed = 1.0;
 
   public RobotContainer() {
@@ -122,13 +125,12 @@ public class RobotContainer {
     * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
     */
     private void configureButtonBindings() {
-      /* ***** --- Elevator Subsystem --- ***** */
-
-
       if (OIConstants.kUseAuxController) {
         // TODO - if we decide to use an aux controller then set that up
+        // I believe we decided against the aux controller, but double check with Cole/Jason -AC
       }
       else {
+        /* ***** --- Elevator Subsystem --- ***** */
         // Using the driver station, we know that "A" is button 1 and "Y" is button 4 (see constants)
       
         // Raise elevator
@@ -145,12 +147,15 @@ public class RobotContainer {
         new JoystickButton(m_driveController, OIConstants.kDownElevator)
         .whenReleased(new InstantCommand(m_elevator::stopElevator, m_elevator));
 
+        /* ***** --- Intake Subsystem --- ***** */
         new JoystickButton(m_driveController, OIConstants.kIntake)
         .whenPressed(new InstantCommand(m_intakeRoller::start, m_intakeRoller).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kIntake + " Pressed")));
         // When button (B) on the joystick is held, the intake motor will start. Before lowering it will say "Joystick Button (2) Pressed"
         new JoystickButton(m_driveController, OIConstants.kIntake)
         .whenReleased(new InstantCommand(m_intakeRoller::stop, m_intakeRoller).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kIntake + " Released")));
         // When button (B) on the joystick is released, the intake motor will stop. Before stopping it will say "Joystick Button (2) Released"
+        
+        /* ***** --- BallMover Subsystem --- ***** */
         new JoystickButton(m_driveController, OIConstants.kBallMover)
         .whenPressed(new InstantCommand(m_ballMover::start, m_ballMover).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kBallMover + " Pressed")));
         // When button (X) on the joystick is held, the ball mover will start. Before raising it will say "Joystick Button (3) Pressed"
@@ -158,11 +163,13 @@ public class RobotContainer {
         .whenReleased(new InstantCommand(m_ballMover::stop, m_ballMover).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kBallMover + " Released")));
         // When button (X) on the joystick is released, the feeder arm will stop raising. Before stopping it will say "Joystick Button (10) Released"
   
+        /* ***** --- Shooter Subsystem --- ***** */
         new JoystickButton(m_driveController, OIConstants.kShooter)
         .whenPressed(new InstantCommand(m_shooter::start, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooter + " Pressed")));
+        // When the right bumper (RB) on the joystick is held, the shooter will start.
         new JoystickButton(m_driveController, OIConstants.kShooter)
         .whenReleased(new InstantCommand(m_shooter::stop, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooter + " Released")));
-  
+        // When the right bumber (RB) on the joystick is released, the shooter will stop.
       }
     }
   }

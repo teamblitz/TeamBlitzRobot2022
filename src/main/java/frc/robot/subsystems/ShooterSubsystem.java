@@ -18,13 +18,14 @@ public class ShooterSubsystem extends SubsystemBase {
     // 40A Limit - Motor failure at approximately 27s.
     // 60A Limit - Motor failure at approximately 5.5s
     // 80A Limit* - Motor failure at approximately 2.0s
-    m_shooter.setSmartCurrentLimit(15);
+    // m_shooter.setSmartCurrentLimit(15);  // Do not uncomment this unless you modify the speed below
 
   }
   // Enables Shooter Wheel
   public void start() {
-    System.out.println("BallMoverSubsystem::start");
-    m_shooter.set(1.0);
+    System.out.println("ShooterSubsystem::start");
+    // m_shooter.set(1.0);
+    m_shooter.set(0.32);
   }
 
   // Disable Shooter Wheels

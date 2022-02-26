@@ -59,7 +59,7 @@ public class RobotContainer {
   private IntakeSubsystem m_intakeRoller;
   private BallMoverSubsystem m_ballMover;
 
-  private final double kLowSpeed = 0.6;
+  private final double kLowSpeed = 0.75;
   private final double kFullSpeed = 1.0;
 
   public RobotContainer() {

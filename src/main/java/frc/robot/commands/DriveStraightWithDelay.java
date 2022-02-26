@@ -62,10 +62,10 @@ public class DriveStraightWithDelay extends CommandBase {
 
         if (Cur_Time - startTime < delay) {
             System.out.print("First condition");
-            driveSubsystem.tankDrive(-voltage, voltage);
+            driveSubsystem.tankDrive(voltage, -voltage);
         }
         else if ((Cur_Time - startTime < (duration + delay))) {
-            driveSubsystem.tankDrive(-voltage, voltage);
+            driveSubsystem.tankDrive(voltage, -voltage);
             System.out.print("Second condition");  // This makes it work; don't remove; don't ask
         } else {
             driveSubsystem.tankDrive(0, 0);

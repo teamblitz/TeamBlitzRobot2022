@@ -90,7 +90,11 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fwd the commanded forward movement
    * @param rot the commanded rotation
    */
-  public void performDrive(final double fwd, final double rot, final boolean semiAutonomousState) {
+
+    public void doNothing(final double fwd, final double rot, final boolean semiAutonomousState) {
+    }
+
+   public void performDrive(final double fwd, final double rot, final boolean semiAutonomousState) {
   
     // decide who is in control and execute their drive operations
     if(semiAutonomousState)

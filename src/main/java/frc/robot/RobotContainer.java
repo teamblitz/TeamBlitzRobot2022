@@ -73,31 +73,55 @@ public class RobotContainer {
     * Do Not delete unless removed below
     */
 
+    
+
+    // Tank drive
+    if (kUseTankDrive) {
+      // m_robotDrive.setDefaultCommand(
+      // new RunCommand(() -> m_robotDrive
+      // .tankDrive(m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed),
+      // //Get y value of left analog stick. Then set the motor speed to a max of 50% when the left trigger is less then half pulled otherwise set the max speed to 100%
+      // m_driveController.getRightY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
+      // m_robotDrive));
+    }
+
+    else { //perform driving using one of several methods
+      // m_robotDrive.setDefaultCommand(
+      // new RunCommand(() -> m_robotDrive
+
+      // // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
+      //   .performDrive(filter.calculate(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
+      //   filterRotation.calculate(-m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)), m_driveController.getLeftBumper()),
+      //   m_robotDrive));
+    }
+  }
+
+  public void BeginTeleop(){
+    System.out.println("Enabling controller for Teleop");
+
     // Drive SlewRateLimiter
     SlewRateLimiter filter = new SlewRateLimiter(1.75);
     // Turn SlewRateLimiter
     SlewRateLimiter filterRotation = new SlewRateLimiter(1.75);
 
-    // Tank drive
-    if (kUseTankDrive) {
-      m_robotDrive.setDefaultCommand(
+    m_robotDrive.setDefaultCommand(
       new RunCommand(() -> m_robotDrive
-      .tankDrive(m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed),
-      //Get y value of left analog stick. Then set the motor speed to a max of 50% when the left trigger is less then half pulled otherwise set the max speed to 100%
-      m_driveController.getRightY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
-      m_robotDrive));
-    }
-
-    else { //perform driving using one of several methods
-      m_robotDrive.setDefaultCommand(
-      new RunCommand(() -> m_robotDrive
-
       // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
         .performDrive(filter.calculate(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
         filterRotation.calculate(-m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)), m_driveController.getLeftBumper()),
         m_robotDrive));
-    }
   }
+
+
+
+// Below code stops the xbox controller. In theory the doNothing thing doesn't need args but we couldn't make it work. Will refine latter
+  public void BeginAutonomous() {
+    // below does nothing
+    m_robotDrive.setDefaultCommand(
+      new RunCommand(() -> m_robotDrive
+        .doNothing(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed),
+        -m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed), m_driveController.getLeftBumper()),
+        m_robotDrive));}
 
   private void configureSubsystems() {
 
@@ -175,7 +199,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-      return new DriveStraightWithDelay(m_robotDrive, 5000, 0.5, 0, m_shooter, 2000, 0);
+      return new DriveStraightWithDelay(m_robotDrive, 0.5, m_shooter, m_ballMover);
     }
   }
 

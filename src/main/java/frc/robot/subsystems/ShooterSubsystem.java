@@ -30,7 +30,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // Disable Shooter Wheels
   public void stop() {
-    // System.out.println("ShooterSubsystem::stop");
+    System.out.println("ShooterSubsystem::stop");
     m_shooter.set(0.0);
   }
 

@@ -44,6 +44,9 @@ public class DriveStraightWithDelay extends CommandBase {
 	public void execute() {
 
         if (stage==4){
+            shooterSubsystem.stop();
+            ballMoverSubsystem.stop();
+            System.out.println("Finished");
             return;
         }
 
@@ -97,29 +100,6 @@ public class DriveStraightWithDelay extends CommandBase {
             }
         }
 
-        // if (Cur_Time - startTime < shooter_delay) {
-        //     // System.out.print("First condition");
-		// 	shooterSubsystem.start();
-		// }
-		// else if ((Cur_Time - startTime < (shooter_duration + shooter_delay))) {
-		// 	shooterSubsystem.start();
-        //     // System.out.print("Second condition");  // This makes it work; don't remove; don't ask
-		// } else {
-		// 	shooterSubsystem.stop();
-        //     // System.out.print("Stop condition");
-        // }
-
-        // if (Cur_Time - startTime < delay) {
-        //     System.out.print("First condition");
-        //     driveSubsystem.tankDrive(-voltage, voltage);
-        // }
-        // else if ((Cur_Time - startTime < (duration + delay))) {
-        //     driveSubsystem.tankDrive(-voltage, voltage);
-        //     System.out.print("Second condition");  // This makes it work; don't remove; don't ask
-        // } else {
-        //     driveSubsystem.tankDrive(0, 0);
-        //     System.out.print("Stop condition");
-    // Make this return true when this Command no longer needs to run execute()
 	// @Override
 	// public boolean isFinished() {
 	// 	return System.currentTimeMillis() - startTime > (duration + shooter_duration + delay);

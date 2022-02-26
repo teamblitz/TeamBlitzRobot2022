@@ -10,14 +10,14 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-// import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.Constants.OIConstants;
-
+import frc.robot.commands.DriveStraightWithDelay;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -128,6 +128,7 @@ public class RobotContainer {
       if (OIConstants.kUseAuxController) {
         // TODO - if we decide to use an aux controller then set that up
         // I believe we decided against the aux controller, but double check with Cole/Jason -AC
+        return;
       }
       else {
         /* ***** --- Elevator Subsystem --- ***** */
@@ -171,6 +172,10 @@ public class RobotContainer {
         .whenReleased(new InstantCommand(m_shooter::stop, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooter + " Released")));
         // When the right bumber (RB) on the joystick is released, the shooter will stop.
       }
+    }
+
+    public Command getAutonomousCommand() {
+      return new DriveStraightWithDelay(m_robotDrive, 5000, 0.5, 0, m_shooter, 2000, 0);
     }
   }
 

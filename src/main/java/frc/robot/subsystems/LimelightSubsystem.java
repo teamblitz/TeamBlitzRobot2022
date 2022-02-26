@@ -15,6 +15,23 @@ public class LimelightSubsystem extends SubsystemBase {
   public double getY() { return(m_ty);}
   public double getArea() { return(m_ta);}
 
+
+  // returns 0 for blue, 1 for red
+  public int getAllianceColor() {
+    return(NetworkTableInstance.getDefault().getTable("FMSInfo").getEntry("IsRedAlliance").getBoolean(false) ? 1 : 0);
+  }
+
+  // pipelines selected by below
+  public static final int kSeekBlueContour = 0;
+  public static final int kSeekRedContour = 1;
+  public static final int kSeekBlueCircleBlob = 2;
+  public static final int kSeekRedCircleBlob = 3;
+  // set vision navigation pipeline
+  public void setPipeline(Number pipelineNum) {
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipelineNum);
+
+  }
+
     @Override
     public void periodic() {
         //read values periodically

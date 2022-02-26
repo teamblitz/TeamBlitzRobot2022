@@ -24,6 +24,10 @@ public class BallAcquirePlanSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        // inform LimeLight of our alliance color
+        // configure alliance color (0=blue, 1=red)
+        m_LimelightSubsystem.setPipeline(m_LimelightSubsystem.getAllianceColor() == 1 ? LimelightSubsystem.kSeekRedContour : LimelightSubsystem.kSeekBlueContour);
+
         m_rot = 0.0;
         m_fwd = 0.0;
         // acquire tx and area and valid from LimelightSubsystem

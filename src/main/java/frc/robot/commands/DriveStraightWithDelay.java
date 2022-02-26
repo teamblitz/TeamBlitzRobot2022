@@ -16,6 +16,7 @@ public class DriveStraightWithDelay extends CommandBase {
     long    shooter_duration;
     long    shooter_delay;
 
+    int     stage = 1;
     // double	voltageAccommodater	= .5;	// Because our robot is part of the alt-right (or at least leans to the right)
 										// Tests: VA Value | Distance | Avg. Deviation | Trials (Deviation to the Right,
 										// Negative is Left)
@@ -46,8 +47,49 @@ public class DriveStraightWithDelay extends CommandBase {
     @Override
 	public void execute() {
 
+        if (stage==3)
+        {
+            return;
+        }
+
 		final long Cur_Time = System.currentTimeMillis();
         
+        if (stage==1){
+            //Insert shooter code
+            if (Cur_Time - startTime < shooter_delay) {
+                System.out.print("S1 First condition");
+                shooterSubsystem.start();
+                driveSubsystem.tankDrive(-voltage, voltage);
+            }
+            else if ((Cur_Time - startTime < (shooter_duration + shooter_delay))) {
+                shooterSubsystem.start();
+                driveSubsystem.tankDrive(-voltage, voltage);
+                System.out.print("S1 Second condition");  // This makes it work; don't remove; don't ask
+            }
+            else {
+                shooterSubsystem.stop();
+                System.out.println("S1 Stop condition. Entering stage 2");
+                stage = 2;
+            }
+        }
+
+        if (stage==2){
+            //Insert drive code.
+            System.out.println("stage 2");
+            if (Cur_Time - startTime - shooter_duration < delay) {
+                System.out.print("S2 First condition");
+                driveSubsystem.tankDrive(-voltage, voltage);
+            }
+            else if ((Cur_Time - startTime - shooter_duration < (duration + delay))) {
+                driveSubsystem.tankDrive(-voltage, voltage);
+                System.out.println("S2 Second condition");  // This makes it work; don't remove; don't ask
+            } else {
+                driveSubsystem.tankDrive(0, 0);
+                System.out.println("S2 Stop condition. Entering Stage 3");
+                stage = 3;
+            }
+        }
+
         // if (Cur_Time - startTime < shooter_delay) {
         //     // System.out.print("First condition");
 		// 	shooterSubsystem.start();
@@ -60,22 +102,21 @@ public class DriveStraightWithDelay extends CommandBase {
         //     // System.out.print("Stop condition");
         // }
 
-        if (Cur_Time - startTime < delay) {
-            System.out.print("First condition");
-            driveSubsystem.tankDrive(-voltage, voltage);
+        // if (Cur_Time - startTime < delay) {
+        //     System.out.print("First condition");
+        //     driveSubsystem.tankDrive(-voltage, voltage);
+        // }
+        // else if ((Cur_Time - startTime < (duration + delay))) {
+        //     driveSubsystem.tankDrive(-voltage, voltage);
+        //     System.out.print("Second condition");  // This makes it work; don't remove; don't ask
+        // } else {
+        //     driveSubsystem.tankDrive(0, 0);
+        //     System.out.print("Stop condition");
         }
-        else if ((Cur_Time - startTime < (duration + delay))) {
-            driveSubsystem.tankDrive(-voltage, voltage);
-            System.out.print("Second condition");  // This makes it work; don't remove; don't ask
-        } else {
-            driveSubsystem.tankDrive(0, 0);
-            System.out.print("Stop condition");
-        }
-	}
-
     // Make this return true when this Command no longer needs to run execute()
-	@Override
-	public boolean isFinished() {
-		return System.currentTimeMillis() - startTime > (duration + shooter_duration + delay);
-	}
+	// @Override
+	// public boolean isFinished() {
+	// 	return System.currentTimeMillis() - startTime > (duration + shooter_duration + delay);
+    // }
+
 }

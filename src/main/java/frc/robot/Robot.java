@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-    m_robotContainer.BeginAutonomous();
+    m_robotContainer.beginAutonomous();
   }
 
   @Override
@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_robotContainer.BeginTeleop();
+    m_robotContainer.beginTeleop();
 
     
   }

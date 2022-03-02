@@ -1,25 +1,25 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.BallMoverSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
- public class DriveStraightWithDelay extends CommandBase
+ public class Shoot extends CommandBase
 {
-	DriveSubsystem driveSubsystem;
+	ShooterSubsystem shooterSubsystem;
+    BallMoverSubsystem ballMoverSubsystem;
 	long	duration;
-	long	delay;
+    long    warmupPeriod;
 	long	startTime;
-	double	voltage;
+
 	
 
-	public DriveStraightWithDelay(final DriveSubsystem driveSubsystem, final long duration, final double voltage, final long delay)
-	{
+	public Shoot(final ShooterSubsystem shooterSubsystem, final BallMoverSubsystem ballMoverSubsystem, final long warmupPeriod, final long duration){
 		// Use requires() here to declare subsystem dependencies
 		// eg. requires(chassis);
 		// requires(driveSubsystem);
-		this.driveSubsystem = driveSubsystem;
-		this.delay = delay;
-		this.voltage = voltage;
+		this.shooterSubsystem = shooterSubsystem;
+		this.warmupPeriod = warmupPeriod;
 		this.duration = duration;
 	}
 
@@ -27,6 +27,7 @@ import frc.robot.subsystems.DriveSubsystem;
 	@Override
 	public void initialize() {
 		startTime = System.currentTimeMillis();
+        ballMoverSubsystem.start();
 	}
 
 
@@ -35,8 +36,8 @@ import frc.robot.subsystems.DriveSubsystem;
 	public void execute() {
 
 		final long Cur_Time = System.currentTimeMillis();
-        if (Cur_Time - startTime > delay) {
-            driveSubsystem.tankDrive(voltage, -voltage);
+        if (Cur_Time - startTime > warmupPeriod) {
+            shooterSubsystem.start();
         }
 		
 	}
@@ -44,15 +45,16 @@ import frc.robot.subsystems.DriveSubsystem;
 
     // Called when isFinished returns ture
     public void end() {
-        driveSubsystem.tankDrive(0, 0);
-        System.out.println("Ending DriveStraitWith Delay");
+        shooterSubsystem.stop();
+        ballMoverSubsystem.stop();
+        System.out.println("Ending Shoot");
     }
 
 	// Make this return true when this Command no longer needs to run execute()
 	
 	@Override
     public boolean isFinished() {
-		return System.currentTimeMillis() - startTime > (duration + delay);
+		return System.currentTimeMillis() - startTime > (duration);
 	}
 
 

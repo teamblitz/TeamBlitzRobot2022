@@ -13,11 +13,13 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.AutonomousCommand; //test thing
 import frc.robot.commands.DriveStraightWithDelay;
+import frc.robot.commands.Shoot;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -96,7 +98,7 @@ public class RobotContainer {
     }
   }
 
-  public void BeginTeleop(){
+  public void beginTeleop(){
     System.out.println("Enabling controller for Teleop");
 
     // Drive SlewRateLimiter
@@ -115,13 +117,15 @@ public class RobotContainer {
 
 
 // Below code stops the xbox controller. In theory the doNothing thing doesn't need args but we couldn't make it work. Will refine latter
-  public void BeginAutonomous() {
+  public void beginAutonomous() {
     // below does nothing
     m_robotDrive.setDefaultCommand(
       new RunCommand(() -> m_robotDrive
         .doNothing(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed),
         -m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed), m_driveController.getLeftBumper()),
-        m_robotDrive));}
+        m_robotDrive));
+    //m_robotDrive.getDefaultCommand().cancel();
+  }
 
   private void configureSubsystems() {
 
@@ -199,7 +203,11 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-      return new DriveStraightWithDelay(m_robotDrive, 0.5, m_shooter, m_ballMover);
+      //return new AutonomousCommand(m_robotDrive, 0.5, m_shooter, m_ballMover);
+      return new SequentialCommandGroup(
+        new Shoot(m_shooter, m_ballMover, 1000, 3000),
+        new DriveStraightWithDelay(m_robotDrive, 5000, .5, 0)
+      );
     }
   }
 

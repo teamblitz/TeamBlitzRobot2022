@@ -14,14 +14,17 @@ import frc.robot.subsystems.LimelightSubsystem;
     LimelightSubsystem limelightSubsystem;
     
 
-	long	duration;
-	long	delay;
+	
 	long	startTime;
     long    ballLastSeen;
-	double	voltage;
+	boolean	seenBall;
+	boolean valid;
+	long notSeenTimeout;
+	long timeout;
+
 	
 
-	public SeekBall(final DriveSubsystem driveSubsystem, final IntakeSubsystem intakeSubsystem, final BallAcquirePlanSubsystem ballAcquirePlanSubsystem, final LimelightSubsystem limelightSubsystem){
+	public SeekBall(final DriveSubsystem driveSubsystem, final IntakeSubsystem intakeSubsystem, final BallAcquirePlanSubsystem ballAcquirePlanSubsystem, final LimelightSubsystem limelightSubsystem, long notSeenTimeout, long timeout){
 		// Use requires() here to declare subsystem dependencies
 		// eg. requires(chassis);
 		// requires(driveSubsystem);
@@ -29,45 +32,56 @@ import frc.robot.subsystems.LimelightSubsystem;
 		this.intakeSubsystem = intakeSubsystem;
         this.ballAcquirePlanSubsystem = ballAcquirePlanSubsystem;
         this.limelightSubsystem = limelightSubsystem;
+		this.notSeenTimeout = notSeenTimeout;
+		this.timeout = timeout;
 	}
 
 	// Called just before this Command runs the first time
 	@Override
 	public void initialize() {
+		System.out.println("Starting Seek Ball");
 		startTime = System.currentTimeMillis();
         ballLastSeen = System.currentTimeMillis();
+		seenBall = false;
+		valid = false;
+		intakeSubsystem.start();
+		
 	}
 
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	public void execute() {
-        if (limelightSubsystem.getValid() > 0){
-            ballLastSeen = System.currentTimeMillis();
-        }
+		// final long Cur_Time = System.currentTimeMillis();
 
+		
+		if (limelightSubsystem.getValid() > 0){ //if limelight sees the ball then this returns true
+			valid = true;
 
+			ballLastSeen = System.currentTimeMillis(); //updates ball last seen. as we are seeing it now.
+			driveSubsystem.performDrive(0, 0, true);
+			System.out.println("SeekBall Valid");
+		}
+		else{
+			System.out.printf("No Ball, Ending in %d seconds %n", 3000 - ballLastSeen); //Prints how long until the command will end due to no ball being seen
 
-		final long Cur_Time = System.currentTimeMillis();
+		}
 
-        if (Cur_Time - startTime > delay) {
-            driveSubsystem.tankDrive(voltage, -voltage);
-        }
 		
 	}
 
 
     // Called when isFinished returns ture
     public void end() {
-        driveSubsystem.tankDrive(0, 0);
-        System.out.println("Ending DriveStraitWith Delay");
+		intakeSubsystem.stop();
+		driveSubsystem.performDrive(0, 0, false);
+		System.out.println("Ending SeekBall");
     }
 
 	// Make this return true when this Command no longer needs to run execute()
-	
 	@Override
     public boolean isFinished() {
-		return (System.currentTimeMillis() - ballLastSeen) > (duration + delay);
+		return (System.currentTimeMillis() - ballLastSeen > notSeenTimeout) /*If we havent seen the ball for more than notSeenTimeout, end.*/ || (System.currentTimeMillis() - startTime > timeout); // Ends if either condition is true
 	}
 
 

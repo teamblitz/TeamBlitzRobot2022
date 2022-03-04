@@ -26,6 +26,7 @@ import frc.robot.subsystems.DriveSubsystem;
 	// Called just before this Command runs the first time
 	@Override
 	public void initialize() {
+		System.out.println("Starting Drive");
 		startTime = System.currentTimeMillis();
 	}
 
@@ -33,6 +34,7 @@ import frc.robot.subsystems.DriveSubsystem;
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	public void execute() {
+		System.out.println("Drive Loop");
 
 		final long Cur_Time = System.currentTimeMillis();
         if (Cur_Time - startTime > delay) {

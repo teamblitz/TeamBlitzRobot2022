@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class BallAcquirePlanSubsystem extends SubsystemBase {
+public class BallShooterPlanSubsystem extends SubsystemBase {
 
     // all of the below can be tinkered with for tuning
     private double m_autoRotationScaleFactor = 0.3;
@@ -43,7 +43,7 @@ public class BallAcquirePlanSubsystem extends SubsystemBase {
             // clamp tx magnitude for safety
             heading_error = Math.max(-m_maxHeadingError, heading_error);
             heading_error = Math.min(heading_error, m_maxHeadingError);
-    
+
             double steering_adjust = 0.0f;
             if (tx > 1.0)
             {
@@ -53,25 +53,25 @@ public class BallAcquirePlanSubsystem extends SubsystemBase {
             {
                     steering_adjust = m_Kp*heading_error + m_min_command;
             }
-    
+
             // calculate a drive speed fractionbased on area -- smaller area = further away = go faster
             double driveSpeedFraction = (m_maxAreaFraction - area) / m_maxAreaFraction; // results in [0.0 ... 1.0]
             // limit the drive speed fraction to m_maxDriveSpeedFraction for safety
             driveSpeedFraction = Math.min(m_maxDriveSpeedFraction, driveSpeedFraction);
-    
+
             // negate steering adjust because camera and ball feeder face the rear
             m_rot = m_autoRotationScaleFactor * -steering_adjust;
             m_fwd = m_autoMoveScaleFactor * driveSpeedFraction;
-            
+
             // we could post the debug info to the Shuffleboard if we wanted
             SmartDashboard.putNumber("AutoMove", (m_autoRotationScaleFactor * driveSpeedFraction));
-    
+
         }
 
     }
 
-    public BallAcquirePlanSubsystem(LimelightSubsystem lSub) {
+    public BallShooterPlanSubsystem(LimelightSubsystem lSub) {
         m_LimelightSubsystem = lSub;
     }
-    
+
 }

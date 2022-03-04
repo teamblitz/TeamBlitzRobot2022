@@ -17,8 +17,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.AutonomousCommand; //test thing
+// import frc.robot.commands.AutonomousCommand; //test thing
 import frc.robot.commands.DriveStraightWithDelay;
+import frc.robot.commands.SeekBall;
 import frc.robot.commands.Shoot;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -207,6 +208,7 @@ public class RobotContainer {
       return new SequentialCommandGroup(
         new Shoot(m_shooter, m_ballMover, 1000, 3000),
         new DriveStraightWithDelay(m_robotDrive, 5000, .5, 0)
+        //,new SeekBall(m_robotDrive, m_intakeRoller, m_ballAcquire, m_limelight, 3000, 5000)
       );
     }
   }

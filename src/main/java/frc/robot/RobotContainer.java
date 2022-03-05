@@ -25,9 +25,11 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.LimelightTargetSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.BallAcquirePlanSubsystem;
 import frc.robot.subsystems.BallMoverSubsystem;
+import frc.robot.subsystems.BallShooterPlanSubsystem;
 
 /**
 * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -43,8 +45,14 @@ public class RobotContainer {
   // Limelight subsystem:
   private LimelightSubsystem m_limelight;
 
+  // Targeting Limelight subsystem
+  private LimelightTargetSubsystem m_limelightTarget;
+
   // Ball Acquire subsystem:
   private BallAcquirePlanSubsystem m_ballAcquire;
+
+  // Ball Shooter Plan Subsystem
+  private BallShooterPlanSubsystem m_ballShoot;
 
   // Elevator Subsystem:
   private ElevatorSubsystem m_elevator;
@@ -110,8 +118,11 @@ public class RobotContainer {
     m_robotDrive.setDefaultCommand(
       new RunCommand(() -> m_robotDrive
       // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
-        .performDrive(filter.calculate(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
-        filterRotation.calculate(-m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)), m_driveController.getLeftBumper()),
+        .performDrive(
+          filter.calculate(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
+          filterRotation.calculate(-m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)), 
+          m_driveController.getLeftBumper(), //Turns on semiautonomous ball acquire
+          m_driveController.getRightBumper()), //Turns on semiautonomous targeter
         m_robotDrive));
   }
 
@@ -134,9 +145,13 @@ public class RobotContainer {
 
     m_limelight = new LimelightSubsystem();
 
+    m_limelightTarget = new LimelightTargetSubsystem();
+
     m_ballAcquire = new BallAcquirePlanSubsystem(m_limelight);
+
+    m_ballShoot = new BallShooterPlanSubsystem(m_limelightTarget);
     
-    m_robotDrive = new DriveSubsystem(m_ballAcquire);
+    m_robotDrive = new DriveSubsystem(m_ballAcquire, m_ballShoot);
 
     m_elevator = new ElevatorSubsystem();
 
@@ -203,12 +218,12 @@ public class RobotContainer {
       }
     }
 
-    public Command getAutonomousCommand() {
+    public Command getAutonomousCommand() { // Autonomous code goes here
       //return new AutonomousCommand(m_robotDrive, 0.5, m_shooter, m_ballMover);
       return new SequentialCommandGroup(
-        new Shoot(m_shooter, m_ballMover, 1000, 3000),
-        new DriveStraightWithDelay(m_robotDrive, 5000, .5, 0)
-        //,new SeekBall(m_robotDrive, m_intakeRoller, m_ballAcquire, m_limelight, 3000, 5000)
+        new Shoot(m_shooter, m_ballMover, 1000, 3000), //Warmup time, Total duration
+        new DriveStraightWithDelay(m_robotDrive, 5000, .5, 0) // duration, speed, delay
+        ,new SeekBall(m_robotDrive, m_intakeRoller, m_ballAcquire, m_limelight, 3000, 5000) //Time with no ball seen before ending, Total duration
       );
     }
   }

@@ -10,10 +10,10 @@ public class BallShooterPlanSubsystem extends SubsystemBase {
     private double m_Kp = -0.1f;
     private double m_min_command = 0.05f;
     private double m_maxHeadingError = 10.0;
-    private double m_maxAreaFraction = 25.0;
+    private double m_maxOffsetFraction = 2.0;
     private double m_maxDriveSpeedFraction = 0.70; // how fast we allow the autodrive code to dictate we want to go
 
-    private LimelightSubsystem m_LimelightSubsystem;
+    private LimelightTargetSubsystem m_LimelightTargetSubsystem;
 
     // these are the calculated movement directives for autodrive
     private double m_fwd = 0;
@@ -24,19 +24,18 @@ public class BallShooterPlanSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // inform LimeLight of our alliance color
-        // configure alliance color (0=blue, 1=red)
-        m_LimelightSubsystem.setPipeline(m_LimelightSubsystem.getAllianceColor() == 1 ? LimelightSubsystem.kSeekRedContour : LimelightSubsystem.kSeekBlueContour);
+        // TODO <<<>>> set correct pipeline number
+        m_LimelightTargetSubsystem.setPipeline(7);
 
         m_rot = 0.0;
         m_fwd = 0.0;
         // acquire tx and area and valid from LimelightSubsystem
-        double tx = m_LimelightSubsystem.getX();
-        double area = m_LimelightSubsystem.getArea();
+        double tx = m_LimelightTargetSubsystem.getX();
+        double ty = m_LimelightTargetSubsystem.getY();
 
         // boolean valid = false;
 
-        if(m_LimelightSubsystem.getValid() > 0)
+        if(m_LimelightTargetSubsystem.getValid() > 0)
         {
             double heading_error = -tx; // there's a negative here that's negated again later in arcadeDrive()
 
@@ -54,24 +53,30 @@ public class BallShooterPlanSubsystem extends SubsystemBase {
                     steering_adjust = m_Kp*heading_error + m_min_command;
             }
 
-            // calculate a drive speed fractionbased on area -- smaller area = further away = go faster
-            double driveSpeedFraction = (m_maxAreaFraction - area) / m_maxAreaFraction; // results in [0.0 ... 1.0]
+            // calculate the direction we need to drive to aim the target where we want it
+            // if target is below crosshair, then ty will be negative, and otherwise positive.
+            // if ty is negative then we are too far back and need to move forward, so direction will be positive 1
+            // if ty is positive then we are too close and need to move back so direction will be negative 1
+            double driveDirection = (ty < -1 ? 1 : -1);
+            // calculate the speed to drive at based on how far off from target we are
+            double driveSpeedFraction = (Math.abs(ty)) / m_maxOffsetFraction; // results in [0.0 ... 1.0]
             // limit the drive speed fraction to m_maxDriveSpeedFraction for safety
             driveSpeedFraction = Math.min(m_maxDriveSpeedFraction, driveSpeedFraction);
-
-            // negate steering adjust because camera and ball feeder face the rear
-            m_rot = m_autoRotationScaleFactor * -steering_adjust;
-            m_fwd = m_autoMoveScaleFactor * driveSpeedFraction;
+            
+            // DON'T negate steering adjust because target camera faces the front
+            m_rot = m_autoRotationScaleFactor * steering_adjust;
+            // -1 below flips the drive direction compared to BallAcquire which faces the rear instead of the front
+            m_fwd = m_autoMoveScaleFactor * driveSpeedFraction * driveDirection * -1;
 
             // we could post the debug info to the Shuffleboard if we wanted
-            SmartDashboard.putNumber("AutoMove", (m_autoRotationScaleFactor * driveSpeedFraction));
+            SmartDashboard.putNumber("AutoTarget", (m_autoRotationScaleFactor * driveSpeedFraction * -1));
 
         }
 
     }
 
-    public BallShooterPlanSubsystem(LimelightSubsystem lSub) {
-        m_LimelightSubsystem = lSub;
+    public BallShooterPlanSubsystem(LimelightTargetSubsystem lSub) {
+        m_LimelightTargetSubsystem = lSub;
     }
 
 }

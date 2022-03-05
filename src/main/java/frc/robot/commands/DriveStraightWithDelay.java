@@ -45,7 +45,8 @@ import frc.robot.subsystems.DriveSubsystem;
 
 
     // Called when isFinished returns ture
-    public void end() {
+	@Override
+    public void end(boolean interrupted) {
         driveSubsystem.tankDrive(0, 0);
         System.out.println("Ending DriveStraitWith Delay");
     }

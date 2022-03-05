@@ -27,14 +27,16 @@ public class DriveSubsystem extends SubsystemBase {
   private CANSparkMax m_leftMotor, m_leftMotorSlave;
   private CANSparkMax m_rightMotor, m_rightMotorSlave;
   private BallAcquirePlanSubsystem m_ballAcquire;
+  private BallShooterPlanSubsystem m_ballShoot;
 
   private DifferentialDrive m_drive;
  
   /**
    * Creates a new DriveSubsystem.
    */
-  public DriveSubsystem(BallAcquirePlanSubsystem ballAcquire) {
+  public DriveSubsystem(BallAcquirePlanSubsystem ballAcquire, BallShooterPlanSubsystem ballShoot) {
     m_ballAcquire = ballAcquire;
+    m_ballShoot = ballShoot;
     // *********** PUT NON-TUNABLE PARAMETERS BELOW THIS LINE **********
     /**
    * SPARK MAX controllers are intialized over CAN by constructing a CANSparkMax object
@@ -94,17 +96,20 @@ public class DriveSubsystem extends SubsystemBase {
     public void doNothing(final double fwd, final double rot, final boolean semiAutonomousState) {
     }
 
-   public void performDrive(final double fwd, final double rot, final boolean semiAutonomousState) {
+   public void performDrive(final double fwd, final double rot, final boolean semiAutonomousState, final boolean targetingState) {
   
-    // decide who is in control and execute their drive operations
-    if(semiAutonomousState)
-    {
-      arcadeDrive(m_ballAcquire.getRot(), m_ballAcquire.getFwd()); // Again, our arcade drive is reversed for some reason, so we reverse this.
-    }
-    else
-    {
-      arcadeDrive(fwd, rot);
-    }
+      // decide who is in control and execute their drive operations
+      if(semiAutonomousState)
+      {
+        arcadeDrive(m_ballAcquire.getRot(), m_ballAcquire.getFwd()); // Again, our arcade drive is reversed for some reason, so we reverse this.
+      }
+      else if (targetingState){
+        arcadeDrive(m_ballAcquire.getRot(), m_ballAcquire.getFwd());
+      }
+      else
+      {
+        arcadeDrive(fwd, rot);
+      }
   }
 
 

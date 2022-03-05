@@ -47,7 +47,8 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 
     // Called when isFinished returns ture
-    public void end() {
+	@Override
+    public void end(boolean interrupted) {
         shooterSubsystem.stop();
         ballMoverSubsystem.stop();
         System.out.println("Ending Shoot");

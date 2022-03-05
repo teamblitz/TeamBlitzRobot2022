@@ -59,11 +59,11 @@ import frc.robot.subsystems.LimelightSubsystem;
 			valid = true;
 
 			ballLastSeen = System.currentTimeMillis(); //updates ball last seen. as we are seeing it now.
-			driveSubsystem.performDrive(0, 0, true);
+			driveSubsystem.performDrive(0, 0, true, false);
 			System.out.println("SeekBall Valid");
 		}
 		else{
-			System.out.printf("No Ball, Ending in %d seconds %n", 3000 - ballLastSeen); //Prints how long until the command will end due to no ball being seen
+			System.out.printf("No Ball, Ending in %d seconds %n", notSeenTimeout - ballLastSeen); //Prints how long until the command will end due to no ball being seen
 
 		}
 
@@ -72,9 +72,10 @@ import frc.robot.subsystems.LimelightSubsystem;
 
 
     // Called when isFinished returns ture
-    public void end() {
+	@Override
+    public void end(boolean interrupted) {
 		intakeSubsystem.stop();
-		driveSubsystem.performDrive(0, 0, false);
+		driveSubsystem.performDrive(0, 0, false, false);
 		System.out.println("Ending SeekBall");
     }
 

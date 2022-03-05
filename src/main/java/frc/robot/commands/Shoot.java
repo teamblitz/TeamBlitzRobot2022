@@ -19,6 +19,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 		// eg. requires(chassis);
 		// requires(driveSubsystem);
 		this.shooterSubsystem = shooterSubsystem;
+		this.ballMoverSubsystem = ballMoverSubsystem;
 		this.warmupPeriod = warmupPeriod;
 		this.duration = duration;
 	}

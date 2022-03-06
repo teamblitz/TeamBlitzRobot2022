@@ -36,7 +36,6 @@ public final class Constants {
         public static final int kDriveControllerPort = 0;
         
         // Xbox buttons:
-        public static final int kOverdriveLeftTriggerAxis = 2;
         public static final int kOverdriveRightTriggerAxis = 3;
         
         public static final int kUpElevator = 4; // Should be the Y button
@@ -45,6 +44,11 @@ public final class Constants {
         public static final int kIntake = 2; // Should be the B button
         public static final int kBallMover = 3; // Should be the X button
         public static final int kShooter = 6;  // Should be right bumper  
+
+        //not actually used but listed here for reference. Actual binding is done in RobotContainer beginTeleop()
+        public static final int kSemiAutoBallSeek = 0; // Auto Ball seek is on left bumper
+        public static final int kSemiAutoBallTarget = 0; // Auto target is on left analog trigger
+
     }
     
     public static final class BallMoverSubsystemConstants {

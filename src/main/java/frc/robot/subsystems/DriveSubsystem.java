@@ -104,7 +104,7 @@ public class DriveSubsystem extends SubsystemBase {
         arcadeDrive(m_ballAcquire.getRot(), m_ballAcquire.getFwd()); // Again, our arcade drive is reversed for some reason, so we reverse this.
       }
       else if (targetingState){
-        arcadeDrive(m_ballAcquire.getRot(), m_ballAcquire.getFwd());
+        arcadeDrive(m_ballShoot.getRot(), m_ballShoot.getFwd());
       }
       else
       {

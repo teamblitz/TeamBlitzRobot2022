@@ -11,7 +11,7 @@ public class BallShooterPlanSubsystem extends SubsystemBase {
     private double m_min_command = 0.05f;
     private double m_maxHeadingError = 10.0;
     private double m_maxOffsetFraction = 2.0;
-    private double m_maxDriveSpeedFraction = 0.70; // how fast we allow the autodrive code to dictate we want to go
+    private double m_maxDriveSpeedFraction = 0.30; // how fast we allow the autodrive code to dictate we want to go
 
     private LimelightTargetSubsystem m_LimelightTargetSubsystem;
 
@@ -59,12 +59,12 @@ public class BallShooterPlanSubsystem extends SubsystemBase {
             // if ty is positive then we are too close and need to move back so direction will be negative 1
             double driveDirection = (ty < -1 ? 1 : -1);
             // calculate the speed to drive at based on how far off from target we are
-            double driveSpeedFraction = (Math.abs(ty)) / m_maxOffsetFraction; // results in [0.0 ... 1.0]
+            double driveSpeedFraction = 0.2 * (Math.abs(ty)) / m_maxOffsetFraction; // results in [0.0 ... 1.0]
             // limit the drive speed fraction to m_maxDriveSpeedFraction for safety
             driveSpeedFraction = Math.min(m_maxDriveSpeedFraction, driveSpeedFraction);
             
             // DON'T negate steering adjust because target camera faces the front
-            m_rot = m_autoRotationScaleFactor * steering_adjust;
+            m_rot = m_autoRotationScaleFactor * steering_adjust * -1;
             // -1 below flips the drive direction compared to BallAcquire which faces the rear instead of the front
             m_fwd = m_autoMoveScaleFactor * driveSpeedFraction * driveDirection * -1;
 

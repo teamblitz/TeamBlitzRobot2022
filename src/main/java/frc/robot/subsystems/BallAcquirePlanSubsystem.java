@@ -26,6 +26,7 @@ public class BallAcquirePlanSubsystem extends SubsystemBase {
     public void periodic() {
         // inform LimeLight of our alliance color
         // configure alliance color (0=blue, 1=red)
+        // this refers to files like RoundBlue and RoundRed in the limelight_configuration repository
         m_LimelightSubsystem.setPipeline(m_LimelightSubsystem.getAllianceColor() == 1 ? LimelightSubsystem.kSeekRedContour : LimelightSubsystem.kSeekBlueContour);
 
         m_rot = 0.0;

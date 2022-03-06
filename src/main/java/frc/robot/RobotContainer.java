@@ -63,10 +63,7 @@ public class RobotContainer {
   // Controllers:
   private XboxController m_driveController;
 
-
   // Controller Constants:
-  private final boolean kUseTankDrive = false;
-
   private IntakeSubsystem m_intakeRoller;
   private BallMoverSubsystem m_ballMover;
 
@@ -78,37 +75,16 @@ public class RobotContainer {
     configureSubsystems();
     configureButtonBindings();
     
-    /** SlewRateLimiter
-    * Creates a SlewRateLimiter that limits the rate of change of the signal to 1.75 units per second for forward and backward
-    * Essemtaly stoping jerking of the robot during arcade drive
-    * Do Not delete unless removed below
-    */
-
-    
-
-    // Tank drive
-    if (kUseTankDrive) {
-      // m_robotDrive.setDefaultCommand(
-      // new RunCommand(() -> m_robotDrive
-      // .tankDrive(m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed),
-      // //Get y value of left analog stick. Then set the motor speed to a max of 50% when the left trigger is less then half pulled otherwise set the max speed to 100%
-      // m_driveController.getRightY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
-      // m_robotDrive));
-    }
-
-    else { //perform driving using one of several methods
-      // m_robotDrive.setDefaultCommand(
-      // new RunCommand(() -> m_robotDrive
-
-      // // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
-      //   .performDrive(filter.calculate(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
-      //   filterRotation.calculate(-m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)), m_driveController.getLeftBumper()),
-      //   m_robotDrive));
-    }
   }
 
   public void beginTeleop(){
     System.out.println("Enabling controller for Teleop");
+
+  /** SlewRateLimiter
+    * Creates a SlewRateLimiter that limits the rate of change of the signal to 1.75 units per second for forward and backward
+    * Essemtaly stoping jerking of the robot during arcade drive
+    * Do Not delete unless removed below
+    */
 
     // Drive SlewRateLimiter
     SlewRateLimiter filter = new SlewRateLimiter(1.75);
@@ -122,7 +98,7 @@ public class RobotContainer {
           filter.calculate(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
           filterRotation.calculate(-m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)), 
           m_driveController.getLeftBumper(), //Turns on semiautonomous ball acquire
-          m_driveController.getRightBumper()), //Turns on semiautonomous targeter
+          m_driveController.getLeftTriggerAxis() > 0.5), //Turns on semiautonomous targeter on Left Trigger
         m_robotDrive));
   }
 

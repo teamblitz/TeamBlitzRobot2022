@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.ResourceBundle.Control; // Unsure if this is necessary
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
@@ -33,8 +31,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         m_slave.configFactoryDefault();
 
         // Set to coast
-        m_master.setNeutralMode(NeutralMode.Coast); // This might be changed to brake
-        m_slave.setNeutralMode(NeutralMode.Coast); // Same with this one
+        m_master.setNeutralMode(NeutralMode.Brake); // This might be changed to brake
+        m_slave.setNeutralMode(NeutralMode.Brake); // Same with this one
 
         // Make slave follow master
         m_slave.follow(m_master);
@@ -47,13 +45,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void upElevator() {
         // Drives the motors up (or at least it should)
-        m_master.set(ControlMode.PercentOutput, 0.6); 
+        m_master.set(ControlMode.PercentOutput, -0.6); 
         checkMovement = true;
     }
 
     public void downElevator() {
         // Drives the motors down (or at least it should)
-        m_master.set(ControlMode.PercentOutput, -0.6);
+        m_master.set(ControlMode.PercentOutput, 0.6);
         checkMovement = true;
     }
 
@@ -79,12 +77,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (m_master.get() > 0.0) {
-            // elevator going up
-            checkTopLimit();
-        }
-        if (m_master.get() < 0.0){
-            checkBottomLimit();
-        }
+        checkTopLimit();
+        checkBottomLimit();
     }
 }

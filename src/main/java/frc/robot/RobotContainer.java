@@ -159,7 +159,7 @@ public class RobotContainer {
       
         // Raise elevator
         new JoystickButton(m_driveController, OIConstants.kUpElevator)
-        .whenPressed(new InstantCommand(m_elevator::upElevator, m_elevator));
+        .whenHeld(new InstantCommand(m_elevator::upElevator, m_elevator)); // TODO - <<<>>> This needs to be a whenHeld for slewrate limiter to work
         // Stop raising elevator when button is released
         new JoystickButton(m_driveController, OIConstants.kUpElevator)
         .whenReleased(new InstantCommand(m_elevator::stopElevator, m_elevator));

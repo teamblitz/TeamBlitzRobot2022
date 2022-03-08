@@ -27,7 +27,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final WPI_TalonFX m_slave = new WPI_TalonFX(Constants.ElevatorConstants.kSlavePort); // This is set to 8
     
 
-    // TODO - <<<>>> Did not create limiters for stoping of the elevator. As the moters would keep going a bit as they slowed down, Posiblly resaulting in the moter going too far. If the 
+    // TODO - <<<>>> Did not create limiters for stoping of the elevator. As the moters would keep going a bit as they slowed down, Posiblly resaulting in the moter going too far. 
     // Creates a SlewRateLimiter that limits the rate of change of the signal to 1.75 units per second
     SlewRateLimiter upFilter = new SlewRateLimiter(1.75);
     SlewRateLimiter downFilter = new SlewRateLimiter(1.75);

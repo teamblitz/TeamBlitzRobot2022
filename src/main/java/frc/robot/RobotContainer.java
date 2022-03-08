@@ -22,6 +22,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DriveStraightWithDelay;
 import frc.robot.commands.SeekBall;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.Target;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -200,8 +201,10 @@ public class RobotContainer {
       //return new AutonomousCommand(m_robotDrive, 0.5, m_shooter, m_ballMover);
       return new SequentialCommandGroup(
         new Shoot(m_shooter, m_ballMover, 1000, 3000), //Warmup time, Total duration
-        new DriveStraightWithDelay(m_robotDrive, 5000, .5, 0) // duration, speed, delay
-        ,new SeekBall(m_robotDrive, m_intakeRoller, m_ballAcquire, m_limelight, 3000, 5000) //Time with no ball seen before ending, Total duration
+        new SeekBall(m_robotDrive, m_intakeRoller, m_ballAcquire, m_limelight, 3000, 5000), //Time with no ball seen before ending, Total duration
+        new Target(m_robotDrive, m_ballShoot, m_limelightTarget, 1000, 5000), // Not seen timeout, total duration.
+        new DriveStraightWithDelay(m_robotDrive, 2000, .5, 0), // duration, speed, delay. 1000 worked at scrimage. keeping it at 2000 to be safe.
+        new Shoot(m_shooter, m_ballMover, 1000, 3000) //Warmup time, Total duration
       );
     }
   }

@@ -7,11 +7,14 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ElevatorSubsystem extends SubsystemBase {
-
+    DigitalInput toplimitSwitch= new DigitalInput(8);
+    DigitalInput bottomlimitSwitch = new DigitalInput(7);
+    boolean checkMovement = false;
     /* ***** ----- Talon IDs need to be configured with the Phoenix Tuner ----- ***** */
     
     /* Master Talon */
@@ -37,25 +40,51 @@ public class ElevatorSubsystem extends SubsystemBase {
         m_slave.follow(m_master);
         
         // One of the motors needs to be inverted, so we do this
-        m_slave.setInverted(TalonFXInvertType.CounterClockwise); // If they still move the same way, try clockwise
+        // if Master is ID 8, use counterclockwise
+        // If Master is 7 use Clockwise
+        m_slave.setInverted(TalonFXInvertType.Clockwise); // If they still move the same way, try clockwise
     }
 
     public void upElevator() {
         // Drives the motors up (or at least it should)
-        m_master.set(ControlMode.PercentOutput, 0.45); 
-        
-        // Please change the set inverted value for slave/master instead of this percentage
-        // Basically, don't do a negative percentage for up and a positive percentage for down
-        // You can change the actual value of .45 though.
+        m_master.set(ControlMode.PercentOutput, 0.6); 
+        checkMovement = true;
     }
 
     public void downElevator() {
         // Drives the motors down (or at least it should)
-        m_master.set(ControlMode.PercentOutput, -0.45);
+        m_master.set(ControlMode.PercentOutput, -0.6);
+        checkMovement = true;
     }
 
     public void stopElevator() {
         // Should stop the motors
         m_master.set(ControlMode.PercentOutput, 0.0);
+        checkMovement = false;
+    }
+
+    public void checkTopLimit(){
+        if (toplimitSwitch.get() && checkMovement) { 
+            stopElevator();
+            System.out.println("Stop Elevator Up");
+        }
+    }
+
+    public void checkBottomLimit(){
+        if (bottomlimitSwitch.get() && checkMovement) { 
+            stopElevator();
+            System.out.println("Stop Elevator Down");
+        }
+    }
+
+    @Override
+    public void periodic() {
+        if (m_master.get() > 0.0) {
+            // elevator going up
+            checkTopLimit();
+        }
+        if (m_master.get() < 0.0){
+            checkBottomLimit();
+        }
     }
 }

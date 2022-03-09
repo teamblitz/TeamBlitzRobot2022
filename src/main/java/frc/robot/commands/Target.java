@@ -59,7 +59,7 @@ import frc.robot.subsystems.LimelightTargetSubsystem;
 			System.out.println("Target Valid");
 		}
 		else{
-			System.out.printf("No Target, is the limelight obstructed? Ending in %d seconds %n", timeout - targetLastSeen); //Prints how long until the command will end due to no ball being seen
+			System.out.printf("No Target, is the limelight obstructed? Ending in %d seconds %n", timeout - (System.currentTimeMillis() - targetLastSeen)); //Prints how long until the command will end due to no ball being seen
 
 		}
 
@@ -74,6 +74,7 @@ import frc.robot.subsystems.LimelightTargetSubsystem;
     }
 
 	// Make this return true when this Command no longer needs to run execute()
+		// TODO - DOES not work! ASK NOAH.
 	@Override
     public boolean isFinished() {
 		return (System.currentTimeMillis() - targetLastSeen > notSeenTimeout) /*If we havent seen the target for more than notSeenTimeout, end.*/ || (System.currentTimeMillis() - startTime > timeout); // Ends if either condition is true

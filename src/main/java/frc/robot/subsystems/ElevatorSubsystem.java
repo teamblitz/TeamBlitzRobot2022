@@ -56,13 +56,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void upElevator() {
         // Drives the motors up (or at least it should)
-        m_master.set(ControlMode.PercentOutput, upFilter.calculate(-0.6)); 
+        // m_master.set(ControlMode.PercentOutput, upFilter.calculate(-0.6));
+        m_master.set(ControlMode.PercentOutput, -0.6); 
         checkMovement = true;
     }
 
     public void downElevator() {
         // Drives the motors down (or at least it should)
-        m_master.set(ControlMode.PercentOutput, downFilter.calculate(0.6));
+        // m_master.set(ControlMode.PercentOutput, downFilter.calculate(0.6));
+        m_master.set(ControlMode.PercentOutput, 0.6);
         checkMovement = true;
     }
 

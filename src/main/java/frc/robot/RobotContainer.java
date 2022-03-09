@@ -159,7 +159,7 @@ public class RobotContainer {
       
         // Raise elevator
         new JoystickButton(m_driveController, OIConstants.kUpElevator)
-        .whenHeld(new InstantCommand(m_elevator::upElevator, m_elevator)); // TODO - <<<>>> This needs to be a whenHeld for slewrate limiter to work
+        .whenPressed(new InstantCommand(m_elevator::upElevator, m_elevator)); // TODO - <<<>>> This needs to be a whenHeld for slewrate limiter to work
         // Stop raising elevator when button is released
         new JoystickButton(m_driveController, OIConstants.kUpElevator)
         .whenReleased(new InstantCommand(m_elevator::stopElevator, m_elevator));
@@ -171,6 +171,7 @@ public class RobotContainer {
         new JoystickButton(m_driveController, OIConstants.kDownElevator)
         .whenReleased(new InstantCommand(m_elevator::stopElevator, m_elevator));
 
+        
         /* ***** --- Intake Subsystem --- ***** */
         new JoystickButton(m_driveController, OIConstants.kIntake)
         .whenPressed(new InstantCommand(m_intakeRoller::start, m_intakeRoller).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kIntake + " Pressed")));
@@ -202,7 +203,7 @@ public class RobotContainer {
       return new SequentialCommandGroup( // TODO - <<<>>> Could possibly go over 15 seconds of autonomous. Should't be a problem as SeekBall will auto disable after pickup. 
         new Shoot(m_shooter, m_ballMover, 1000, 3000), //Warmup time, Total duration
         new SeekBall(m_robotDrive, m_intakeRoller, m_ballAcquire, m_limelight, 3000, 5000), //Time with no ball seen before ending, Total duration
-        new Target(m_robotDrive, m_ballShoot, m_limelightTarget, 1000, 3000), // Not seen timeout, total duration.
+        new Target(m_robotDrive, m_ballShoot, m_limelightTarget, 3000, 3000), // Not seen timeout, total duration.
         new Shoot(m_shooter, m_ballMover, 1000, 3000), //Warmup time, Total duration
         new DriveStraightWithDelay(m_robotDrive, 2000, .5, 0) // duration, speed, delay. 1000 worked at scrimage. keeping it at 2000 to be safe.
       );

@@ -63,7 +63,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 			System.out.println("SeekBall Valid");
 		}
 		else{
-			System.out.printf("No Ball, Ending in %d seconds %n", notSeenTimeout - (ballLastSeen- System.currentTimeMillis())); //Prints how long until the command will end due to no ball being seen
+			System.out.printf("No Ball, Ending in %d seconds %n", notSeenTimeout - (System.currentTimeMillis() - ballLastSeen)); //Prints how long until the command will end due to no ball being seen
 
 		}
 
@@ -78,11 +78,11 @@ import frc.robot.subsystems.LimelightSubsystem;
 		driveSubsystem.performDrive(0, 0, false, false);
 		System.out.println("Ending SeekBall");
     }
-	// TODO - DOES not work! ASK NOAH.
+
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
     public boolean isFinished() {
-		return ((ballLastSeen - System.currentTimeMillis()) > notSeenTimeout) /*If we havent seen the ball for more than notSeenTimeout, end.*/ || (System.currentTimeMillis() - startTime > timeout); // Ends if either condition is true
+		return ((System.currentTimeMillis() - ballLastSeen) > notSeenTimeout) /*If we havent seen the ball for more than notSeenTimeout, end.*/ || (System.currentTimeMillis() - startTime > timeout); // Ends if either condition is true
 	}
 
 

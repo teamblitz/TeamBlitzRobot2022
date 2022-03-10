@@ -21,6 +21,7 @@ public class BallShooterPlanSubsystem extends SubsystemBase {
 
     public double getFwd() {return(m_fwd);}
     public double getRot() {return(m_rot);}
+    // public double getSpeed() {return()}
 
     @Override
     public void periodic() {

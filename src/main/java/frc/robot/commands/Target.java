@@ -5,6 +5,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.BallShooterPlanSubsystem;
 import frc.robot.subsystems.LimelightTargetSubsystem;
+import java.math.*;
 
  public class Target extends CommandBase
 {
@@ -76,7 +77,8 @@ import frc.robot.subsystems.LimelightTargetSubsystem;
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
     public boolean isFinished() {
-		return (System.currentTimeMillis() - targetLastSeen > notSeenTimeout) /*If we havent seen the target for more than notSeenTimeout, end.*/ || (System.currentTimeMillis() - startTime > timeout); // Ends if either condition is true
+		// Math.abs(ballShooterPlanSubsystem.getFwd()) < .1 || 
+		return (System.currentTimeMillis() - targetLastSeen > notSeenTimeout) || (System.currentTimeMillis() - startTime > timeout); // Ends if either condition is true
 	}
 
 

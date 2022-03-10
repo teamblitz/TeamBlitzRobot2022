@@ -21,7 +21,7 @@ public class BallShooterPlanSubsystem extends SubsystemBase {
 
     public double getFwd() {return(m_fwd);}
     public double getRot() {return(m_rot);}
-    // public double getSpeed() {return()}
+    
 
     @Override
     public void periodic() {
@@ -71,6 +71,7 @@ public class BallShooterPlanSubsystem extends SubsystemBase {
 
             // we could post the debug info to the Shuffleboard if we wanted
             SmartDashboard.putNumber("AutoTarget", (m_autoRotationScaleFactor * driveSpeedFraction * -1));
+            SmartDashboard.putNumber("GetFwd", (m_fwd));
 
         }
 

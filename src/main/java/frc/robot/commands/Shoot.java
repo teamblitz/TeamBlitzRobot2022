@@ -29,7 +29,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 	public void initialize() {
 		System.out.println("Starting Shoot");
 		startTime = System.currentTimeMillis();
-        ballMoverSubsystem.start();
+        shooterSubsystem.start();
 	}
 
 
@@ -40,7 +40,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 		final long Cur_Time = System.currentTimeMillis();
         if (Cur_Time - startTime > warmupPeriod) {
-            shooterSubsystem.start();
+            ballMoverSubsystem.start();
         }
 		
 	}

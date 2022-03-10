@@ -60,7 +60,7 @@ import frc.robot.subsystems.LimelightTargetSubsystem;
 			System.out.println("Target Valid");
 		}
 		else{
-			System.out.printf("No Target, is the limelight obstructed? Ending in %d seconds %n", timeout - (System.currentTimeMillis() - targetLastSeen)); //Prints how long until the command will end due to no target
+			System.out.printf("No Target, is the limelight obstructed? Ending in %d miliseconds %n", timeout - (System.currentTimeMillis() - targetLastSeen)); //Prints how long until the command will end due to no target
 		}
 
 		

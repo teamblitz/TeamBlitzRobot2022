@@ -63,7 +63,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 			System.out.println("SeekBall Valid");
 		}
 		else{
-			System.out.printf("No Ball, Ending in %d seconds %n", notSeenTimeout - (System.currentTimeMillis() - ballLastSeen)); //Prints how long until the command will end due to no ball being seen
+			System.out.printf("No Ball, Ending in %d miliseconds %n", notSeenTimeout - (System.currentTimeMillis() - ballLastSeen)); //Prints how long until the command will end due to no ball being seen
 
 		}
 

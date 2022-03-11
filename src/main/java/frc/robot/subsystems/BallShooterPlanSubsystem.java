@@ -60,7 +60,7 @@ public class BallShooterPlanSubsystem extends SubsystemBase {
             // if ty is positive then we are too close and need to move back so direction will be negative 1
             double driveDirection = (ty < -1 ? 1 : -1);
             // calculate the speed to drive at based on how far off from target we are
-            double driveSpeedFraction = 0.3 * (Math.abs(ty)) / m_maxOffsetFraction; // results in [0.0 ... 1.0]
+            double driveSpeedFraction = 0.33 * (Math.abs(ty)) / m_maxOffsetFraction; // results in [0.0 ... 1.0]
             // limit the drive speed fraction to m_maxDriveSpeedFraction for safety
             driveSpeedFraction = Math.min(m_maxDriveSpeedFraction, driveSpeedFraction);
             

@@ -187,6 +187,13 @@ public class RobotContainer {
         new JoystickButton(m_driveController, OIConstants.kBallMover)
         .whenReleased(new InstantCommand(m_ballMover::stop, m_ballMover).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kBallMover + " Released")));
         // When button (X) on the joystick is released, the feeder arm will stop raising. Before stopping it will say "Joystick Button (10) Released"
+        new JoystickButton(m_driveController, OIConstants.kBallMoverReversed)
+        .whenPressed(new InstantCommand(m_ballMover::reverse, m_ballMover).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kBallMoverReversed + " Pressed")));
+        // When button (Back) on the joystick is pressed, the feeder will stop. Before stopping it will say "Joystick Button (10) Released"
+        new JoystickButton(m_driveController, OIConstants.kBallMoverReversed)
+        .whenReleased(new InstantCommand(m_ballMover::stop, m_ballMover).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kBallMoverReversed + " Released")));
+        // When button (Back) on the joystick is released, the feeder arm will stop raising. Before stopping it will say "Joystick Button (10) Released"
+        
   
         /* ***** --- Shooter Subsystem --- ***** */
         new JoystickButton(m_driveController, OIConstants.kShooter)
@@ -195,6 +202,12 @@ public class RobotContainer {
         new JoystickButton(m_driveController, OIConstants.kShooter)
         .whenReleased(new InstantCommand(m_shooter::stop, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooter + " Released")));
         // When the right bumber (RB) on the joystick is released, the shooter will stop.
+        new JoystickButton(m_driveController, OIConstants.kShooterReversed)
+        .whenPressed(new InstantCommand(m_shooter::reverse, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooterReversed + " Pressed")));
+        // When the start button on the xbox is pressed, the shooter will reverse.
+        new JoystickButton(m_driveController, OIConstants.kShooterReversed)
+        .whenReleased(new InstantCommand(m_shooter::stop, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooterReversed + " Released")));
+        // When the start button on the joystick is released, the shooter will stop.
       }
     }
 

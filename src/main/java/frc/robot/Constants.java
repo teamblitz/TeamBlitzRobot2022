@@ -43,8 +43,10 @@ public final class Constants {
         
         public static final int kIntake = 2; // Should be the B button
         public static final int kBallMover = 3; // Should be the X button
+        public static final int kBallMoverReversed = 7; // Back Button
         public static final int kShooter = 6;  // Should be right bumper  
-
+        public static final int kShooterReversed = 8; // Start button
+        
         //not actually used but listed here for reference. Actual binding is done in RobotContainer beginTeleop()
         public static final int kSemiAutoBallSeek = 0; // Auto Ball seek is on left bumper
         public static final int kSemiAutoBallTarget = 0; // Auto target is on left analog trigger

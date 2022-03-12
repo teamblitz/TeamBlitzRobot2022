@@ -218,7 +218,7 @@ public class RobotContainer {
         new SeekBall(m_robotDrive, m_intakeRoller, m_ballAcquire, m_limelight, 1000, 5000), //Time with no ball seen before ending, Total duration
         new Target(m_robotDrive, m_ballShoot, m_limelightTarget, 1000, 3000), // Not seen timeout, total duration.
         new Shoot(m_shooter, m_ballMover, 1000, 3000), //Warmup time, Total duration
-        new DriveStraightWithDelay(m_robotDrive, 1000, .5, 0) // duration, speed, delay. 1000 worked at scrimage. keeping it at 2000 to be safe.
+        new DriveStraightWithDelay(m_robotDrive, 500, .5, 0) // duration, speed, delay. 1000 worked at scrimage. keeping it at 2000 to be safe.
       );
     }
   }

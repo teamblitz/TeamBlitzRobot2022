@@ -29,18 +29,19 @@ import frc.robot.subsystems.ShooterSubsystem;
 	public void initialize() {
 		System.out.println("Starting Shoot");
 		startTime = System.currentTimeMillis();
-        ballMoverSubsystem.start();
+        shooterSubsystem.start();
 	}
 
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	public void execute() {
+		// 
 		System.out.println("Shoot Main Loop");
 
 		final long Cur_Time = System.currentTimeMillis();
         if (Cur_Time - startTime > warmupPeriod) {
-            shooterSubsystem.start();
+            ballMoverSubsystem.start();
         }
 		
 	}

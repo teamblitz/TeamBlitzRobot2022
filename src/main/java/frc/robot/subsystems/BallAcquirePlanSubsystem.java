@@ -11,7 +11,7 @@ public class BallAcquirePlanSubsystem extends SubsystemBase {
     private double m_min_command = 0.05f;
     private double m_maxHeadingError = 10.0;
     private double m_maxAreaFraction = 25.0;
-    private double m_maxDriveSpeedFraction = 0.70; // how fast we allow the autodrive code to dictate we want to go
+    private double m_maxDriveSpeedFraction = 0.45; // how fast we allow the autodrive code to dictate we want to go
 
     private LimelightSubsystem m_LimelightSubsystem;
 

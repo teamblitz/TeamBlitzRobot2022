@@ -28,6 +28,15 @@ public class ShooterSubsystem extends SubsystemBase {
     m_shooter.set(0.31);
   }
 
+  // Enables Shooter Wheel
+  public void reverse() {
+    // System.out.println("ShooterSubsystem::start");
+    // m_shooter.set(1.0);
+    m_shooter.set(-0.31);
+  }
+
+    
+
   // Disable Shooter Wheels
   public void stop() {
     System.out.println("ShooterSubsystem::stop");

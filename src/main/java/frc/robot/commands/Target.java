@@ -3,49 +3,46 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.BallAcquirePlanSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.BallShooterPlanSubsystem;
+import frc.robot.subsystems.LimelightTargetSubsystem;
+
 
  public class Target extends CommandBase
 {
 	DriveSubsystem driveSubsystem;
     IntakeSubsystem intakeSubsystem;
-    BallAcquirePlanSubsystem ballAcquirePlanSubsystem;
-    LimelightSubsystem limelightSubsystem;
+    BallShooterPlanSubsystem ballShooterPlanSubsystem;
+    LimelightTargetSubsystem limelightTargetSubsystem;
     
 
 	
 	long	startTime;
-    long    ballLastSeen;
-	boolean	seenBall;
+    long    targetLastSeen;
+	long	notSeenTimeout;
 	boolean valid;
-	long notSeenTimeout;
-	long timeout;
+	long 	timeout;
 
 	
-	// TODO - Change it to BallShooterPlanSub when we get preform drive to work with it. 
-	// Dont call yet
-	public Target(final DriveSubsystem driveSubsystem, final IntakeSubsystem intakeSubsystem, final BallAcquirePlanSubsystem ballAcquirePlanSubsystem, final LimelightSubsystem limelightSubsystem, long notSeenTimeout, long timeout){
+
+	public Target(final DriveSubsystem driveSubsystem, final BallShooterPlanSubsystem ballShooterPlanSubsystem, final LimelightTargetSubsystem limelightTargetSubsystem, long notSeenTimeout, long timeout){
 		// Use requires() here to declare subsystem dependencies
 		// eg. requires(chassis);
 		// requires(driveSubsystem);
 		this.driveSubsystem = driveSubsystem;
-		this.intakeSubsystem = intakeSubsystem;
-        this.ballAcquirePlanSubsystem = ballAcquirePlanSubsystem;
-        this.limelightSubsystem = limelightSubsystem;
-		this.notSeenTimeout = notSeenTimeout;
+        this.ballShooterPlanSubsystem = ballShooterPlanSubsystem;
+        this.limelightTargetSubsystem = limelightTargetSubsystem;
 		this.timeout = timeout;
+		this.notSeenTimeout = notSeenTimeout;
 	}
 
 	// Called just before this Command runs the first time
 	@Override
 	public void initialize() {
-		System.out.println("Starting Seek Ball");
+		System.out.println("Starting Target");
 		startTime = System.currentTimeMillis();
-        ballLastSeen = System.currentTimeMillis();
-		seenBall = false;
+        targetLastSeen = System.currentTimeMillis();
 		valid = false;
-		intakeSubsystem.start();
+
 		
 	}
 
@@ -56,16 +53,14 @@ import frc.robot.subsystems.LimelightSubsystem;
 		// final long Cur_Time = System.currentTimeMillis();
 
 		
-		if (limelightSubsystem.getValid() > 0){ //if limelight sees the ball then this returns true
+		if (limelightTargetSubsystem.getValid() > 0){ //if limelight sees the target then this returns true
 			valid = true;
-
-			ballLastSeen = System.currentTimeMillis(); //updates ball last seen. as we are seeing it now.
-			driveSubsystem.performDrive(0, 0, true, false);
-			System.out.println("SeekBall Valid");
+			targetLastSeen = System.currentTimeMillis(); //updates ball last seen. as we are seeing it now.
+			driveSubsystem.performDrive(0, 0, false, true);
+			// System.out.println("Target Valid");
 		}
 		else{
-			System.out.printf("No Ball, Ending in %d seconds %n", 3000 - ballLastSeen); //Prints how long until the command will end due to no ball being seen
-
+			System.out.printf("No Target, is the limelight obstructed? Ending in %d miliseconds %n", timeout - (System.currentTimeMillis() - targetLastSeen)); //Prints how long until the command will end due to no target
 		}
 
 		
@@ -73,16 +68,17 @@ import frc.robot.subsystems.LimelightSubsystem;
 
 
     // Called when isFinished returns ture
-    public void end() {
-		intakeSubsystem.stop();
+    @Override
+    public void end(boolean interrupted) {
 		driveSubsystem.performDrive(0, 0, false, false);
-		System.out.println("Ending SeekBall");
+		System.out.println("Ending Target");
     }
 
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
     public boolean isFinished() {
-		return (System.currentTimeMillis() - ballLastSeen > notSeenTimeout) /*If we havent seen the ball for more than notSeenTimeout, end.*/ || (System.currentTimeMillis() - startTime > timeout); // Ends if either condition is true
+		// Math.abs(ballShooterPlanSubsystem.getFwd()) < .1 || 
+		return (System.currentTimeMillis() - targetLastSeen > notSeenTimeout) || (System.currentTimeMillis() - startTime > timeout); // Ends if either condition is true
 	}
 
 

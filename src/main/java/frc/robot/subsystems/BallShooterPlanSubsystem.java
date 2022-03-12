@@ -11,7 +11,7 @@ public class BallShooterPlanSubsystem extends SubsystemBase {
     private double m_min_command = 0.05f;
     private double m_maxHeadingError = 10.0;
     private double m_maxOffsetFraction = 2.0;
-    private double m_maxDriveSpeedFraction = 0.30; // how fast we allow the autodrive code to dictate we want to go
+    private double m_maxDriveSpeedFraction = 0.45; // how fast we allow the autodrive code to dictate we want to go
 
     private LimelightTargetSubsystem m_LimelightTargetSubsystem;
 
@@ -21,6 +21,7 @@ public class BallShooterPlanSubsystem extends SubsystemBase {
 
     public double getFwd() {return(m_fwd);}
     public double getRot() {return(m_rot);}
+    
 
     @Override
     public void periodic() {
@@ -59,7 +60,7 @@ public class BallShooterPlanSubsystem extends SubsystemBase {
             // if ty is positive then we are too close and need to move back so direction will be negative 1
             double driveDirection = (ty < -1 ? 1 : -1);
             // calculate the speed to drive at based on how far off from target we are
-            double driveSpeedFraction = 0.2 * (Math.abs(ty)) / m_maxOffsetFraction; // results in [0.0 ... 1.0]
+            double driveSpeedFraction = 0.33 * (Math.abs(ty)) / m_maxOffsetFraction; // results in [0.0 ... 1.0]
             // limit the drive speed fraction to m_maxDriveSpeedFraction for safety
             driveSpeedFraction = Math.min(m_maxDriveSpeedFraction, driveSpeedFraction);
             
@@ -70,6 +71,7 @@ public class BallShooterPlanSubsystem extends SubsystemBase {
 
             // we could post the debug info to the Shuffleboard if we wanted
             SmartDashboard.putNumber("AutoTarget", (m_autoRotationScaleFactor * driveSpeedFraction * -1));
+            SmartDashboard.putNumber("GetFwd", (m_fwd));
 
         }
 

@@ -22,6 +22,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DriveStraightWithDelay;
 import frc.robot.commands.SeekBall;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.Target;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -98,7 +99,7 @@ public class RobotContainer {
       // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
         .performDrive(
           filter.calculate(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
-          filterRotation.calculate(-m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)), 
+          filterRotation.calculate(m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)), 
           m_driveController.getLeftBumper(), //Turns on semiautonomous ball acquire
           m_driveController.getLeftTriggerAxis() > 0.5), //Turns on semiautonomous targeter on Left Trigger
         m_robotDrive));
@@ -158,7 +159,7 @@ public class RobotContainer {
       
         // Raise elevator
         new JoystickButton(m_driveController, OIConstants.kUpElevator)
-        .whenPressed(new InstantCommand(m_elevator::upElevator, m_elevator));
+        .whenPressed(new InstantCommand(m_elevator::upElevator, m_elevator)); // TODO - <<<>>> This needs to be a whenHeld for slewrate limiter to work
         // Stop raising elevator when button is released
         new JoystickButton(m_driveController, OIConstants.kUpElevator)
         .whenReleased(new InstantCommand(m_elevator::stopElevator, m_elevator));
@@ -170,6 +171,7 @@ public class RobotContainer {
         new JoystickButton(m_driveController, OIConstants.kDownElevator)
         .whenReleased(new InstantCommand(m_elevator::stopElevator, m_elevator));
 
+        
         /* ***** --- Intake Subsystem --- ***** */
         new JoystickButton(m_driveController, OIConstants.kIntake)
         .whenPressed(new InstantCommand(m_intakeRoller::start, m_intakeRoller).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kIntake + " Pressed")));
@@ -185,6 +187,13 @@ public class RobotContainer {
         new JoystickButton(m_driveController, OIConstants.kBallMover)
         .whenReleased(new InstantCommand(m_ballMover::stop, m_ballMover).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kBallMover + " Released")));
         // When button (X) on the joystick is released, the feeder arm will stop raising. Before stopping it will say "Joystick Button (10) Released"
+        new JoystickButton(m_driveController, OIConstants.kBallMoverReversed)
+        .whenPressed(new InstantCommand(m_ballMover::reverse, m_ballMover).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kBallMoverReversed + " Pressed")));
+        // When button (Back) on the joystick is pressed, the feeder will stop. Before stopping it will say "Joystick Button (10) Released"
+        new JoystickButton(m_driveController, OIConstants.kBallMoverReversed)
+        .whenReleased(new InstantCommand(m_ballMover::stop, m_ballMover).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kBallMoverReversed + " Released")));
+        // When button (Back) on the joystick is released, the feeder arm will stop raising. Before stopping it will say "Joystick Button (10) Released"
+        
   
         /* ***** --- Shooter Subsystem --- ***** */
         new JoystickButton(m_driveController, OIConstants.kShooter)
@@ -193,15 +202,23 @@ public class RobotContainer {
         new JoystickButton(m_driveController, OIConstants.kShooter)
         .whenReleased(new InstantCommand(m_shooter::stop, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooter + " Released")));
         // When the right bumber (RB) on the joystick is released, the shooter will stop.
+        new JoystickButton(m_driveController, OIConstants.kShooterReversed)
+        .whenPressed(new InstantCommand(m_shooter::reverse, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooterReversed + " Pressed")));
+        // When the start button on the xbox is pressed, the shooter will reverse.
+        new JoystickButton(m_driveController, OIConstants.kShooterReversed)
+        .whenReleased(new InstantCommand(m_shooter::stop, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooterReversed + " Released")));
+        // When the start button on the joystick is released, the shooter will stop.
       }
     }
 
     public Command getAutonomousCommand() { // Autonomous code goes here
       //return new AutonomousCommand(m_robotDrive, 0.5, m_shooter, m_ballMover);
-      return new SequentialCommandGroup(
+      return new SequentialCommandGroup( // TODO - <<<>>> Could possibly go over 15 seconds of autonomous. Should't be a problem as SeekBall will auto disable after pickup. 
         new Shoot(m_shooter, m_ballMover, 1000, 3000), //Warmup time, Total duration
-        new DriveStraightWithDelay(m_robotDrive, 5000, .5, 0) // duration, speed, delay
-        ,new SeekBall(m_robotDrive, m_intakeRoller, m_ballAcquire, m_limelight, 3000, 5000) //Time with no ball seen before ending, Total duration
+        new SeekBall(m_robotDrive, m_intakeRoller, m_ballAcquire, m_limelight, 1000, 5000), //Time with no ball seen before ending, Total duration
+        new Target(m_robotDrive, m_ballShoot, m_limelightTarget, 1000, 3000), // Not seen timeout, total duration.
+        new Shoot(m_shooter, m_ballMover, 1000, 3000), //Warmup time, Total duration
+        new DriveStraightWithDelay(m_robotDrive, 500, .5, 0) // duration, speed, delay. 1000 worked at scrimage. keeping it at 2000 to be safe.
       );
     }
   }

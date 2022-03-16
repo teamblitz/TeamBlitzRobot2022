@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  private Command m_teleopCommand;
   private RobotContainer m_robotContainer;  // Leave this anyways. 
 
   @Override
@@ -45,12 +46,13 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-    m_robotContainer.beginAutonomous();
+    // m_robotContainer.beginAutonomous();
   }
 
   @Override
   public void teleopInit() {
     System.out.println("TeleopInit");
+    m_teleopCommand = m_robotContainer.getTeleopCommand();
     // m_robotContainer = new RobotContainer();
 
     // This makes sure that the autonomous stops running when
@@ -61,8 +63,24 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_robotContainer.beginTeleop();
+    // m_robotContainer.beginTeleop();
 
+    if (m_teleopCommand != null){
+      m_teleopCommand.schedule();
+    }
     
   }
+  /**
+   * Exit code for teleop mode should go here.
+   *
+   * <p>Users should override this method for code which will be called each time the robot exits
+   * teleop mode.
+   */
+  public void teleopExit() {
+    if (m_teleopCommand != null){
+      m_teleopCommand.cancel();
+    }
+  }
+
+
 }

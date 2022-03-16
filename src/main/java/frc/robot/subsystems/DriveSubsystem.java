@@ -96,7 +96,11 @@ public class DriveSubsystem extends SubsystemBase {
     public void doNothing(final double fwd, final double rot, final boolean semiAutonomousState) {
     }
 
-   public void performDrive(final double fwd, final double rot, final boolean semiAutonomousState, final boolean targetingState) {
+    public void seed(){ //Feeds our moter s
+      m_drive.feed();
+    }
+
+    public void performDrive(final double fwd, final double rot, final boolean semiAutonomousState, final boolean targetingState) {
   
       // decide who is in control and execute their drive operations
       if(semiAutonomousState)

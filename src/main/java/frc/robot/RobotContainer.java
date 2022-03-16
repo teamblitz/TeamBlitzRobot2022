@@ -77,46 +77,47 @@ public class RobotContainer {
     configureSubsystems();
     configureButtonBindings();
     CameraServer.startAutomaticCapture();
+    m_robotDrive.setDefaultCommand(new RunCommand(() -> m_robotDrive.seed(), m_robotDrive));
     
   }
 
-  public void beginTeleop(){
-    System.out.println("Enabling controller for Teleop");
+  // public void beginTeleop(){
+  //   System.out.println("Enabling controller for Teleop");
 
-  /** SlewRateLimiter
-    * Creates a SlewRateLimiter that limits the rate of change of the signal to 1.75 units per second for forward and backward
-    * Essemtaly stoping jerking of the robot during arcade drive
-    * Do Not delete unless removed below
-    */
+  // /** SlewRateLimiter
+  //   * Creates a SlewRateLimiter that limits the rate of change of the signal to 1.75 units per second for forward and backward
+  //   * Essemtaly stoping jerking of the robot during arcade drive
+  //   * Do Not delete unless removed below
+  //   */
 
-    // Drive SlewRateLimiter
-    SlewRateLimiter filter = new SlewRateLimiter(1.75);
-    // Turn SlewRateLimiter
-    SlewRateLimiter filterRotation = new SlewRateLimiter(1.75);
+  //   // Drive SlewRateLimiter
+  //   SlewRateLimiter filter = new SlewRateLimiter(1.75);
+  //   // Turn SlewRateLimiter
+  //   SlewRateLimiter filterRotation = new SlewRateLimiter(1.75);
 
-    m_robotDrive.setDefaultCommand(
-      new RunCommand(() -> m_robotDrive
-      // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
-        .performDrive(
-          filter.calculate(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
-          filterRotation.calculate(m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)), 
-          m_driveController.getLeftBumper(), //Turns on semiautonomous ball acquire
-          m_driveController.getLeftTriggerAxis() > 0.5), //Turns on semiautonomous targeter on Left Trigger
-        m_robotDrive));
-  }
+  //   m_robotDrive.setDefaultCommand(
+  //     new RunCommand(() -> m_robotDrive
+  //     // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
+  //       .performDrive(
+  //         filter.calculate(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
+  //         filterRotation.calculate(m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)), 
+  //         m_driveController.getLeftBumper(), //Turns on semiautonomous ball acquire
+  //         m_driveController.getLeftTriggerAxis() > 0.5), //Turns on semiautonomous targeter on Left Trigger
+  //       m_robotDrive));
+  // }
 
 
 
 // Below code stops the xbox controller. In theory the doNothing thing doesn't need args but we couldn't make it work. Will refine latter
-  public void beginAutonomous() {
-    // below does nothing
-    m_robotDrive.setDefaultCommand(
-      new RunCommand(() -> m_robotDrive
-        .doNothing(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed),
-        -m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed), m_driveController.getLeftBumper()),
-        m_robotDrive));
-    //m_robotDrive.getDefaultCommand().cancel();
-  }
+  // public void beginAutonomous() {
+  //   // below does nothing
+  //   m_robotDrive.setDefaultCommand(
+  //     new RunCommand(() -> m_robotDrive
+  //       .doNothing(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed),
+  //       -m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed), m_driveController.getLeftBumper()),
+  //       m_robotDrive));
+  //   //m_robotDrive.getDefaultCommand().cancel();
+  // }
 
   private void configureSubsystems() {
 
@@ -220,6 +221,22 @@ public class RobotContainer {
         new Shoot(m_shooter, m_ballMover, 1000, 3000), //Warmup time, Total duration
         new DriveStraightWithDelay(m_robotDrive, 500, .5, 0) // duration, speed, delay. 1000 worked at scrimage. keeping it at 2000 to be safe.
       );
+    }
+
+    public Command getTeleopCommand() { //Returns commands we want scheduled durring teleoperated period
+      // Drive SlewRateLimiter
+      SlewRateLimiter filter = new SlewRateLimiter(1.75);
+      // Turn SlewRateLimiter
+      SlewRateLimiter filterRotation = new SlewRateLimiter(1.75);
+
+      return new RunCommand(() -> m_robotDrive
+      // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
+        .performDrive(
+          filter.calculate(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
+          filterRotation.calculate(m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)), 
+          m_driveController.getLeftBumper(), //Turns on semiautonomous ball acquire
+          m_driveController.getLeftTriggerAxis() > 0.5), //Turns on semiautonomous targeter on Left Trigger
+        m_robotDrive);
     }
   }
 

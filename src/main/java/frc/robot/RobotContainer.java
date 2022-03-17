@@ -32,6 +32,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.BallAcquirePlanSubsystem;
 import frc.robot.subsystems.BallMoverSubsystem;
 import frc.robot.subsystems.BallShooterPlanSubsystem;
+import frc.robot.subsystems.InternalBallDetectorSubsystem;
 
 /**
 * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -49,6 +50,9 @@ public class RobotContainer {
 
   // Targeting Limelight subsystem
   private LimelightTargetSubsystem m_limelightTarget;
+
+  // Color sensor
+  private InternalBallDetectorSubsystem m_internalBallDetectorSubsystem;
 
   // Ball Acquire subsystem:
   private BallAcquirePlanSubsystem m_ballAcquire;
@@ -126,6 +130,8 @@ public class RobotContainer {
     m_limelight = new LimelightSubsystem();
 
     m_limelightTarget = new LimelightTargetSubsystem();
+
+    m_internalBallDetectorSubsystem = new InternalBallDetectorSubsystem();
 
     m_ballAcquire = new BallAcquirePlanSubsystem(m_limelight);
 

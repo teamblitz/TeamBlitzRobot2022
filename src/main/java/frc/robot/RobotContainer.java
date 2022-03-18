@@ -73,8 +73,11 @@ public class RobotContainer {
   private IntakeSubsystem m_intakeRoller;
   private BallMoverSubsystem m_ballMover;
 
-  private final double kLowSpeed = 0.75;
-  private final double kFullSpeed = 1.0;
+  private final double kDriveLowSpeed = 0.75;
+  private final double kDriveFullSpeed = 1.0;
+
+  private final double kTurnLowSpeed = 0.45;
+  private final double kTurnFullSpeed = .60;
 
   public RobotContainer() {
 
@@ -238,8 +241,10 @@ public class RobotContainer {
       return new RunCommand(() -> m_robotDrive
       // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
         .performDrive(
-          filter.calculate(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
-          filterRotation.calculate(m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)), 
+          filterRotation.calculate(
+            -m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kTurnLowSpeed : kTurnFullSpeed)),
+          filter.calculate(
+            m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kDriveLowSpeed : kDriveFullSpeed)), 
           m_driveController.getLeftBumper(), //Turns on semiautonomous ball acquire
           m_driveController.getLeftTriggerAxis() > 0.5), //Turns on semiautonomous targeter on Left Trigger
         m_robotDrive);

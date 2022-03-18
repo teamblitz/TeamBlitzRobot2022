@@ -7,10 +7,16 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 
 
 public class InternalBallDetectorSubsystem extends SubsystemBase {
+
+    public InternalBallDetectorSubsystem() {
+        m_colorMatcher.addColorMatch(kRedTarget);
+        m_colorMatcher.addColorMatch(kBlueTarget);
+    }
     
     public Color getColor() {return m_colorSensor.getColor();}
     /** Creates a new InternalBallDetectorSubsystem. */
@@ -37,6 +43,7 @@ public class InternalBallDetectorSubsystem extends SubsystemBase {
 
     private final ColorMatch m_colorMatcher = new ColorMatch();
     
+    
 
     private static double CalculateDistance(Color color1, Color color2) {
         double redDiff = color1.red - color2.red;
@@ -46,18 +53,15 @@ public class InternalBallDetectorSubsystem extends SubsystemBase {
         return Math.sqrt((redDiff * redDiff + greenDiff * greenDiff + blueDiff * blueDiff) / 2);
       }
 
-    /**
-     * Note: Any example colors should be calibrated as the user needs, these
-     * are here as a basic example.
-     */
-
+    
     private final Color kRedTarget = new Color(.52, .34, .13);
     private final Color kBlueTarget = new Color(.15, .38, .46);
+    // private final Color kNoTarget = new Color(.29, .47, .23);
+
+
+
+
     
-
-    public InternalBallDetectorSubsystem() {
-
-    }
     
 
     @Override
@@ -71,6 +75,29 @@ public class InternalBallDetectorSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Distance From Blue", CalculateDistance(detectedColor, kBlueTarget));
 
         // System.out.printf("Red %d Green %d Blue %d", detectedColor.red, detectedColor.green, detectedColor.blue);
+
+        ColorMatchResult match = m_colorMatcher.matchColor(detectedColor);
+
+        if (match != null) {
+            if (match.color == kRedTarget) {
+                SmartDashboard.putString("Is Red?" , "Yes");
+            }
+            else {
+                SmartDashboard.putString("Is Red?" , "No");
+            }
+        
+            if (match.color == kBlueTarget) {
+                SmartDashboard.putString("Is Blue?" , "Yes");
+            }
+            else {
+                SmartDashboard.putString("Is Blue?" , "No");
+            }
+            
+        }
+        else {
+            SmartDashboard.putString("Is Red?" , "No");
+            SmartDashboard.putString("Is Blue?" , "No");
+        }
 
 
     }

@@ -52,7 +52,7 @@ public class RobotContainer {
   private LimelightTargetSubsystem m_limelightTarget;
 
   // Color sensor
-  private InternalBallDetectorSubsystem m_internalBallDetectorSubsystem;
+  private InternalBallDetectorSubsystem m_internalBallDetectorSubsystem; // Ignore this warning. 
 
   // Ball Acquire subsystem:
   private BallAcquirePlanSubsystem m_ballAcquire;

@@ -1,27 +1,32 @@
 package frc.robot.subsystems;
 
 import java.lang.Math;
+
+
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import com.ctre.phoenix.time.StopWatch;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 
 
 public class InternalBallDetectorSubsystem extends SubsystemBase {
-
-    public InternalBallDetectorSubsystem() {
-        m_colorMatcher.addColorMatch(kRedTarget);
-        m_colorMatcher.addColorMatch(kBlueTarget);
-    }
     
-    public Color getColor() {return m_colorSensor.getColor();}
-    /** Creates a new InternalBallDetectorSubsystem. */
+    // Constants
+    private static final Color kRedTarget = new Color(.52, .34, .13);
+    private static final Color kBlueTarget = new Color(.15, .38, .46);
+    
+    // Do we see red or blue at all?
+    private Boolean isRed = false;
+    private Boolean isBlue = false;
 
-    /**
+    private StopWatch timer = new StopWatch();
+     /**
      * Change the I2C port below to match the connection of your color sensor
      */
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
@@ -42,9 +47,20 @@ public class InternalBallDetectorSubsystem extends SubsystemBase {
      */
 
     private final ColorMatch m_colorMatcher = new ColorMatch();
-    
-    
 
+
+    public InternalBallDetectorSubsystem() {
+        m_colorMatcher.addColorMatch(kRedTarget);
+        m_colorMatcher.addColorMatch(kBlueTarget);
+        timer.start();
+
+    }
+    
+    public Boolean ballSeen() {return isRed || isBlue;}
+    public Integer lastSeen() {return timer.getDurationMs();}
+    
+    
+    // Used for debuging only
     private static double CalculateDistance(Color color1, Color color2) {
         double redDiff = color1.red - color2.red;
         double greenDiff = color1.green - color2.green;
@@ -53,15 +69,6 @@ public class InternalBallDetectorSubsystem extends SubsystemBase {
         return Math.sqrt((redDiff * redDiff + greenDiff * greenDiff + blueDiff * blueDiff) / 2);
       }
 
-    
-    private final Color kRedTarget = new Color(.52, .34, .13);
-    private final Color kBlueTarget = new Color(.15, .38, .46);
-    // private final Color kNoTarget = new Color(.29, .47, .23);
-
-
-
-
-    
     
 
     @Override
@@ -74,30 +81,22 @@ public class InternalBallDetectorSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Distance From Red", CalculateDistance(detectedColor, kRedTarget));
         SmartDashboard.putNumber("Distance From Blue", CalculateDistance(detectedColor, kBlueTarget));
 
-        // System.out.printf("Red %d Green %d Blue %d", detectedColor.red, detectedColor.green, detectedColor.blue);
 
         ColorMatchResult match = m_colorMatcher.matchColor(detectedColor);
-
         if (match != null) {
-            if (match.color == kRedTarget) {
-                SmartDashboard.putString("Is Red?" , "Yes");
-            }
-            else {
-                SmartDashboard.putString("Is Red?" , "No");
-            }
-        
-            if (match.color == kBlueTarget) {
-                SmartDashboard.putString("Is Blue?" , "Yes");
-            }
-            else {
-                SmartDashboard.putString("Is Blue?" , "No");
-            }
-            
+            isRed = (match.color == kRedTarget);
+            isBlue = (match.color == kBlueTarget);
         }
         else {
-            SmartDashboard.putString("Is Red?" , "No");
-            SmartDashboard.putString("Is Blue?" , "No");
+            isRed = false;
+            isBlue = false;
         }
+        if (isRed || isBlue) {
+            timer.start();
+        }
+        
+        SmartDashboard.putString("Is Red?", isRed ? "Yes" : "No");
+        SmartDashboard.putString("Is Blue?" , isBlue ? "Yes" : "No");
 
 
     }

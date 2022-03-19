@@ -16,6 +16,7 @@ public class BallAcquirePlanSubsystem extends SubsystemBase {
 
     private LimelightSubsystem m_LimelightSubsystem;
     private PowerDistribution m_PD;
+    private StatusLightSubsystem m_statusLightSubsystem;
 
     // these are the calculated movement directives for autodrive
     private double m_fwd = 0;
@@ -70,15 +71,15 @@ public class BallAcquirePlanSubsystem extends SubsystemBase {
             // we could post the debug info to the Shuffleboard if we wanted
             SmartDashboard.putNumber("AutoMove", (m_autoRotationScaleFactor * driveSpeedFraction));
             
-            
+            // m_statusLightSubsystem.setLights(x, size, m_LimelightSubsystem.getAllianceColor());
         }
 
     }
 
-    public BallAcquirePlanSubsystem(LimelightSubsystem lSub, PowerDistribution PD) {
+    public BallAcquirePlanSubsystem(LimelightSubsystem lSub, PowerDistribution PD, StatusLightSubsystem statusLightSubsystem) {
         m_LimelightSubsystem = lSub;
         m_PD = PD;
-
+        m_statusLightSubsystem = statusLightSubsystem;
     }
 
     public void lightsOn() {

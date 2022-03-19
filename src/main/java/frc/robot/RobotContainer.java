@@ -8,11 +8,14 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -41,6 +44,9 @@ import frc.robot.subsystems.InternalBallDetectorSubsystem;
 * (including subsystems, commands, and button mappings) should be declared here.
 */
 public class RobotContainer {
+
+  // Power Board
+  private PowerDistribution m_PD;
 
   // Chassis drive subsystem:
   private DriveSubsystem m_robotDrive;
@@ -128,6 +134,8 @@ public class RobotContainer {
 
   private void configureSubsystems() {
 
+    m_PD = new PowerDistribution(1, ModuleType.kRev);
+
     m_driveController = new XboxController(OIConstants.kDriveControllerPort);
 
     m_limelight = new LimelightSubsystem();
@@ -136,7 +144,7 @@ public class RobotContainer {
 
     m_internalBallDetector = new InternalBallDetectorSubsystem();
 
-    m_ballAcquire = new BallAcquirePlanSubsystem(m_limelight);
+    m_ballAcquire = new BallAcquirePlanSubsystem(m_limelight, m_PD);
 
     m_ballShoot = new BallShooterPlanSubsystem(m_limelightTarget);
     
@@ -218,6 +226,12 @@ public class RobotContainer {
         new JoystickButton(m_driveController, OIConstants.kShooterReversed)
         .whenReleased(new InstantCommand(m_shooter::stop, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooterReversed + " Released")));
         // When the start button on the joystick is released, the shooter will stop.
+
+        /* Ball Aquire Lighting */
+        new JoystickButton(m_driveController, OIConstants.kSemiAutoBallSeek)
+        .whenPressed(new InstantCommand(m_ballAcquire::lightsOn, m_ballAcquire)); // TODO - <<<>>> Add light control command
+        new JoystickButton(m_driveController, OIConstants.kSemiAutoBallSeek)
+        .whenReleased(new InstantCommand(m_ballAcquire::lightsOff, m_ballAcquire));
       }
     }
 

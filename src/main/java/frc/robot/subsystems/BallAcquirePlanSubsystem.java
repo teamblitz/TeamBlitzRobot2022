@@ -86,5 +86,10 @@ public class BallAcquirePlanSubsystem extends SubsystemBase {
     public void lightsOff() {
         m_PD.setSwitchableChannel(false);
     }
+
+    public void statusLights (Boolean on) {
+        if (on) {m_statusLightSubsystem.setStatusLights(-m_LimelightSubsystem.getX() / 25.0 , m_LimelightSubsystem.getArea() / 30.0, m_LimelightSubsystem.getAllianceColor());}
+        else {m_statusLightSubsystem.clear();}
+    }
     
 }

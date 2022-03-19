@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -14,6 +15,7 @@ import frc.robot.subsystems.InternalBallDetectorSubsystem;
     BallAcquirePlanSubsystem ballAcquirePlanSubsystem;
     LimelightSubsystem limelightSubsystem;
 	InternalBallDetectorSubsystem internalBallDetectorSubsystem;
+	PowerDistribution PD;
     
 
 	
@@ -26,7 +28,7 @@ import frc.robot.subsystems.InternalBallDetectorSubsystem;
 
 	
 
-	public SeekBall(final DriveSubsystem driveSubsystem, final IntakeSubsystem intakeSubsystem, final BallAcquirePlanSubsystem ballAcquirePlanSubsystem, final LimelightSubsystem limelightSubsystem, long notSeenTimeout, long timeout, InternalBallDetectorSubsystem internalBallDetectorSubsystem){
+	public SeekBall(final DriveSubsystem driveSubsystem, final IntakeSubsystem intakeSubsystem, final BallAcquirePlanSubsystem ballAcquirePlanSubsystem, final LimelightSubsystem limelightSubsystem, long notSeenTimeout, long timeout, InternalBallDetectorSubsystem internalBallDetectorSubsystem, PowerDistribution PD){
 		// Use requires() here to declare subsystem dependencies
 		// eg. requires(chassis);
 		// requires(driveSubsystem);
@@ -37,6 +39,7 @@ import frc.robot.subsystems.InternalBallDetectorSubsystem;
 		this.internalBallDetectorSubsystem = internalBallDetectorSubsystem;
 		this.notSeenTimeout = notSeenTimeout;
 		this.timeout = timeout;
+		this.PD = PD;
 	}
 
 	// Called just before this Command runs the first time
@@ -47,6 +50,7 @@ import frc.robot.subsystems.InternalBallDetectorSubsystem;
         ballLastSeen = System.currentTimeMillis();
 		seenBall = false;
 		valid = false;
+		PD.setSwitchableChannel(true);
 		intakeSubsystem.start();
 		
 	}
@@ -79,6 +83,7 @@ import frc.robot.subsystems.InternalBallDetectorSubsystem;
     public void end(boolean interrupted) {
 		intakeSubsystem.stop();
 		driveSubsystem.performDrive(0, 0, false, false);
+		PD.setSwitchableChannel(false);
 		System.out.println("Ending SeekBall");
     }
 

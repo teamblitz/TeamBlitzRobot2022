@@ -69,7 +69,8 @@ public class BallAcquirePlanSubsystem extends SubsystemBase {
             
             // we could post the debug info to the Shuffleboard if we wanted
             SmartDashboard.putNumber("AutoMove", (m_autoRotationScaleFactor * driveSpeedFraction));
-    
+            
+            
         }
 
     }

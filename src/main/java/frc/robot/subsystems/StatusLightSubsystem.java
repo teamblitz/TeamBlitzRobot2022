@@ -10,6 +10,18 @@ public class StatusLightSubsystem extends SubsystemBase{
 
     private AddressableLED m_led;
     private AddressableLEDBuffer m_ledBuffer;
+    // Constants
+    private final long kNumberOfLEDs = 22;
+    private final double kHalfWidth = ((double)kNumberOfLEDs - 1.0)/2.0;
+    private final int kBrightness = 128;
+
+    private long center;
+    private long start;
+    private long howMany;
+    private int red;
+    private int green;
+    private int blue;
+
     int m_rainbowFirstPixelHue;
 
 
@@ -21,29 +33,15 @@ public class StatusLightSubsystem extends SubsystemBase{
         // Reuse buffer
         // Default to a length of 60, start empty output
         // Length is expensive to set, so only set it once, then just update data
-        m_ledBuffer = new AddressableLEDBuffer(24);
+        m_ledBuffer = new AddressableLEDBuffer(22);
         m_led.setLength(m_ledBuffer.getLength());
 
-        // for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-        //     // Sets the specified LED to the RGB values for red
-        //     m_ledBuffer.setRGB(i, 0, 0, 128);
-        //  }
-         
-        // m_led.setData(m_ledBuffer);
-
-        // Set the data
-
-        
-
-        m_led.setData(m_ledBuffer);
         m_led.start();
 
-        rainbow();
+        // rainbow();
 
-        m_led.setData(m_ledBuffer);
+        // m_led.setData(m_ledBuffer);
         System.out.println("Status Light Subsystem Constructor");
-
-        
     }
 
     @Override
@@ -65,6 +63,40 @@ public class StatusLightSubsystem extends SubsystemBase{
         m_rainbowFirstPixelHue += 3;
         // Check bounds
         m_rainbowFirstPixelHue %= 180;
-      }
+    }
+    
+
+
+    public void setLights(double x, double size, int color) {
+        howMany = Math.round(size * 22);
+        center = Math.round((x+1) * kHalfWidth);
+        start = center - (howMany / 2);
+
+        if (color == 0) { // If we are blue
+            red = 0;
+            green = 0;
+            blue = kBrightness;
+        }
+        else if (color == 1) { // If we are red
+            red = kBrightness;
+            green = 0;
+            blue = 0;
+        }
+        // x value will be our center
+        // 11 and 12 are our center.
+
+        // Clear the leds just in case.
+        for (int i = 0; i < kNumberOfLEDs; i++) {
+            m_ledBuffer.setRGB(i, 0, 0, 0);
+        }
+        
+        // Set our leds
+        for (int i = (int)start; i < start+howMany; i++) {
+            if (i >= 0 && i < kNumberOfLEDs){
+                m_ledBuffer.setRGB(i, red, green, blue);
+            }
+        }
+        m_led.setData(m_ledBuffer);
+    }
     
 }

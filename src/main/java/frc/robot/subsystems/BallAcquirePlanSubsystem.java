@@ -71,7 +71,7 @@ public class BallAcquirePlanSubsystem extends SubsystemBase {
             // we could post the debug info to the Shuffleboard if we wanted
             SmartDashboard.putNumber("AutoMove", (m_autoRotationScaleFactor * driveSpeedFraction));
             
-            // m_statusLightSubsystem.setLights(x, size, m_LimelightSubsystem.getAllianceColor());
+            
         }
 
     }
@@ -90,7 +90,7 @@ public class BallAcquirePlanSubsystem extends SubsystemBase {
     }
 
     public void statusLights (Boolean on) {
-        if (on) {m_statusLightSubsystem.setStatusLights(-m_LimelightSubsystem.getX() / 25.0 , m_LimelightSubsystem.getArea() / 30.0, m_LimelightSubsystem.getAllianceColor());}
+        if (on) {m_statusLightSubsystem.setStatusLights(m_LimelightSubsystem.getX() / 25.0 , m_LimelightSubsystem.getArea() / 30.0, m_LimelightSubsystem.getAllianceColor());}
         else {m_statusLightSubsystem.clear();}
     }
     

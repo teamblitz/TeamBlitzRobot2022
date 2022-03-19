@@ -14,6 +14,7 @@ public class BallShooterPlanSubsystem extends SubsystemBase {
     private double m_maxDriveSpeedFraction = 0.45; // how fast we allow the autodrive code to dictate we want to go
 
     private LimelightTargetSubsystem m_LimelightTargetSubsystem;
+    private StatusLightSubsystem m_statusLightSubsystem;
 
     // these are the calculated movement directives for autodrive
     private double m_fwd = 0;
@@ -77,8 +78,13 @@ public class BallShooterPlanSubsystem extends SubsystemBase {
 
     }
 
-    public BallShooterPlanSubsystem(LimelightTargetSubsystem lSub) {
+    public BallShooterPlanSubsystem(LimelightTargetSubsystem lSub, StatusLightSubsystem statusLightSubsystem) {
         m_LimelightTargetSubsystem = lSub;
+        m_statusLightSubsystem = statusLightSubsystem;
+    }
+
+    public void statusLights () {
+        m_statusLightSubsystem.setStatusLights(m_LimelightTargetSubsystem.getX() / 25.0, 1.0 - Math.abs(m_LimelightTargetSubsystem.getY())/20.0, 2);
     }
 
 }

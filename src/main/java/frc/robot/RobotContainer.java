@@ -32,6 +32,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.LimelightTargetSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.StatusLightSubsystem;
 import frc.robot.subsystems.BallAcquirePlanSubsystem;
 import frc.robot.subsystems.BallMoverSubsystem;
 import frc.robot.subsystems.BallShooterPlanSubsystem;
@@ -59,6 +60,9 @@ public class RobotContainer {
 
   // Color sensor
   private InternalBallDetectorSubsystem m_internalBallDetector; 
+
+  // Status Light Leds
+  private StatusLightSubsystem m_statusLightSubsystem;
 
   // Ball Acquire subsystem:
   private BallAcquirePlanSubsystem m_ballAcquire;
@@ -91,7 +95,7 @@ public class RobotContainer {
     configureButtonBindings();
     CameraServer.startAutomaticCapture();
     m_robotDrive.setDefaultCommand(new RunCommand(() -> m_robotDrive.seed(), m_robotDrive));
-    
+    m_PD.setSwitchableChannel(false); // Turn off our light
   }
 
   // public void beginTeleop(){
@@ -144,9 +148,11 @@ public class RobotContainer {
 
     m_internalBallDetector = new InternalBallDetectorSubsystem();
 
-    m_ballAcquire = new BallAcquirePlanSubsystem(m_limelight, m_PD);
+    m_statusLightSubsystem = new StatusLightSubsystem();
 
-    m_ballShoot = new BallShooterPlanSubsystem(m_limelightTarget);
+    m_ballAcquire = new BallAcquirePlanSubsystem(m_limelight, m_PD, m_statusLightSubsystem);
+
+    m_ballShoot = new BallShooterPlanSubsystem(m_limelightTarget, m_statusLightSubsystem);
     
     m_robotDrive = new DriveSubsystem(m_ballAcquire, m_ballShoot);
 
@@ -239,7 +245,7 @@ public class RobotContainer {
       //return new AutonomousCommand(m_robotDrive, 0.5, m_shooter, m_ballMover);
       return new SequentialCommandGroup(
         new Shoot(m_shooter, m_ballMover, 1000, 3000), //Warmup time, Total duration
-        new SeekBall(m_robotDrive, m_intakeRoller, m_ballAcquire, m_limelight, 1000, 5000, m_internalBallDetector), //Time with no ball seen before ending, Total duration
+        new SeekBall(m_robotDrive, m_intakeRoller, m_ballAcquire, m_limelight, 1000, 5000, m_internalBallDetector, m_PD), //Time with no ball seen before ending, Total duration
         new Target(m_robotDrive, m_ballShoot, m_limelightTarget, 1000, 3000), // Not seen timeout, total duration.
         new Shoot(m_shooter, m_ballMover, 1000, 3000), //Warmup time, Total duration
         new DriveStraightWithDelay(m_robotDrive, m_internalBallDetector, 500, .5, 0) // duration, speed, delay. 1000 worked at scrimage. keeping it at 2000 to be safe.

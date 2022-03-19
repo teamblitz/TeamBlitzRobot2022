@@ -33,20 +33,22 @@ public class StatusLightSubsystem extends SubsystemBase{
         // Reuse buffer
         // Default to a length of 60, start empty output
         // Length is expensive to set, so only set it once, then just update data
-        m_ledBuffer = new AddressableLEDBuffer(22);
+        m_ledBuffer = new AddressableLEDBuffer(24);
         m_led.setLength(m_ledBuffer.getLength());
 
         m_led.start();
+        clear();
 
         // rainbow();
 
         // m_led.setData(m_ledBuffer);
         System.out.println("Status Light Subsystem Constructor");
+
     }
 
     @Override
     public void periodic() {
-
+        // setStatusLights(0, .5, 0);
     }
     
     private void rainbow() {
@@ -67,7 +69,7 @@ public class StatusLightSubsystem extends SubsystemBase{
     
 
 
-    public void setLights(double x, double size, int color) {
+    public void setStatusLights(double x, double size, int color) {
         howMany = Math.round(size * 22);
         center = Math.round((x+1) * kHalfWidth);
         start = center - (howMany / 2);
@@ -82,6 +84,11 @@ public class StatusLightSubsystem extends SubsystemBase{
             green = 0;
             blue = 0;
         }
+        else if (color == 2) {// If we are targeting lights will be purple
+            red = kBrightness / 2;
+            green = 0;
+            blue = kBrightness / 2;
+        }
         // x value will be our center
         // 11 and 12 are our center.
 
@@ -95,6 +102,12 @@ public class StatusLightSubsystem extends SubsystemBase{
             if (i >= 0 && i < kNumberOfLEDs){
                 m_ledBuffer.setRGB(i, red, green, blue);
             }
+        }
+        m_led.setData(m_ledBuffer);
+    }
+    public void clear () {
+        for (int i = 0; i < kNumberOfLEDs; i++) {
+            m_ledBuffer.setRGB(i, 0, 0, 0);
         }
         m_led.setData(m_ledBuffer);
     }

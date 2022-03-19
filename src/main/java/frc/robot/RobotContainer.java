@@ -95,7 +95,7 @@ public class RobotContainer {
     configureButtonBindings();
     CameraServer.startAutomaticCapture();
     m_robotDrive.setDefaultCommand(new RunCommand(() -> m_robotDrive.seed(), m_robotDrive));
-    
+    m_PD.setSwitchableChannel(false); // Turn off our light
   }
 
   // public void beginTeleop(){
@@ -150,9 +150,9 @@ public class RobotContainer {
 
     m_statusLightSubsystem = new StatusLightSubsystem();
 
-    m_ballAcquire = new BallAcquirePlanSubsystem(m_limelight, m_PD);
+    m_ballAcquire = new BallAcquirePlanSubsystem(m_limelight, m_PD, m_statusLightSubsystem);
 
-    m_ballShoot = new BallShooterPlanSubsystem(m_limelightTarget);
+    m_ballShoot = new BallShooterPlanSubsystem(m_limelightTarget, m_statusLightSubsystem);
     
     m_robotDrive = new DriveSubsystem(m_ballAcquire, m_ballShoot);
 

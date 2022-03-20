@@ -51,6 +51,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         // If Master is 7 use Clockwise
         m_slave.setInverted(TalonFXInvertType.Clockwise); // If they still move the same way, try clockwise
 
+        m_master.setSafetyEnabled(true); // Enable moter saftey so our moters stop if for some reason our code stops.
+        m_slave.setSafetyEnabled(true);
+
 
     }
 
@@ -92,5 +95,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void periodic() {
       checkTopLimit();
       checkBottomLimit();
+
+      m_master.feed(); // Tell our moters we are still alive.
+      m_slave.feed();
     }
 }

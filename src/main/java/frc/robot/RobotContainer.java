@@ -235,7 +235,7 @@ public class RobotContainer {
 
         /* Ball Aquire Lighting */
         new JoystickButton(m_driveController, OIConstants.kSemiAutoBallSeek)
-        .whenPressed(new InstantCommand(m_ballAcquire::lightsOn, m_ballAcquire)); // TODO - <<<>>> Add light control command
+        .whenPressed(new InstantCommand(m_ballAcquire::lightsOn, m_ballAcquire));
         new JoystickButton(m_driveController, OIConstants.kSemiAutoBallSeek)
         .whenReleased(new InstantCommand(m_ballAcquire::lightsOff, m_ballAcquire));
       }

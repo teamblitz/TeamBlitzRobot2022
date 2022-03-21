@@ -13,7 +13,7 @@ public class StatusLightSubsystem extends SubsystemBase{
     // Constants
     private final long kNumberOfLEDs = 22;
     private final double kHalfWidth = ((double)kNumberOfLEDs - 1.0)/2.0;
-    private final int kBrightness = 128;
+    private final int kBrightness = 255;
 
     private long center;
     private long start;

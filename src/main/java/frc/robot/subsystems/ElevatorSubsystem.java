@@ -90,7 +90,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-    //   checkTopLimit();
+      checkTopLimit();
     //   checkBottomLimit();
     }
 }

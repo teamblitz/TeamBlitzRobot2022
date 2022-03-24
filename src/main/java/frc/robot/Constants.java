@@ -19,11 +19,11 @@ package frc.robot;
 */
 public final class Constants {
     public static final class DriveConstants {
-        public static final int kRightMasterPort = 4;
-        public static final int kRightSlavePort = 3;
+        public static final int kRightMasterPort = 6;
+        public static final int kRightSlavePort = 5;
         
-        public static final int kLeftMasterPort = 6;
-        public static final int kLeftSlavePort = 5;
+        public static final int kLeftMasterPort = 4;
+        public static final int kLeftSlavePort = 3;
     }
     
     public static final class ElevatorConstants {

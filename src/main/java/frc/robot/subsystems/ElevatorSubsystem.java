@@ -19,10 +19,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     /* ***** ----- Talon IDs need to be configured with the Phoenix Tuner ----- ***** */
     
     /* Master Talon */
-    private final WPI_TalonFX m_master = new WPI_TalonFX(Constants.ElevatorConstants.kMasterPort); // This is set to 7
+    private final WPI_TalonFX m_master = new WPI_TalonFX(Constants.ElevatorConstants.kMasterPort); // This is set to 8
 
     /* Slave Talon */
-    private final WPI_TalonFX m_slave = new WPI_TalonFX(Constants.ElevatorConstants.kSlavePort); // This is set to 8
+    private final WPI_TalonFX m_slave = new WPI_TalonFX(Constants.ElevatorConstants.kSlavePort); // This is set to 7
     
 
     // TODO - <<<>>> Did not create limiters for stoping of the elevator. As the moters would keep going a bit as they slowed down, Posiblly resaulting in the moter going too far. 
@@ -57,14 +57,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void upElevator() {
         // Drives the motors up (or at least it should)
         // m_master.set(ControlMode.PercentOutput, upFilter.calculate(-0.6));
-        m_master.set(ControlMode.PercentOutput, 0.6); 
+        m_master.set(ControlMode.PercentOutput, -0.40); 
         checkMovement = true;
     }
 
     public void downElevator() {
         // Drives the motors down (or at least it should)
         // m_master.set(ControlMode.PercentOutput, downFilter.calculate(0.6));
-        m_master.set(ControlMode.PercentOutput, -0.6);
+        m_master.set(ControlMode.PercentOutput, 0.40);
         checkMovement = true;
     }
 
@@ -90,7 +90,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-      checkTopLimit();
-      checkBottomLimit();
+    //   checkTopLimit();
+    //   checkBottomLimit();
     }
 }

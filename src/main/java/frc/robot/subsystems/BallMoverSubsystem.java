@@ -41,8 +41,8 @@ public class BallMoverSubsystem extends SubsystemBase {
 
   // This could reverse BallMover Wheels
   public void reverse(){
-    m_ballMoverR.set(0.45);
-    m_ballMoverL.set(-0.45);
+    m_ballMoverR.set(-0.45);
+    m_ballMoverL.set(0.45);
    }
 
   // Disable BallMover Wheels

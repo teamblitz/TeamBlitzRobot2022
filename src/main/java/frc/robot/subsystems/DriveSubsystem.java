@@ -19,7 +19,7 @@ import frc.robot.Constants;
 public class DriveSubsystem extends SubsystemBase {
   private static final int 
   leftDeviceID = Constants.DriveConstants.kLeftMasterPort, 
-  leftSlaveDeviceID = Constants.DriveConstants.kLeftSlavePort;  // Should be 6 master, 5 slave
+  leftSlaveDeviceID = Constants.DriveConstants.kLeftSlavePort;  // Should be 5 master, 6 slave
 
   private static final int 
   rightDeviceID = Constants.DriveConstants.kRightMasterPort, 

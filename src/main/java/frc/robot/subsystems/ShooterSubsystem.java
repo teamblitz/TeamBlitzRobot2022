@@ -25,7 +25,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void start() {
     // System.out.println("ShooterSubsystem::start");
     // m_shooter.set(1.0);
-    m_shooter.set(0.31);
+    m_shooter.set(0.45);
   }
 
   // Enables Shooter Wheel

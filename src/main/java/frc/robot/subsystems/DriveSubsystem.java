@@ -96,19 +96,26 @@ public class DriveSubsystem extends SubsystemBase {
     public void doNothing(final double fwd, final double rot, final boolean semiAutonomousState) {
     }
 
-   public void performDrive(final double fwd, final double rot, final boolean semiAutonomousState, final boolean targetingState) {
+    public void seed(){ //Feeds our moters
+      m_drive.feed();
+    }
+
+    public void performDrive(final double fwd, final double rot, final boolean semiAutonomousState, final boolean targetingState) {
   
       // decide who is in control and execute their drive operations
       if(semiAutonomousState)
       {
         arcadeDrive(m_ballAcquire.getRot(), m_ballAcquire.getFwd()); // Again, our arcade drive is reversed for some reason, so we reverse this.
+        m_ballAcquire.statusLights(true);
       }
       else if (targetingState){
         arcadeDrive(m_ballShoot.getRot(), m_ballShoot.getFwd());
+        m_ballShoot.statusLights();
       }
       else
       {
         arcadeDrive(fwd, rot);
+        m_ballAcquire.statusLights(false); // Turn off status lights
       }
   }
 

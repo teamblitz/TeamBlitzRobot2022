@@ -1,4 +1,5 @@
 package frc.robot.subsystems;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -14,10 +15,13 @@ public class BallAcquirePlanSubsystem extends SubsystemBase {
     private double m_maxDriveSpeedFraction = 0.45; // how fast we allow the autodrive code to dictate we want to go
 
     private LimelightSubsystem m_LimelightSubsystem;
+    private PowerDistribution m_PD;
+    private StatusLightSubsystem m_statusLightSubsystem;
 
     // these are the calculated movement directives for autodrive
     private double m_fwd = 0;
     private double m_rot = 0;
+
 
     public double getFwd() {return(m_fwd);}
     public double getRot() {return(m_rot);}
@@ -66,13 +70,31 @@ public class BallAcquirePlanSubsystem extends SubsystemBase {
             
             // we could post the debug info to the Shuffleboard if we wanted
             SmartDashboard.putNumber("AutoMove", (m_autoRotationScaleFactor * driveSpeedFraction));
-    
+            
+            
         }
 
     }
 
-    public BallAcquirePlanSubsystem(LimelightSubsystem lSub) {
+    public BallAcquirePlanSubsystem(LimelightSubsystem lSub, PowerDistribution PD, StatusLightSubsystem statusLightSubsystem) {
         m_LimelightSubsystem = lSub;
+        m_PD = PD;
+        m_statusLightSubsystem = statusLightSubsystem;
+        
+        
+
+    }
+
+    public void lightsOn() {
+        m_PD.setSwitchableChannel(true);
+    }
+    public void lightsOff() {
+        m_PD.setSwitchableChannel(false);
+    }
+
+    public void statusLights(Boolean on) {
+        if (on) {m_statusLightSubsystem.setStatusLights(m_LimelightSubsystem.getX() / 25.0 , m_LimelightSubsystem.getArea() / 30.0, m_LimelightSubsystem.getAllianceColor());}
+        else {m_statusLightSubsystem.clear();}
     }
     
 }

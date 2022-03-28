@@ -1,10 +1,12 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.BallAcquirePlanSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.InternalBallDetectorSubsystem;
 
  public class SeekBall extends CommandBase
 {
@@ -12,6 +14,8 @@ import frc.robot.subsystems.LimelightSubsystem;
     IntakeSubsystem intakeSubsystem;
     BallAcquirePlanSubsystem ballAcquirePlanSubsystem;
     LimelightSubsystem limelightSubsystem;
+	InternalBallDetectorSubsystem internalBallDetectorSubsystem;
+	PowerDistribution PD;
     
 
 	
@@ -24,7 +28,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 
 	
 
-	public SeekBall(final DriveSubsystem driveSubsystem, final IntakeSubsystem intakeSubsystem, final BallAcquirePlanSubsystem ballAcquirePlanSubsystem, final LimelightSubsystem limelightSubsystem, long notSeenTimeout, long timeout){
+	public SeekBall(final DriveSubsystem driveSubsystem, final IntakeSubsystem intakeSubsystem, final BallAcquirePlanSubsystem ballAcquirePlanSubsystem, final LimelightSubsystem limelightSubsystem, long notSeenTimeout, long timeout, InternalBallDetectorSubsystem internalBallDetectorSubsystem, PowerDistribution PD){
 		// Use requires() here to declare subsystem dependencies
 		// eg. requires(chassis);
 		// requires(driveSubsystem);
@@ -32,8 +36,10 @@ import frc.robot.subsystems.LimelightSubsystem;
 		this.intakeSubsystem = intakeSubsystem;
         this.ballAcquirePlanSubsystem = ballAcquirePlanSubsystem;
         this.limelightSubsystem = limelightSubsystem;
+		this.internalBallDetectorSubsystem = internalBallDetectorSubsystem;
 		this.notSeenTimeout = notSeenTimeout;
 		this.timeout = timeout;
+		this.PD = PD;
 	}
 
 	// Called just before this Command runs the first time
@@ -44,6 +50,7 @@ import frc.robot.subsystems.LimelightSubsystem;
         ballLastSeen = System.currentTimeMillis();
 		seenBall = false;
 		valid = false;
+		PD.setSwitchableChannel(true);
 		intakeSubsystem.start();
 		
 	}
@@ -76,13 +83,14 @@ import frc.robot.subsystems.LimelightSubsystem;
     public void end(boolean interrupted) {
 		intakeSubsystem.stop();
 		driveSubsystem.performDrive(0, 0, false, false);
+		PD.setSwitchableChannel(false);
 		System.out.println("Ending SeekBall");
     }
 
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
     public boolean isFinished() {
-		return ((System.currentTimeMillis() - ballLastSeen) > notSeenTimeout) /*If we havent seen the ball for more than notSeenTimeout, end.*/ || (System.currentTimeMillis() - startTime > timeout); // Ends if either condition is true
+		return internalBallDetectorSubsystem.ballSeen() || ((System.currentTimeMillis() - ballLastSeen) > notSeenTimeout) || (System.currentTimeMillis() - startTime > timeout);
 	}
 
 

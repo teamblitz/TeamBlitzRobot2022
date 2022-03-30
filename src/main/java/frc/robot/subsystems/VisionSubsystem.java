@@ -18,7 +18,15 @@ public class VisionSubsystem extends SubsystemBase{
         ballLimelight = new LimelightCamera("limelight", 0);
         targetLimelight = new LimelightCamera("limelight-target", 7);
         ballAcquirePlan = new BallAcquirePlan(ballLimelight);
-        ballShooterPlan = new BallShooterPlan(targetLimelight, null);
+        ballShooterPlan = new BallShooterPlan(targetLimelight);
+    }
+    @Override
+    public void periodic() {
+        // Sence these classes are not subsystems, We need to manualy run their periodic method
+        ballLimelight.periodic();
+        targetLimelight.periodic();
+        ballAcquirePlan.periodic();
+        ballShooterPlan.periodic();
     }
     // Instantiated for each limelight
     private class LimelightCamera {
@@ -171,9 +179,8 @@ public class VisionSubsystem extends SubsystemBase{
         private double m_fwd = 0;
         private double m_rot = 0;
 
-        public BallShooterPlan(LimelightCamera limelight, StatusLightSubsystem statusLightSubsystem) {
+        public BallShooterPlan(LimelightCamera limelight) {
             m_limelight = limelight;
-            // m_statusLightSubsystem = statusLightSubsystem;
         }
 
         public double getFwd() {return(m_fwd);}

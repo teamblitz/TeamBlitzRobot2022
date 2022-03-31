@@ -3,22 +3,35 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-// Condenses all Limelight and Plan Subsystems into one Subsystem to decrease verbosity 
+// Condenses all Limelight and Plan Subsystems into one Subsystem to decrease verbosity
+// Should function exactly like the pre existing subsystes. 
+// Outside code using vision must be changed to VisionSubsystem.BallAcquire instead of BallAcquire subsystem. All internal methods and code reamain intact
 public class VisionSubsystem extends SubsystemBase{
 
-    private LimelightCamera ballLimelight;
-    private LimelightCamera targetLimelight;
+    public final LimelightCamera ballLimelight;
+    public final LimelightCamera targetLimelight;
     public final BallAcquirePlan ballAcquirePlan; // The object that this variable referances can't change, this doesn't stop the object from changing.
     public final BallShooterPlan ballShooterPlan; // Same here.
 
-    public VisionSubsystem() {
+    private StatusLightSubsystem m_statusLights;
+    private PowerDistribution m_pd;
+
+    public VisionSubsystem(StatusLightSubsystem statusLights, PowerDistribution pd) {
+
+        m_statusLights = statusLights;
+        m_pd = pd;
+
+
         ballLimelight = new LimelightCamera("limelight", 0);
         targetLimelight = new LimelightCamera("limelight-target", 7);
-        ballAcquirePlan = new BallAcquirePlan(ballLimelight);
-        ballShooterPlan = new BallShooterPlan(targetLimelight);
+        
+        // We don't need to pass these but keep it this way incase we move these classes.
+        ballAcquirePlan = new BallAcquirePlan(ballLimelight, m_statusLights);
+        ballShooterPlan = new BallShooterPlan(targetLimelight, m_statusLights);
     }
     @Override
     public void periodic() {
@@ -28,6 +41,15 @@ public class VisionSubsystem extends SubsystemBase{
         ballAcquirePlan.periodic();
         ballShooterPlan.periodic();
     }
+
+    public void lightsOn() {
+        m_pd.setSwitchableChannel(true);
+    }
+    public void lightsOff() {
+        m_pd.setSwitchableChannel(false);
+    }
+
+
     // Instantiated for each limelight
     private class LimelightCamera {
 
@@ -86,6 +108,7 @@ public class VisionSubsystem extends SubsystemBase{
 
     }
     
+    // Instantiated only once
     private class BallAcquirePlan {
         // all of the below can be tinkered with for tuning
         private double m_autoRotationScaleFactor = 0.3;
@@ -97,20 +120,25 @@ public class VisionSubsystem extends SubsystemBase{
         private double m_maxDriveSpeedFraction = 0.45; // how fast we allow the autodrive code to dictate we want to go
 
         private LimelightCamera m_limelight;
+        // We do have this instantiated in the outer class. This will over-ride that instantation for within this class,
+        // Keep this here for compatibilty reasons incase we move the class.
+        private StatusLightSubsystem m_statusLights; 
 
         // these are the calculated movement directives for autodrive
         private double m_fwd = 0;
         private double m_rot = 0;
 
-        public BallAcquirePlan(LimelightCamera limelight) {
+        public BallAcquirePlan(LimelightCamera limelight, StatusLightSubsystem statusLights) {
             m_limelight = limelight;
+            m_statusLights = statusLights;
         }
 
         public double getFwd() {return(m_fwd);}
         public double getRot() {return(m_rot);}
 
 
-        public void periodic() { // We must configure this ourselfs.
+        public void periodic() { // We must call this ourselfs.
+
             // inform LimeLight of our alliance color
             // configure alliance color (0=blue, 1=red)
             // this refers to files like RoundBlue and RoundRed in the limelight_configuration repository
@@ -159,9 +187,12 @@ public class VisionSubsystem extends SubsystemBase{
 
         }
 
-        
+        public void statusLights() {
+            m_statusLights.setStatusLights(m_limelight.getX() / 25.0 , m_limelight.getArea() / 30.0, m_limelight.getAllianceColor());
+        }
     }
 
+    // Instantiated only once
     private class BallShooterPlan {
         // all of the below can be tinkered with for tuning
         private double m_autoRotationScaleFactor = 0.3;
@@ -173,14 +204,17 @@ public class VisionSubsystem extends SubsystemBase{
         private double m_maxDriveSpeedFraction = 0.45; // how fast we allow the autodrive code to dictate we want to go
 
         private LimelightCamera m_limelight;
-        // private StatusLightSubsystem m_statusLightSubsystem;
+        // We do have this instantiated in the outer class. This will over-ride that instantation for within this class,
+        // Keep this here for compatibilty reasons incase we move the class.
+        private StatusLightSubsystem m_statusLights; 
 
         // these are the calculated movement directives for autodrive
         private double m_fwd = 0;
         private double m_rot = 0;
 
-        public BallShooterPlan(LimelightCamera limelight) {
+        public BallShooterPlan(LimelightCamera limelight, StatusLightSubsystem statusLights) {
             m_limelight = limelight;
+            m_statusLights = statusLights;
         }
 
         public double getFwd() {return(m_fwd);}
@@ -241,7 +275,9 @@ public class VisionSubsystem extends SubsystemBase{
 
         }
 
-        
+        public void statusLights() {
+            m_statusLights.setStatusLights(m_limelight.getX() / 25.0, 1.0 - Math.abs(m_limelight.getY())/20.0, 2);
+        }
     }
 
 }

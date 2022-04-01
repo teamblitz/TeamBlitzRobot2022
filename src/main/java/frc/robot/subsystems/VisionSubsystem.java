@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 // Condenses all Limelight and Plan Subsystems into one Subsystem to decrease verbosity
 // Should function exactly like the pre existing subsystes. 
-// Outside code using vision must be changed to VisionSubsystem.BallAcquire instead of BallAcquire subsystem. All internal methods and code reamain intact
+// Outside code using vision must be changed to VisionSubsystem.BallAcquire instead of BallAcquire subsystem. All internal methods and code reamain intact 
 public class VisionSubsystem extends SubsystemBase{
 
     public final LimelightCamera ballLimelight;

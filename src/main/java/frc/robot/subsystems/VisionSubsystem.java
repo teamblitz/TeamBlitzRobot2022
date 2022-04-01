@@ -49,7 +49,8 @@ public class VisionSubsystem extends SubsystemBase{
         m_pd.setSwitchableChannel(false);
     }
 
-
+    // We could move all of the below to its own file without breaking much
+    // <<<>>> TODO - Tidy Up Vision Code.
     // Instantiated for each limelight
     private class LimelightCamera {
 

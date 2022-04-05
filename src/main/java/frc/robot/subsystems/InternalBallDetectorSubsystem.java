@@ -18,8 +18,8 @@ import com.revrobotics.ColorSensorV3;
 public class InternalBallDetectorSubsystem extends SubsystemBase {
     
     // Constants
-    private static final Color kRedTarget = new Color(.52, .34, .13);
-    private static final Color kBlueTarget = new Color(.15, .38, .46);
+    private final Color kRedTarget = new Color(.52, .34, .13);
+    private final Color kBlueTarget = new Color(.15, .38, .46);
     
     // Do we see red or blue at all?
     private Boolean isRed = false;

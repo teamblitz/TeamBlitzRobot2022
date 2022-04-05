@@ -12,10 +12,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // Outside code using vision must be changed to VisionSubsystem.BallAcquire instead of BallAcquire subsystem. All internal methods and code reamain intact 
 public class VisionSubsystem extends SubsystemBase{
 
+    // The object that these variables referance shouldn't change therefor we use the final keyword.
+    // Final doesn't stop the object from changing internaly, it just stops the referance variable from changing.
+    // This way we don't accdently change them externaly.
     public final LimelightCamera ballLimelight;
     public final LimelightCamera targetLimelight;
-    public final BallAcquirePlan ballAcquirePlan; // The object that this variable referances can't change, this doesn't stop the object from changing.
-    public final BallShooterPlan ballShooterPlan; // Same here.
+    public final BallAcquirePlan ballAcquirePlan;
+    public final BallShooterPlan ballShooterPlan;
 
     private StatusLightSubsystem m_statusLights;
     private PowerDistribution m_pd;
@@ -26,7 +29,7 @@ public class VisionSubsystem extends SubsystemBase{
         m_pd = pd;
 
 
-        ballLimelight = new LimelightCamera("limelight", 0);
+        ballLimelight = new LimelightCamera("limelight", 0); // Idealy these values would come from constants
         targetLimelight = new LimelightCamera("limelight-target", 7);
         
         // We don't need to pass these but keep it this way incase we move these classes.
@@ -35,11 +38,11 @@ public class VisionSubsystem extends SubsystemBase{
     }
     @Override
     public void periodic() {
-        // Sence these classes are not subsystems, We need to manualy run their periodic method
-        ballLimelight.periodic();
-        targetLimelight.periodic();
-        ballAcquirePlan.periodic();
-        ballShooterPlan.periodic();
+        // Call the nested classes execute method for internal calculation
+        ballLimelight.execute();
+        targetLimelight.execute();
+        ballAcquirePlan.execute();
+        ballShooterPlan.execute();
     }
 
     public void lightsOn() {
@@ -56,9 +59,11 @@ public class VisionSubsystem extends SubsystemBase{
 
         private NetworkTableEntry m_tve, m_txe, m_tye, m_tae;
         private double m_tv, m_tx, m_ty, m_ta;
+        
+        private NetworkTable table; // This must be accesable outside of the constructor
 
         public LimelightCamera(String networkTable, Number pipeline) {
-            NetworkTable table = NetworkTableInstance.getDefault().getTable(networkTable);
+            table = NetworkTableInstance.getDefault().getTable(networkTable); 
             setPipeline(pipeline);
 
             m_tv = m_tx = m_ty = m_ta = 0.0;
@@ -77,24 +82,27 @@ public class VisionSubsystem extends SubsystemBase{
 
 
         // returns 0 for blue, 1 for red
+        // TODO - <<<>>> Move this out of this class as it has nothing to do with limelight
         public int getAllianceColor() {
             return(NetworkTableInstance.getDefault().getTable("FMSInfo").getEntry("IsRedAlliance").getBoolean(false) ? 1 : 0);
         }
 
         // pipelines selected by below
-        public static final int kSeekBlueContour = 0;
+        public static final int kSeekBlueContour = 0; // Keep these static. Idealy they would be in constants
         public static final int kSeekRedContour = 1;
         public static final int kSeekBlueCircleBlob = 2;
         public static final int kSeekRedCircleBlob = 3;
         // set vision navigation pipeline
         public void setPipeline(Number pipelineNum) {
-            NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipelineNum);
+            // NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(pipelineNum);
+            table.getEntry("pipeline").setNumber(pipelineNum);
 
         }
 
 
-        public void periodic() { // We must call this manualy
-            //read values periodically
+        public void execute() { // We must call this manualy
+            // read values periodically
+            // We only need to do this if we are putting to shuffleboard. else we can do this in the getter methods.
             m_tv = m_tve.getDouble(0.0);
             m_tx = m_txe.getDouble(0.0);
             m_ty = m_tye.getDouble(0.0);
@@ -112,9 +120,10 @@ public class VisionSubsystem extends SubsystemBase{
     // Instantiated only once
     private class BallAcquirePlan {
         // all of the below can be tinkered with for tuning
+        // Should idealy be in constants.
         private double m_autoRotationScaleFactor = 0.3;
         private double m_autoMoveScaleFactor = 0.9;
-        private double m_Kp = -0.1f;
+        private double m_Kp = -0.1f; // Why are we using the float indicator here? this variable is a double.
         private double m_min_command = 0.05f;
         private double m_maxHeadingError = 10.0;
         private double m_maxAreaFraction = 25.0;
@@ -138,7 +147,7 @@ public class VisionSubsystem extends SubsystemBase{
         public double getRot() {return(m_rot);}
 
 
-        public void periodic() { // We must call this ourselfs.
+        public void execute() { // We must call this ourselfs.
 
             // inform LimeLight of our alliance color
             // configure alliance color (0=blue, 1=red)
@@ -196,9 +205,10 @@ public class VisionSubsystem extends SubsystemBase{
     // Instantiated only once
     private class BallShooterPlan {
         // all of the below can be tinkered with for tuning
+        // These should Idealy be in constants.
         private double m_autoRotationScaleFactor = 0.3;
         private double m_autoMoveScaleFactor = 0.9;
-        private double m_Kp = -0.1f;
+        private double m_Kp = -0.1f; // Why are we using the float indicator here? this variable is a double.
         private double m_min_command = 0.05f;
         private double m_maxHeadingError = 10.0;
         private double m_maxOffsetFraction = 2.0;
@@ -222,7 +232,7 @@ public class VisionSubsystem extends SubsystemBase{
         public double getRot() {return(m_rot);}
         
 
-        public void periodic() { // We must call this manualy
+        public void execute() { // We must call this manualy
             // TODO <<<>>> set correct pipeline number
             // No need to update this periodicly
             // m_limelight.setPipeline(7);

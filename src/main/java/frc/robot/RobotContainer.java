@@ -209,11 +209,9 @@ public class RobotContainer {
   
         /* ***** --- Shooter Subsystem --- ***** */
         new JoystickButton(m_driveController, OIConstants.kShooter)
-        .whenPressed(new InstantCommand(m_shooter::start, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooter + " Pressed")));
-        // When the right bumper (RB) on the joystick is held, the shooter will start.
-        new JoystickButton(m_driveController, OIConstants.kShooter)
-        .whenReleased(new InstantCommand(m_shooter::stop, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooter + " Released")));
-        // When the right bumber (RB) on the joystick is released, the shooter will stop.
+        .whenPressed(new InstantCommand(m_shooter::start, m_shooter)) // Starts shooter
+        .whenReleased(new InstantCommand(m_shooter::stop, m_shooter)); // Stops shooter
+
         new JoystickButton(m_driveController, OIConstants.kShooterReversed)
         .whenPressed(new InstantCommand(m_shooter::reverse, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooterReversed + " Pressed")));
         // When the start button on the xbox is pressed, the shooter will reverse.

@@ -56,14 +56,15 @@ public class VisionSubsystem extends SubsystemBase{
     // We could move all of the below to its own file without breaking much
     // <<<>>> TODO - Tidy Up Vision Code.
     // Instantiated for each limelight
-    private class LimelightCamera {
+    public class LimelightCamera {
 
         private NetworkTableEntry m_tve, m_txe, m_tye, m_tae;
         private double m_tv, m_tx, m_ty, m_ta;
         
         private NetworkTable table; // This must be accesable outside of the constructor
-
-        public LimelightCamera(String networkTable, Number pipeline) {
+        
+        // Package private to ensure this is not instantiated elsewhere. Change this if moved
+        LimelightCamera(String networkTable, Number pipeline) {
             table = NetworkTableInstance.getDefault().getTable(networkTable); 
             setPipeline(pipeline);
 
@@ -119,7 +120,7 @@ public class VisionSubsystem extends SubsystemBase{
     }
     
     // Instantiated only once
-    private class BallAcquirePlan {
+    public class BallAcquirePlan {
         // all of the below can be tinkered with for tuning
         // Should idealy be in constants.
         private double m_autoRotationScaleFactor = 0.3;
@@ -139,7 +140,8 @@ public class VisionSubsystem extends SubsystemBase{
         private double m_fwd = 0;
         private double m_rot = 0;
 
-        public BallAcquirePlan(LimelightCamera limelight, StatusLightSubsystem statusLights) {
+        // Package private to ensure this is not instantiated elsewhere. Change this if moved
+        BallAcquirePlan(LimelightCamera limelight, StatusLightSubsystem statusLights) {
             m_limelight = limelight;
             m_statusLights = statusLights;
         }
@@ -204,7 +206,7 @@ public class VisionSubsystem extends SubsystemBase{
     }
 
     // Instantiated only once
-    private class BallShooterPlan {
+    public class BallShooterPlan {
         // all of the below can be tinkered with for tuning
         // These should Idealy be in constants.
         private double m_autoRotationScaleFactor = 0.3;
@@ -224,7 +226,8 @@ public class VisionSubsystem extends SubsystemBase{
         private double m_fwd = 0;
         private double m_rot = 0;
 
-        public BallShooterPlan(LimelightCamera limelight, StatusLightSubsystem statusLights) {
+        // Package private to ensure this is not instantiated elsewhere. Change this if moved
+        BallShooterPlan(LimelightCamera limelight, StatusLightSubsystem statusLights) {
             m_limelight = limelight;
             m_statusLights = statusLights;
         }

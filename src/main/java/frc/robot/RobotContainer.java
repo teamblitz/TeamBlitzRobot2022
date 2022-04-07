@@ -203,27 +203,23 @@ public class RobotContainer {
         .whenReleased(new InstantCommand(m_ballMover::stop, m_ballMover)); // Stop ball mover
         
         new JoystickButton(m_driveController, OIConstants.kBallMoverReversed)
-        .whenPressed(new InstantCommand(m_ballMover::reverse, m_ballMover)) // Start reverse ball mover
+        .whenPressed(new InstantCommand(m_ballMover::reverse, m_ballMover)) // Reverse ball mover
         .whenReleased(new InstantCommand(m_ballMover::stop, m_ballMover)); // Stop ball mover
         
   
         /* ***** --- Shooter Subsystem --- ***** */
         new JoystickButton(m_driveController, OIConstants.kShooter)
-        .whenPressed(new InstantCommand(m_shooter::start, m_shooter)) // Starts shooter
-        .whenReleased(new InstantCommand(m_shooter::stop, m_shooter)); // Stops shooter
+        .whenPressed(new InstantCommand(m_shooter::start, m_shooter)) // Start shooter
+        .whenReleased(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
 
         new JoystickButton(m_driveController, OIConstants.kShooterReversed)
-        .whenPressed(new InstantCommand(m_shooter::reverse, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooterReversed + " Pressed")));
-        // When the start button on the xbox is pressed, the shooter will reverse.
-        new JoystickButton(m_driveController, OIConstants.kShooterReversed)
-        .whenReleased(new InstantCommand(m_shooter::stop, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooterReversed + " Released")));
-        // When the start button on the joystick is released, the shooter will stop.
+        .whenPressed(new InstantCommand(m_shooter::reverse, m_shooter)) // Reverse shooter
+        .whenReleased(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
 
         /* Ball Aquire Lighting */
         new JoystickButton(m_driveController, OIConstants.kSemiAutoBallSeek)
-        .whenPressed(new InstantCommand(m_vision::lightsOn)); // This could be a lambda. lets keep it this way incase we change how we turn on/off lights
-        new JoystickButton(m_driveController, OIConstants.kSemiAutoBallSeek)
-        .whenReleased(new InstantCommand(m_vision::lightsOn));
+        .whenPressed(new InstantCommand(m_vision::lightsOn)) // Lights on
+        .whenReleased(new InstantCommand(m_vision::lightsOn)); // Lights off
       }
     }
 

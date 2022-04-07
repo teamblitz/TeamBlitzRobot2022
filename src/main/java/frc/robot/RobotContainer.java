@@ -15,7 +15,6 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -66,10 +65,10 @@ public class RobotContainer {
   private StatusLightSubsystem m_statusLightSubsystem;
 
   // Ball Acquire subsystem:
-  private BallAcquirePlanSubsystem m_ballAcquire;
+  // private BallAcquirePlanSubsystem m_ballAcquire; // Depricated. Should be safe to remove.
 
   // Ball Shooter Plan Subsystem
-  private BallShooterPlanSubsystem m_ballShoot;
+  // private BallShooterPlanSubsystem m_ballShoot; // Depricated. Should be safe to remove.
 
   // Vision Subsystem
   private VisionSubsystem m_vision;
@@ -99,7 +98,7 @@ public class RobotContainer {
     configureSubsystems();
     configureButtonBindings();
     CameraServer.startAutomaticCapture();
-    m_robotDrive.setDefaultCommand(new RunCommand(() -> m_robotDrive.seed(), m_robotDrive));
+    m_robotDrive.setDefaultCommand(new RunCommand(() -> m_robotDrive.feed(), m_robotDrive));
     m_PD.setSwitchableChannel(false); // Turn off our light
   }
 
@@ -147,21 +146,21 @@ public class RobotContainer {
 
     m_driveController = new XboxController(OIConstants.kDriveControllerPort);
 
-    m_limelight = new LimelightSubsystem();
+    // m_limelight = new LimelightSubsystem();
 
-    m_limelightTarget = new LimelightTargetSubsystem();
+    // m_limelightTarget = new LimelightTargetSubsystem();
 
     m_internalBallDetector = new InternalBallDetectorSubsystem();
 
     m_statusLightSubsystem = new StatusLightSubsystem();
 
-    m_ballAcquire = new BallAcquirePlanSubsystem(m_limelight, m_PD, m_statusLightSubsystem);
+    // m_ballAcquire = new BallAcquirePlanSubsystem(m_limelight, m_PD, m_statusLightSubsystem);
 
-    m_ballShoot = new BallShooterPlanSubsystem(m_limelightTarget, m_statusLightSubsystem);
+    // m_ballShoot = new BallShooterPlanSubsystem(m_limelightTarget, m_statusLightSubsystem);
 
     m_vision = new VisionSubsystem(m_statusLightSubsystem, m_PD);
     
-    m_robotDrive = new DriveSubsystem(m_ballAcquire, m_ballShoot);
+    m_robotDrive = new DriveSubsystem(m_vision);
 
     m_elevator = new ElevatorSubsystem();
 
@@ -242,9 +241,9 @@ public class RobotContainer {
 
         /* Ball Aquire Lighting */
         new JoystickButton(m_driveController, OIConstants.kSemiAutoBallSeek)
-        .whenPressed(new InstantCommand(m_ballAcquire::lightsOn, m_ballAcquire)); // TODO - <<<>>> Add light control command
+        .whenPressed(new InstantCommand(m_vision::lightsOn)); // This could be a lambda. lets keep it this way incase we change how we turn on/off lights
         new JoystickButton(m_driveController, OIConstants.kSemiAutoBallSeek)
-        .whenReleased(new InstantCommand(m_ballAcquire::lightsOff, m_ballAcquire));
+        .whenReleased(new InstantCommand(m_vision::lightsOn));
       }
     }
 
@@ -253,7 +252,7 @@ public class RobotContainer {
       return new SequentialCommandGroup(
         new Shoot(m_shooter, m_ballMover, 1000, 3000), //Warmup time, Total duration
         new SeekBall(m_robotDrive, m_intakeRoller, m_vision, m_internalBallDetector, 500, 3000), //Time with no ball seen before ending, Total duration
-        new Target(m_robotDrive, m_ballShoot, m_limelightTarget, 1000, 3000), // Not seen timeout, total duration.
+        new Target(m_robotDrive, m_vision, 1000, 3000), // Not seen timeout, total duration.
         new Shoot(m_shooter, m_ballMover, 1000, 3000), //Warmup time, Total duration
         new DriveStraightWithDelay(m_robotDrive, m_internalBallDetector, 500, .5, 0) // duration, speed, delay. 1000 worked at scrimage. keeping it at 2000 to be safe.
       );

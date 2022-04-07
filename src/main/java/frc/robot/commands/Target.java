@@ -3,16 +3,14 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.BallShooterPlanSubsystem;
-import frc.robot.subsystems.LimelightTargetSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 
  public class Target extends CommandBase
 {
 	DriveSubsystem driveSubsystem;
     IntakeSubsystem intakeSubsystem;
-    BallShooterPlanSubsystem ballShooterPlanSubsystem;
-    LimelightTargetSubsystem limelightTargetSubsystem;
+    VisionSubsystem vision;
     
 
 	
@@ -24,13 +22,12 @@ import frc.robot.subsystems.LimelightTargetSubsystem;
 
 	
 
-	public Target(final DriveSubsystem driveSubsystem, final BallShooterPlanSubsystem ballShooterPlanSubsystem, final LimelightTargetSubsystem limelightTargetSubsystem, long notSeenTimeout, long timeout){
+	public Target(final DriveSubsystem driveSubsystem, final VisionSubsystem vision, long notSeenTimeout, long timeout){
 		// Use requires() here to declare subsystem dependencies
 		// eg. requires(chassis);
 		// requires(driveSubsystem);
 		this.driveSubsystem = driveSubsystem;
-        this.ballShooterPlanSubsystem = ballShooterPlanSubsystem;
-        this.limelightTargetSubsystem = limelightTargetSubsystem;
+		this.vision = vision;
 		this.timeout = timeout;
 		this.notSeenTimeout = notSeenTimeout;
 	}
@@ -53,7 +50,7 @@ import frc.robot.subsystems.LimelightTargetSubsystem;
 		// final long Cur_Time = System.currentTimeMillis();
 
 		
-		if (limelightTargetSubsystem.getValid() > 0){ //if limelight sees the target then this returns true
+		if (vision.targetLimelight.getValid() > 0){ //if limelight sees the target then this returns true
 			valid = true;
 			targetLastSeen = System.currentTimeMillis(); //updates ball last seen. as we are seeing it now.
 			driveSubsystem.performDrive(0, 0, false, true);

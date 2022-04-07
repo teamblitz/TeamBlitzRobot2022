@@ -26,17 +26,15 @@ public class DriveSubsystem extends SubsystemBase {
   rightSlaveDeviceID = Constants.DriveConstants.kRightSlavePort;  // Should be 4 master, 3 slave
   private CANSparkMax m_leftMotor, m_leftMotorSlave;
   private CANSparkMax m_rightMotor, m_rightMotorSlave;
-  private BallAcquirePlanSubsystem m_ballAcquire;
-  private BallShooterPlanSubsystem m_ballShoot;
+  private VisionSubsystem m_vision;
 
   private DifferentialDrive m_drive;
  
   /**
    * Creates a new DriveSubsystem.
    */
-  public DriveSubsystem(BallAcquirePlanSubsystem ballAcquire, BallShooterPlanSubsystem ballShoot) {
-    m_ballAcquire = ballAcquire;
-    m_ballShoot = ballShoot;
+  public DriveSubsystem(VisionSubsystem vision) {
+    m_vision = vision;
     // *********** PUT NON-TUNABLE PARAMETERS BELOW THIS LINE **********
     /**
    * SPARK MAX controllers are intialized over CAN by constructing a CANSparkMax object
@@ -81,9 +79,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
     
   @Override
-  public void periodic() {
-    
-    }
+  public void periodic() {}
 
 
   /**
@@ -96,7 +92,7 @@ public class DriveSubsystem extends SubsystemBase {
     public void doNothing(final double fwd, final double rot, final boolean semiAutonomousState) {
     }
 
-    public void seed(){ //Feeds our moters
+    public void feed(){ //Feeds our moters
       m_drive.feed();
     }
 
@@ -105,17 +101,17 @@ public class DriveSubsystem extends SubsystemBase {
       // decide who is in control and execute their drive operations
       if(semiAutonomousState)
       {
-        arcadeDrive(m_ballAcquire.getRot(), m_ballAcquire.getFwd()); // Again, our arcade drive is reversed for some reason, so we reverse this.
-        m_ballAcquire.statusLights(true);
+        arcadeDrive(m_vision.ballAcquirePlan.getRot(), m_vision.ballAcquirePlan.getFwd()); // Again, our arcade drive is reversed for some reason, so we reverse this.
+        m_vision.ballAcquirePlan.statusLights();
       }
       else if (targetingState){
-        arcadeDrive(m_ballShoot.getRot(), m_ballShoot.getFwd());
-        m_ballShoot.statusLights();
+        arcadeDrive(m_vision.ballShooterPlan.getRot(), m_vision.ballShooterPlan.getFwd());
+        m_vision.ballShooterPlan.statusLights();
       }
       else
       {
         arcadeDrive(fwd, rot);
-        m_ballAcquire.statusLights(false); // Turn off status lights
+        m_vision.statusLightsOff(); // Turn off status lights
       }
   }
 

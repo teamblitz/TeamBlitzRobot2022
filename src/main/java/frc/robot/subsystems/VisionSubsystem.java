@@ -45,6 +45,9 @@ public class VisionSubsystem extends SubsystemBase{
         ballAcquirePlan.execute();
         ballShooterPlan.execute();
     }
+    public void statusLightsOff () {
+        m_statusLights.clear();
+    }
 
     public void lightsOn() {
         m_pd.setSwitchableChannel(true);

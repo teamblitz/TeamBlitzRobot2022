@@ -62,9 +62,9 @@ public class VisionSubsystem extends SubsystemBase{
         private double m_tv, m_tx, m_ty, m_ta;
         
         private NetworkTable table; // This must be accesable outside of the constructor
-        
-        // Package private to ensure this is not instantiated elsewhere. Change this if moved
-        LimelightCamera(String networkTable, Number pipeline) {
+
+        // Private to ensure this is not instantiated elsewhere. Change this if moved
+        private LimelightCamera(String networkTable, Number pipeline) {
             table = NetworkTableInstance.getDefault().getTable(networkTable); 
             setPipeline(pipeline);
 
@@ -140,8 +140,8 @@ public class VisionSubsystem extends SubsystemBase{
         private double m_fwd = 0;
         private double m_rot = 0;
 
-        // Package private to ensure this is not instantiated elsewhere. Change this if moved
-        BallAcquirePlan(LimelightCamera limelight, StatusLightSubsystem statusLights) {
+        // Private to ensure this is not instantiated elsewhere. Change this if moved
+        private BallAcquirePlan(LimelightCamera limelight, StatusLightSubsystem statusLights) {
             m_limelight = limelight;
             m_statusLights = statusLights;
         }
@@ -226,8 +226,8 @@ public class VisionSubsystem extends SubsystemBase{
         private double m_fwd = 0;
         private double m_rot = 0;
 
-        // Package private to ensure this is not instantiated elsewhere. Change this if moved
-        BallShooterPlan(LimelightCamera limelight, StatusLightSubsystem statusLights) {
+        // Private to ensure this is not instantiated elsewhere. Change this if moved
+        private BallShooterPlan(LimelightCamera limelight, StatusLightSubsystem statusLights) {
             m_limelight = limelight;
             m_statusLights = statusLights;
         }

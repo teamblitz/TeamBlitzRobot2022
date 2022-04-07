@@ -6,8 +6,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class BallAcquirePlanSubsystem extends SubsystemBase {
     /*
         Deprecated. Please use vision subsysem and it's inner classes instead.
+        Should be safe to remove
     */
-    
+
     // all of the below can be tinkered with for tuning
     private double m_autoRotationScaleFactor = 0.3;
     private double m_autoMoveScaleFactor = 0.9;

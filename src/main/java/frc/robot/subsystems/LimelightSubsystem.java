@@ -9,8 +9,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class LimelightSubsystem extends SubsystemBase {
   /*
     Deprecated. Please use vision subsysem and it's inner classes instead.
+    Should be safe to remove
   */
-  
+
   private NetworkTableEntry m_tve, m_txe, m_tye, m_tae;
   private double m_tv, m_tx, m_ty, m_ta;
 

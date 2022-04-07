@@ -197,6 +197,10 @@ public class RobotContainer {
         .whenPressed(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
         .whenReleased(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
         
+        new JoystickButton(m_driveController, OIConstants.kSemiAutoBallSeek) // Enable intake when we press down the SemiAutoBallSeek button
+        .whenPressed(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
+        .whenReleased(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
+        
         /* ***** --- BallMover Subsystem --- ***** */
         new JoystickButton(m_driveController, OIConstants.kBallMover)
         .whenPressed(new InstantCommand(m_ballMover::start, m_ballMover)) // Start ball mover

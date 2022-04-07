@@ -7,6 +7,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.XboxController.Axis;
+import edu.wpi.first.wpilibj.XboxController.Button;
+
 /**
 * The Constants class provides a convenient place for teams to hold robot-wide
 * numerical or boolean constants. This class should not be used for any other
@@ -33,23 +36,26 @@ public final class Constants {
     
     public static final class OIConstants {
         public static final boolean kUseAuxController = false;
-        public static final int kDriveControllerPort = 0;
+        public static final int kDriveControllerPort = Axis.kRightTrigger.value; // Right trigger
         
         // Xbox buttons:
+        
+        // We can do Button.kA.value to get the value of button A.
+        // We could make the constants enums and do .value when binding
         public static final int kOverdriveRightTriggerAxis = 3;
         
-        public static final int kUpElevator = 4; // Should be the Y button
-        public static final int kDownElevator = 1; // Should be the A button
+        public static final int kUpElevator = Button.kY.value; // Should be the Y button
+        public static final int kDownElevator = Button.kA.value; // Should be the A button
         
-        public static final int kIntake = 2; // Should be the B button
-        public static final int kBallMover = 3; // Should be the X button
-        public static final int kBallMoverReversed = 7; // Back Button
-        public static final int kShooter = 6;  // Should be right bumper  
-        public static final int kShooterReversed = 8; // Start button
+        public static final int kIntake = Button.kB.value; // Should be the B button
+        public static final int kBallMover = Button.kX.value; // Should be the X button
+        public static final int kBallMoverReversed = Button.kBack.value; // Back Button
+        public static final int kShooter = Button.kRightBumper.value;  // Should be right bumper  
+        public static final int kShooterReversed = Button.kStart.value; // Start button
         
         //not actually used but listed here for reference. Actual binding is done in RobotContainer beginTeleop()
-        public static final int kSemiAutoBallSeek = 5; // Auto Ball seek is on left bumper
-        public static final int kSemiAutoBallTarget = 0; // Auto target is on left analog trigger
+        public static final int kSemiAutoBallSeek = Button.kLeftBumper.value; // Auto Ball seek is on left bumper
+        public static final int kSemiAutoBallTarget = Axis.kLeftTrigger.value; // Auto target is on left analog trigger
 
     }
     

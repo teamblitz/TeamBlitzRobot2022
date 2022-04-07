@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.Constants.OIConstants;
-// import frc.robot.commands.AutonomousCommand; //test thing
 import frc.robot.commands.DriveStraightWithDelay;
 import frc.robot.commands.SeekBall;
 import frc.robot.commands.Shoot;
@@ -33,9 +32,7 @@ import frc.robot.subsystems.LimelightTargetSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StatusLightSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.subsystems.BallAcquirePlanSubsystem;
 import frc.robot.subsystems.BallMoverSubsystem;
-import frc.robot.subsystems.BallShooterPlanSubsystem;
 import frc.robot.subsystems.InternalBallDetectorSubsystem;
 
 /**

@@ -6,16 +6,14 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.BallAcquirePlanSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.InternalBallDetectorSubsystem;
 
- public class SeekBall extends CommandBase
-{
-	DriveSubsystem driveSubsystem;
-    IntakeSubsystem intakeSubsystem;
-    BallAcquirePlanSubsystem ballAcquirePlanSubsystem;
-    LimelightSubsystem limelightSubsystem;
-	InternalBallDetectorSubsystem internalBallDetectorSubsystem;
-	PowerDistribution PD;
+public class SeekBall extends CommandBase {
+	private DriveSubsystem driveSubsystem;
+    private IntakeSubsystem intakeSubsystem;
+	private VisionSubsystem vision;
+	private InternalBallDetectorSubsystem internalBallDetectorSubsystem;
     
 
 	
@@ -28,18 +26,18 @@ import frc.robot.subsystems.InternalBallDetectorSubsystem;
 
 	
 
-	public SeekBall(final DriveSubsystem driveSubsystem, final IntakeSubsystem intakeSubsystem, final BallAcquirePlanSubsystem ballAcquirePlanSubsystem, final LimelightSubsystem limelightSubsystem, long notSeenTimeout, long timeout, InternalBallDetectorSubsystem internalBallDetectorSubsystem, PowerDistribution PD){
+
+	public SeekBall(final DriveSubsystem driveSubsystem, final IntakeSubsystem intakeSubsystem, VisionSubsystem vision, InternalBallDetectorSubsystem internalBallDetectorSubsystem, long notSeenTimeout, long timeout){
 		// Use requires() here to declare subsystem dependencies
 		// eg. requires(chassis);
 		// requires(driveSubsystem);
 		this.driveSubsystem = driveSubsystem;
 		this.intakeSubsystem = intakeSubsystem;
-        this.ballAcquirePlanSubsystem = ballAcquirePlanSubsystem;
-        this.limelightSubsystem = limelightSubsystem;
+        this.vision = vision;
 		this.internalBallDetectorSubsystem = internalBallDetectorSubsystem;
+
 		this.notSeenTimeout = notSeenTimeout;
 		this.timeout = timeout;
-		this.PD = PD;
 	}
 
 	// Called just before this Command runs the first time
@@ -50,7 +48,7 @@ import frc.robot.subsystems.InternalBallDetectorSubsystem;
         ballLastSeen = System.currentTimeMillis();
 		seenBall = false;
 		valid = false;
-		PD.setSwitchableChannel(true);
+		vision.lightsOn();
 		intakeSubsystem.start();
 		
 	}
@@ -62,7 +60,7 @@ import frc.robot.subsystems.InternalBallDetectorSubsystem;
 		// final long Cur_Time = System.currentTimeMillis();
 
 		
-		if (limelightSubsystem.getValid() > 0){ //if limelight sees the ball then this returns true
+		if (vision.ballLimelight.getValid() > 0){ //if limelight sees the ball then this returns true
 			valid = true;
 
 			ballLastSeen = System.currentTimeMillis(); //updates ball last seen. as we are seeing it now.
@@ -83,7 +81,7 @@ import frc.robot.subsystems.InternalBallDetectorSubsystem;
     public void end(boolean interrupted) {
 		intakeSubsystem.stop();
 		driveSubsystem.performDrive(0, 0, false, false);
-		PD.setSwitchableChannel(false);
+		vision.lightsOff();
 		System.out.println("Ending SeekBall");
     }
 

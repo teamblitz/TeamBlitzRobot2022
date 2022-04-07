@@ -3,7 +3,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class BallShooterPlanSubsystem extends SubsystemBase {
-
+    /*
+    Deprecated. Please use vision subsysem and it's inner classes instead.
+    */
+    
     // all of the below can be tinkered with for tuning
     private double m_autoRotationScaleFactor = 0.3;
     private double m_autoMoveScaleFactor = 0.9;

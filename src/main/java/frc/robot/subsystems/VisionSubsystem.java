@@ -19,6 +19,7 @@ public class VisionSubsystem extends SubsystemBase{
     public final LimelightCamera targetLimelight;
     public final BallAcquirePlan ballAcquirePlan;
     public final BallShooterPlan ballShooterPlan;
+    public LimelightCamera getBallLimelight() {return ballLimelight;}
 
     private StatusLightSubsystem m_statusLights;
     private PowerDistribution m_pd;
@@ -152,7 +153,7 @@ public class VisionSubsystem extends SubsystemBase{
             // inform LimeLight of our alliance color
             // configure alliance color (0=blue, 1=red)
             // this refers to files like RoundBlue and RoundRed in the limelight_configuration repository
-            m_limelight.setPipeline(m_limelight.getAllianceColor() == 1 ? LimelightSubsystem.kSeekRedContour : LimelightSubsystem.kSeekBlueContour);
+            m_limelight.setPipeline(m_limelight.getAllianceColor() == 1 ? LimelightCamera.kSeekRedContour : LimelightCamera.kSeekBlueContour);
 
             m_rot = 0.0;
             m_fwd = 0.0;

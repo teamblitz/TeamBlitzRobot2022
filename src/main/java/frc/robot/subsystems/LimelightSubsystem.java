@@ -6,11 +6,12 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+@Deprecated(forRemoval=true)
 public class LimelightSubsystem extends SubsystemBase {
-  /*
-    Deprecated. Please use vision subsysem and it's inner classes instead.
-    Should be safe to remove
-  */
+  /**
+  *    @deprecated Please use {@link VisionSubsystem} and it's inner classes instead.
+  *    As it has up to date vision code.
+  **/
 
   private NetworkTableEntry m_tve, m_txe, m_tye, m_tae;
   private double m_tv, m_tx, m_ty, m_ta;

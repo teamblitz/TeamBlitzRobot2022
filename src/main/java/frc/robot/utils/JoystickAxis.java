@@ -1,4 +1,4 @@
-package frc.robot.lib;
+package frc.robot.utils;
 
 import static edu.wpi.first.wpilibj.util.ErrorMessages.requireNonNullParam;
 
@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 
 /**
  * Essentaly joystick button but for analog imputs
- *
  */
 public class JoystickAxis extends Button {
   private final GenericHID m_joystick;

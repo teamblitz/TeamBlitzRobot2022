@@ -134,6 +134,8 @@ public class DriveSubsystem extends SubsystemBase {
     m_gyro.getRotation2d();
     m_odometry.update(Rotation2d.fromDegrees(getHeading()), m_leftMaster.getSelectedSensorPosition() * Constants.DriveConstants.kEncoderDistancePerPulse,
     m_rightMaster.getSelectedSensorPosition() * Constants.DriveConstants.kEncoderDistancePerPulse);
+
+    m_drive.feed();
    
     // var translation = m_odometry.getPoseMeters().getTranslation();
     //m_xEntry.setNumber(translation.getX());

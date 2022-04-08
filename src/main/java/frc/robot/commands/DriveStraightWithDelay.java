@@ -36,7 +36,7 @@ import frc.robot.subsystems.DriveSubsystem;
 	@Override
 	public void execute() {
 
-		 final long Cur_Time = System.currentTimeMillis();
+		long Cur_Time = System.currentTimeMillis();
 		if (Cur_Time - startTime < delay) {
 			driveSubsystem.tankDrive(voltage, voltage);
 		}

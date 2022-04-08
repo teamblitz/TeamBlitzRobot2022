@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DriveStraightWithDelay;
@@ -65,10 +64,10 @@ public class RobotContainer {
   private StatusLightSubsystem m_statusLightSubsystem;
 
   // Ball Acquire subsystem:
-  private BallAcquirePlanSubsystem m_ballAcquire; // Depricated. Should be safe to remove.
+  private BallAcquirePlanSubsystem m_ballAcquire; // Deprecated. Should be safe to remove.
 
   // Ball Shooter Plan Subsystem
-  private BallShooterPlanSubsystem m_ballShoot; // Depricated. Should be safe to remove.
+  private BallShooterPlanSubsystem m_ballShoot; // Deprecated. Should be safe to remove.
 
   // Vision Subsystem
   private VisionSubsystem m_vision;
@@ -78,15 +77,17 @@ public class RobotContainer {
   // Shooter Subsystem
   private ShooterSubsystem m_shooter;
 
+  // Intake Subsystem
+  private IntakeSubsystem m_intakeRoller;
+
+  // Ball Mover Subsystem
+  private BallMoverSubsystem m_ballMover;
+
   // Controllers:
   private XboxController m_driveController;
 
-  private IntakeSubsystem m_intakeRoller;
-  private BallMoverSubsystem m_ballMover;
-
-  // Controller Constants:
-
-
+  // Controller Constants: 
+  // TODO - <<<>>> Move to Constants
   private final double kDriveLowSpeed = 0.75;
   private final double kDriveFullSpeed = 1.0;
 
@@ -101,7 +102,7 @@ public class RobotContainer {
     m_robotDrive.setDefaultCommand(new RunCommand(() -> m_robotDrive.feed(), m_robotDrive));
     m_PD.setSwitchableChannel(false); // Turn off our light
   }
-
+  // TODO - <<<>>> Refactor defalut commands
   // public void beginTeleop(){
   //   System.out.println("Enabling controller for Teleop");
 
@@ -128,18 +129,6 @@ public class RobotContainer {
   // }
 
 
-
-// Below code stops the xbox controller. In theory the doNothing thing doesn't need args but we couldn't make it work. Will refine latter
-  // public void beginAutonomous() {
-  //   // below does nothing
-  //   m_robotDrive.setDefaultCommand(
-  //     new RunCommand(() -> m_robotDrive
-  //       .doNothing(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed),
-  //       -m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed), m_driveController.getLeftBumper()),
-  //       m_robotDrive));
-  //   //m_robotDrive.getDefaultCommand().cancel();
-  // }
-
   private void configureSubsystems() {
 
     m_PD = new PowerDistribution(1, ModuleType.kRev);
@@ -165,7 +154,9 @@ public class RobotContainer {
     m_elevator = new ElevatorSubsystem();
 
     m_intakeRoller = new IntakeSubsystem();
+
     m_ballMover = new BallMoverSubsystem();
+
     m_shooter = new ShooterSubsystem();
 
   }
@@ -179,8 +170,6 @@ public class RobotContainer {
     */
     private void configureButtonBindings() {
       if (OIConstants.kUseAuxController) {
-        // TODO - if we decide to use an aux controller then set that up
-        // I believe we decided against the aux controller, but double check with Cole/Jason -AC
         return;
       }
       else {
@@ -235,7 +224,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() { // Autonomous code goes here
-      //return new AutonomousCommand(m_robotDrive, 0.5, m_shooter, m_ballMover);
       return new SequentialCommandGroup(
         new Shoot(m_shooter, m_ballMover, 1000, 3000), //Warmup time, Total duration
         new SeekBall(m_robotDrive, m_intakeRoller, m_vision, m_internalBallDetector, 500, 3000), //Time with no ball seen before ending, Total duration
@@ -244,7 +232,7 @@ public class RobotContainer {
         new DriveStraightWithDelay(m_robotDrive, m_internalBallDetector, 500, .5, 0) // duration, speed, delay. 1000 worked at scrimage. keeping it at 2000 to be safe.
       );
     }
-
+    // TODO - Move to defalut command
     public Command getTeleopCommand() { //Returns commands we want scheduled durring teleoperated period
       // Drive SlewRateLimiter
       SlewRateLimiter filter = new SlewRateLimiter(1.75);

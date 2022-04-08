@@ -36,7 +36,7 @@ public final class Constants {
     
     public static final class OIConstants {
         public static final boolean kUseAuxController = false;
-        public static final int kDriveControllerPort = Axis.kRightTrigger.value; // Right trigger
+        public static final int kDriveControllerPort = 0; 
         
         // Xbox buttons:
         

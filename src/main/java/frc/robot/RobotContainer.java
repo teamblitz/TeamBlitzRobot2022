@@ -94,13 +94,29 @@ public class RobotContainer {
   private final double kTurnLowSpeed = 0.45;
   private final double kTurnFullSpeed = .60;
 
+  // Drive SlewRateLimiter
+  SlewRateLimiter filter = new SlewRateLimiter(1.75);
+  // Turn SlewRateLimiter
+  SlewRateLimiter filterRotation = new SlewRateLimiter(1.75);
+
   public RobotContainer() {
 
     configureSubsystems();
     configureButtonBindings();
     CameraServer.startAutomaticCapture();
-    m_robotDrive.setDefaultCommand(new RunCommand(() -> m_robotDrive.feed(), m_robotDrive));
     m_PD.setSwitchableChannel(false); // Turn off our light
+    // Set defalut command for drive
+    m_robotDrive.setDefaultCommand(
+      new RunCommand(() -> m_robotDrive
+      // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
+      .performDrive(
+        filterRotation.calculate(
+          -m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdrive.value) < 0.5 ? kTurnLowSpeed : kTurnFullSpeed)),
+        filter.calculate(
+          m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdrive.value) < 0.5 ? kDriveLowSpeed : kDriveFullSpeed)), 
+        m_driveController.getLeftBumper(), //Turns on semiautonomous ball acquire
+        m_driveController.getLeftTriggerAxis() > 0.5), //Turns on semiautonomous targeter on Left Trigger
+      m_robotDrive).withName("DriveDefalutCommand"));
   }
   // TODO - <<<>>> Refactor defalut commands
   // public void beginTeleop(){
@@ -232,23 +248,6 @@ public class RobotContainer {
         new DriveStraightWithDelay(m_robotDrive, m_internalBallDetector, 500, .5, 0) // duration, speed, delay. 1000 worked at scrimage. keeping it at 2000 to be safe.
       );
     }
-    // TODO - Move to defalut command
-    public Command getTeleopCommand() { //Returns commands we want scheduled durring teleoperated period
-      // Drive SlewRateLimiter
-      SlewRateLimiter filter = new SlewRateLimiter(1.75);
-      // Turn SlewRateLimiter
-      SlewRateLimiter filterRotation = new SlewRateLimiter(1.75);
 
-      return new RunCommand(() -> m_robotDrive
-      // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
-        .performDrive(
-          filterRotation.calculate(
-            -m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdrive.value) < 0.5 ? kTurnLowSpeed : kTurnFullSpeed)),
-          filter.calculate(
-            m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdrive.value) < 0.5 ? kDriveLowSpeed : kDriveFullSpeed)), 
-          m_driveController.getLeftBumper(), //Turns on semiautonomous ball acquire
-          m_driveController.getLeftTriggerAxis() > 0.5), //Turns on semiautonomous targeter on Left Trigger
-        m_robotDrive);
-    }
   }
 

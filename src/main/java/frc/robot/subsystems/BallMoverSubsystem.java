@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.Constants.BallMoverSubsystemConstants;;
 
 public class BallMoverSubsystem extends SubsystemBase {
@@ -34,20 +35,27 @@ public class BallMoverSubsystem extends SubsystemBase {
   }
   // Enables BallMover Wheels
   public void start() {
-    System.out.println("BallMoverSubsystem::start");
+    if (Robot.isSimulation()) {
+      System.out.println("Ball Mover Start");
+      }
     m_ballMoverR.set(0.45);
     m_ballMoverL.set(-0.45);
   }
 
   // This could reverse BallMover Wheels
   public void reverse(){
+    if (Robot.isSimulation()) {
+      System.out.println("Ball Mover Reverse");
+      }
     m_ballMoverR.set(-0.45);
     m_ballMoverL.set(0.45);
    }
 
   // Disable BallMover Wheels
   public void stop() {
-    System.out.println("BallMoverSubsystem::stop");
+    if (Robot.isSimulation()) {
+      System.out.println("Ball Mover Stop");
+      }
     m_ballMoverR.set(0.0);
     m_ballMoverL.set(0.0);
   }

@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.Constants.ShooterSubsystemConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -23,15 +24,17 @@ public class ShooterSubsystem extends SubsystemBase {
   }
   // Enables Shooter Wheel
   public void start() {
-    // System.out.println("ShooterSubsystem::start");
-    // m_shooter.set(1.0);
+    if (Robot.isSimulation()) {
+    System.out.println("Shooter Start");
+    }
     m_shooter.set(0.45);
   }
 
   // Enables Shooter Wheel
   public void reverse() {
-    // System.out.println("ShooterSubsystem::start");
-    // m_shooter.set(1.0);
+    if (Robot.isSimulation()) {
+      System.out.println("Shooter Stop");
+    }
     m_shooter.set(-0.31);
   }
 
@@ -39,7 +42,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // Disable Shooter Wheels
   public void stop() {
-    System.out.println("ShooterSubsystem::stop");
+    if (Robot.isSimulation()) {
+      System.out.println("Shooter Stop");
+    }
     m_shooter.set(0.0);
   }
 

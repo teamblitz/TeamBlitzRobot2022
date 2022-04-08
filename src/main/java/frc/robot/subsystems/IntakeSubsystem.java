@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.Constants.IntakeSubsystemConstants;;
 
 /**
@@ -43,12 +44,16 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
   public void start() {
-    System.out.println("IntakeSubsystem::startIntake");
+    if (Robot.isSimulation()) {
+      System.out.println("Intake Start");
+    }
     m_intakeMotor.set(1.0);
   }
 
   public void stop() {
-    System.out.println("IntakeSubsystem::stopIntake");
+    if (Robot.isSimulation()) {
+      System.out.println("Intake Stop");
+    }
     m_intakeMotor.stopMotor();
   }
 }

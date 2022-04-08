@@ -9,6 +9,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 
 
 
@@ -55,6 +56,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void upElevator() {
+        if (Robot.isSimulation()) {
+            System.out.println("Elevator up");
+            }
         // Drives the motors up (or at least it should)
         // m_master.set(ControlMode.PercentOutput, upFilter.calculate(-0.6));
         m_master.set(ControlMode.PercentOutput, -0.40); 
@@ -62,6 +66,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void downElevator() {
+        if (Robot.isSimulation()) {
+            System.out.println("Elevator Down");
+            }
         // Drives the motors down (or at least it should)
         // m_master.set(ControlMode.PercentOutput, downFilter.calculate(0.6));
         m_master.set(ControlMode.PercentOutput, 0.40);

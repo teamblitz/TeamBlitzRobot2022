@@ -7,11 +7,14 @@
 
 package frc.robot.subsystems;
 
+import javax.management.MBeanConstructorInfo;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ExternalFollower;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -79,7 +82,15 @@ public class DriveSubsystem extends SubsystemBase {
   }
     
   @Override
-  public void periodic() {}
+  public void periodic() {
+    m_drive.feed();
+    // if (getDefaultCommand() != null) {
+    // SmartDashboard.putString("Default Command", getDefaultCommand().getName());
+    // }
+    // if (getCurrentCommand() != null) {
+    // SmartDashboard.putString("Current Command", getCurrentCommand().getName());
+    // }
+  }
 
 
   /**

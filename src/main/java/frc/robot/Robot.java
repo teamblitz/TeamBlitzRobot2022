@@ -19,8 +19,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-    // TODO - <<<>>> Please update the version after making any major code changes.
-    System.out.println("TeamBlitz 2083 2022 Code \n3-10-2022 V3.10.22.1"); //Version is day, month, year, version
   }
 
   @Override

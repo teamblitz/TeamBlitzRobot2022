@@ -42,20 +42,20 @@ public final class Constants {
         
         // We can do Button.kA.value to get the value of button A.
         // We could make the constants enums and do .value when binding
-        public static final int kOverdriveRightTriggerAxis = 3;
+        public static final Axis kOverdrive = Axis.kRightTrigger;
         
         public static final int kUpElevator = Button.kY.value; // Should be the Y button
         public static final int kDownElevator = Button.kA.value; // Should be the A button
         
-        public static final int kIntake = Button.kB.value; // Should be the B button
-        public static final int kBallMover = Button.kX.value; // Should be the X button
-        public static final int kBallMoverReversed = Button.kBack.value; // Back Button
-        public static final int kShooter = Button.kRightBumper.value;  // Should be right bumper  
-        public static final int kShooterReversed = Button.kStart.value; // Start button
+        public static final Button kIntake = Button.kB; // Should be the B button
+        public static final Button kBallMover = Button.kX; // Should be the X button
+        public static final Button kBallMoverReversed = Button.kBack; // Back Button
+        public static final Button kShooter = Button.kRightBumper;  // Should be right bumper  
+        public static final Button kShooterReversed = Button.kStart; // Start button
         
         //not actually used but listed here for reference. Actual binding is done in RobotContainer beginTeleop()
-        public static final int kSemiAutoBallSeek = Button.kLeftBumper.value; // Auto Ball seek is on left bumper
-        public static final int kSemiAutoBallTarget = Axis.kLeftTrigger.value; // Auto target is on left analog trigger
+        public static final Button kSemiAutoBallSeek = Button.kLeftBumper; // Auto Ball seek is on left bumper
+        public static final Axis kSemiAutoBallTarget = Axis.kLeftTrigger; // Auto target is on left analog trigger
 
     }
     

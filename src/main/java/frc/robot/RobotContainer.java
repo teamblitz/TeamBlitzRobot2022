@@ -32,6 +32,7 @@ import frc.robot.subsystems.LimelightTargetSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StatusLightSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.utils.ButtonBinder;
 import frc.robot.subsystems.BallMoverSubsystem;
 import frc.robot.subsystems.InternalBallDetectorSubsystem;
 
@@ -184,44 +185,48 @@ public class RobotContainer {
         // We can chain the the methods as any command binders will return the button they were called on.
         /* ***** --- Elevator Subsystem --- ***** */
       
-        new JoystickButton(m_driveController, OIConstants.kUpElevator)
+        new ButtonBinder(m_driveController, OIConstants.kUpElevator)
         .whenPressed(new InstantCommand(m_elevator::upElevator, m_elevator)) // Raise elevator
         .whenReleased(new InstantCommand(m_elevator::stopElevator, m_elevator)); // Stop raising elevator when button is released
 
-        new JoystickButton(m_driveController, OIConstants.kDownElevator)
+        new ButtonBinder(m_driveController, OIConstants.kDownElevator)
         .whenPressed(new InstantCommand(m_elevator::downElevator, m_elevator)) // Lower elevator
         .whenReleased(new InstantCommand(m_elevator::stopElevator, m_elevator)); // Stop lowering elevator when button is released
 
         /* ***** --- Intake Subsystem --- ***** */
-        new JoystickButton(m_driveController, OIConstants.kIntake)
+        new ButtonBinder(m_driveController, OIConstants.kIntake)
         .whenPressed(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
         .whenReleased(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
         
-        new JoystickButton(m_driveController, OIConstants.kSemiAutoBallSeek) // Enable intake when we press down the SemiAutoBallSeek button
+        new ButtonBinder(m_driveController, OIConstants.kSemiAutoBallSeek) // Enable intake when we press down the SemiAutoBallSeek button
         .whenPressed(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
         .whenReleased(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
         
         /* ***** --- BallMover Subsystem --- ***** */
-        new JoystickButton(m_driveController, OIConstants.kBallMover)
+        new ButtonBinder(m_driveController, OIConstants.kBallMover)
         .whenPressed(new InstantCommand(m_ballMover::start, m_ballMover)) // Start ball mover
         .whenReleased(new InstantCommand(m_ballMover::stop, m_ballMover)); // Stop ball mover
         
-        new JoystickButton(m_driveController, OIConstants.kBallMoverReversed)
+        new ButtonBinder(m_driveController, OIConstants.kBallMoverReversed)
         .whenPressed(new InstantCommand(m_ballMover::reverse, m_ballMover)) // Reverse ball mover
         .whenReleased(new InstantCommand(m_ballMover::stop, m_ballMover)); // Stop ball mover
         
   
         /* ***** --- Shooter Subsystem --- ***** */
-        new JoystickButton(m_driveController, OIConstants.kShooter)
+        new ButtonBinder(m_driveController, OIConstants.kShooter)
         .whenPressed(new InstantCommand(m_shooter::start, m_shooter)) // Start shooter
         .whenReleased(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
 
-        new JoystickButton(m_driveController, OIConstants.kShooterReversed)
+        new ButtonBinder(m_driveController, OIConstants.kShooterReversed)
         .whenPressed(new InstantCommand(m_shooter::reverse, m_shooter)) // Reverse shooter
         .whenReleased(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
 
+        new ButtonBinder(m_driveController, OIConstants.kSemiAutoBallTarget)
+        .whenPressed(new InstantCommand(m_shooter::start, m_shooter)) // Start shooter
+        .whenReleased(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
+
         /* Ball Aquire Lighting */
-        new JoystickButton(m_driveController, OIConstants.kSemiAutoBallSeek)
+        new ButtonBinder(m_driveController, OIConstants.kSemiAutoBallSeek)
         .whenPressed(new InstantCommand(m_vision::lightsOn)) // Lights on
         .whenReleased(new InstantCommand(m_vision::lightsOn)); // Lights off
       }
@@ -248,9 +253,9 @@ public class RobotContainer {
       // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
         .performDrive(
           filterRotation.calculate(
-            -m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kTurnLowSpeed : kTurnFullSpeed)),
+            -m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdrive.value) < 0.5 ? kTurnLowSpeed : kTurnFullSpeed)),
           filter.calculate(
-            m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kDriveLowSpeed : kDriveFullSpeed)), 
+            m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdrive.value) < 0.5 ? kDriveLowSpeed : kDriveFullSpeed)), 
           m_driveController.getLeftBumper(), //Turns on semiautonomous ball acquire
           m_driveController.getLeftTriggerAxis() > 0.5), //Turns on semiautonomous targeter on Left Trigger
         m_robotDrive);

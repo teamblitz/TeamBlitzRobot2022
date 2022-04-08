@@ -33,7 +33,9 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StatusLightSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.utils.ButtonBinder;
+import frc.robot.subsystems.BallAcquirePlanSubsystem;
 import frc.robot.subsystems.BallMoverSubsystem;
+import frc.robot.subsystems.BallShooterPlanSubsystem;
 import frc.robot.subsystems.InternalBallDetectorSubsystem;
 
 /**
@@ -63,10 +65,10 @@ public class RobotContainer {
   private StatusLightSubsystem m_statusLightSubsystem;
 
   // Ball Acquire subsystem:
-  // private BallAcquirePlanSubsystem m_ballAcquire; // Depricated. Should be safe to remove.
+  private BallAcquirePlanSubsystem m_ballAcquire; // Depricated. Should be safe to remove.
 
   // Ball Shooter Plan Subsystem
-  // private BallShooterPlanSubsystem m_ballShoot; // Depricated. Should be safe to remove.
+  private BallShooterPlanSubsystem m_ballShoot; // Depricated. Should be safe to remove.
 
   // Vision Subsystem
   private VisionSubsystem m_vision;

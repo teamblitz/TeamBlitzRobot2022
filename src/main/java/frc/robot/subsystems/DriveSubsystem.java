@@ -7,7 +7,6 @@
 
 package frc.robot.subsystems;
 
-import javax.management.MBeanConstructorInfo;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ExternalFollower;

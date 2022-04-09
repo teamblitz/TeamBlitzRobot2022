@@ -19,14 +19,15 @@ public class DriveStraightWithDelay extends CommandBase
 
 	public DriveStraightWithDelay(final DriveSubsystem driveSubsystem, InternalBallDetectorSubsystem internalBallDetectorSubsystem, final long duration, final double voltage, final long delay)
 	{
-		// Use requires() here to declare subsystem dependencies
-		// eg. requires(chassis);
-		// requires(driveSubsystem);
 		this.driveSubsystem = driveSubsystem;
 		this.internalBallDetectorSubsystem = internalBallDetectorSubsystem;
 		this.delay = delay;
 		this.voltage = voltage;
 		this.duration = duration;
+
+		// Use addRequirements() here to declare subsystem dependencies
+		// eg. addRequirements(chassis);
+		addRequirements(driveSubsystem);
 	}
 
 	// Called just before this Command runs the first time

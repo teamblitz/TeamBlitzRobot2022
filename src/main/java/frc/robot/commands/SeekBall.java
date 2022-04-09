@@ -25,9 +25,6 @@ public class SeekBall extends CommandBase {
 
 	// TODO - <<<>>> Add requires subsystems
 	public SeekBall(final DriveSubsystem driveSubsystem, final IntakeSubsystem intakeSubsystem, VisionSubsystem vision, InternalBallDetectorSubsystem internalBallDetectorSubsystem, long notSeenTimeout, long timeout){
-		// Use requires() here to declare subsystem dependencies
-		// eg. requires(chassis);
-		// requires(driveSubsystem);
 		this.driveSubsystem = driveSubsystem;
 		this.intakeSubsystem = intakeSubsystem;
         this.vision = vision;
@@ -35,6 +32,9 @@ public class SeekBall extends CommandBase {
 
 		this.notSeenTimeout = notSeenTimeout;
 		this.timeout = timeout;
+		// Use addRequirements() here to declare subsystem dependencies
+		// eg. addRequirements(chassis);
+		addRequirements(driveSubsystem, intakeSubsystem);
 	}
 
 	// Called just before this Command runs the first time

@@ -48,42 +48,32 @@ public class RobotContainer {
   // Power Board
   private PowerDistribution m_PD;
 
-  // Chassis drive subsystem:
+  /* ***** --- Subsystems --- ***** */
   private DriveSubsystem m_robotDrive;
 
-  // Limelight subsystem:
   private LimelightSubsystem m_limelight;
 
-  // Targeting Limelight subsystem
   private LimelightTargetSubsystem m_limelightTarget;
 
-  // Color sensor
   private InternalBallDetectorSubsystem m_internalBallDetector; 
 
-  // Status Light Leds
   private StatusLightSubsystem m_statusLightSubsystem;
 
-  // Ball Acquire subsystem:
   private BallAcquirePlanSubsystem m_ballAcquire; // Deprecated. Should be safe to remove.
 
-  // Ball Shooter Plan Subsystem
   private BallShooterPlanSubsystem m_ballShoot; // Deprecated. Should be safe to remove.
 
-  // Vision Subsystem
   private VisionSubsystem m_vision;
-  // Elevator Subsystem:
+
   private ElevatorSubsystem m_elevator;
 
-  // Shooter Subsystem
   private ShooterSubsystem m_shooter;
 
-  // Intake Subsystem
   private IntakeSubsystem m_intakeRoller;
 
-  // Ball Mover Subsystem
   private BallMoverSubsystem m_ballMover;
 
-  // Controllers:
+  /* ***** --- Controllers --- ***** */
   private XboxController m_driveController;
 
   // Controller Constants: 
@@ -103,8 +93,13 @@ public class RobotContainer {
 
     configureSubsystems();
     configureButtonBindings();
+    setDefaultCommands();
     CameraServer.startAutomaticCapture();
     m_PD.setSwitchableChannel(false); // Turn off our light
+  }
+
+
+  private void setDefaultCommands() {
     // Set defalut command for drive
     m_robotDrive.setDefaultCommand(
       new RunCommand(() -> m_robotDrive
@@ -118,31 +113,6 @@ public class RobotContainer {
         m_driveController.getLeftTriggerAxis() > 0.5), //Turns on semiautonomous targeter on Left Trigger
       m_robotDrive).withName("DriveDefalutCommand"));
   }
-  // TODO - <<<>>> Refactor defalut commands
-  // public void beginTeleop(){
-  //   System.out.println("Enabling controller for Teleop");
-
-  // /** SlewRateLimiter
-  //   * Creates a SlewRateLimiter that limits the rate of change of the signal to 1.75 units per second for forward and backward
-  //   * Essemtaly stoping jerking of the robot during arcade drive
-  //   * Do Not delete unless removed below
-  //   */
-
-  //   // Drive SlewRateLimiter
-  //   SlewRateLimiter filter = new SlewRateLimiter(1.75);
-  //   // Turn SlewRateLimiter
-  //   SlewRateLimiter filterRotation = new SlewRateLimiter(1.75);
-
-  //   m_robotDrive.setDefaultCommand(
-  //     new RunCommand(() -> m_robotDrive
-  //     // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
-  //       .performDrive(
-  //         filter.calculate(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
-  //         filterRotation.calculate(m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)), 
-  //         m_driveController.getLeftBumper(), //Turns on semiautonomous ball acquire
-  //         m_driveController.getLeftTriggerAxis() > 0.5), //Turns on semiautonomous targeter on Left Trigger
-  //       m_robotDrive));
-  // }
 
 
   private void configureSubsystems() {

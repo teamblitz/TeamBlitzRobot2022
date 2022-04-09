@@ -24,13 +24,14 @@ public class Target extends CommandBase
 	
 
 	public Target(final DriveSubsystem driveSubsystem, final VisionSubsystem vision, long notSeenTimeout, long timeout){
-		// Use requires() here to declare subsystem dependencies
-		// eg. requires(chassis);
-		// requires(driveSubsystem);
 		this.driveSubsystem = driveSubsystem;
 		this.vision = vision;
 		this.timeout = timeout;
 		this.notSeenTimeout = notSeenTimeout;
+		
+		// Use addRequirements() here to declare subsystem dependencies
+		// eg. addRequirements(chassis);
+		addRequirements(driveSubsystem);
 	}
 
 	// Called just before this Command runs the first time

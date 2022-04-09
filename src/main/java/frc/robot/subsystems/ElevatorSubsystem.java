@@ -37,7 +37,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         NONE // Not moving
     }
 
-    private Direction direction = Direction.NONE;
+    private Direction direction = Direction.NONE; // We arn't moving yet
 
 
     public ElevatorSubsystem() {

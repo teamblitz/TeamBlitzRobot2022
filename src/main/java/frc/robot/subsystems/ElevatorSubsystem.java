@@ -31,6 +31,15 @@ public class ElevatorSubsystem extends SubsystemBase {
     SlewRateLimiter upFilter = new SlewRateLimiter(1.75);
     SlewRateLimiter downFilter = new SlewRateLimiter(1.75);
 
+    private enum  Direction{ // Has 3 states
+        UP, // Moving up
+        DOWN, // Moving down
+        NONE // Not moving
+    }
+
+    private Direction direction = Direction.NONE;
+
+
     public ElevatorSubsystem() {
         
         /* Please look at the 2021 code and configure the peak/nominal output and stator current limits */
@@ -57,47 +66,64 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void upElevator() {
         if (Robot.isSimulation()) {
-            System.out.println("Elevator up");
+            System.out.println("upElevator Called");
             }
         // Drives the motors up (or at least it should)
         // m_master.set(ControlMode.PercentOutput, upFilter.calculate(-0.6));
-        m_master.set(ControlMode.PercentOutput, -0.40); 
+        
+        if (!toplimitSwitch.get()) {// If the top limit switch is not true
+            m_master.set(ControlMode.PercentOutput, -0.40); // Turn the moter on.
+            direction = Direction.UP; // We are now moving up
+            System.out.println("Elevator up");
+        }
         checkMovement = true;
     }
 
     public void downElevator() {
         if (Robot.isSimulation()) {
-            System.out.println("Elevator Down");
+            System.out.println("downElevator Called");
             }
         // Drives the motors down (or at least it should)
         // m_master.set(ControlMode.PercentOutput, downFilter.calculate(0.6));
-        m_master.set(ControlMode.PercentOutput, 0.40);
-        checkMovement = true;
+        if (!bottomlimitSwitch.get()) { // If the bottem limit switch is not true
+            m_master.set(ControlMode.PercentOutput, 0.40); // Turn the moter on.
+            direction = Direction.DOWN; // We are now moving dow
+            System.out.println("Elevator down");
+        }
+        // checkMovement = true;
     }
 
     public void stopElevator() {
         // Should stop the motors
         m_master.set(ControlMode.PercentOutput, 0.0);
-        checkMovement = false;
+        direction = Direction.NONE; // We are no longer moving
+        System.out.println("Elevator Stop");
+        // checkMovement = false;
     }
 
     public void checkTopLimit(){
-        if (toplimitSwitch.get() && checkMovement) { 
-            stopElevator();
-            System.out.println("Stop Elevator Up");
+        if (toplimitSwitch.get() && direction == Direction.UP) { // If we are at the top and moving up
+            stopElevator(); // Stop the elevator
         }
+        // if (toplimitSwitch.get() && checkMovement) { 
+        //     stopElevator();
+        //     System.out.println("Stop Elevator Up");
+        // }
     }
 
     public void checkBottomLimit(){
-        if (bottomlimitSwitch.get() && checkMovement) { 
-            stopElevator();
-            System.out.println("Stop Elevator Down");
+        if (bottomlimitSwitch.get() && direction == Direction.DOWN) { // If we are at the bottom and moving down
+            stopElevator(); // Stop the elevator
         }
+        // if (bottomlimitSwitch.get() && checkMovement) { 
+        //     stopElevator();
+        //     System.out.println("Stop Elevator Down");
+        // }
     }
 
     @Override
     public void periodic() {
-      checkTopLimit();
-    //   checkBottomLimit();
+        checkTopLimit();
+        checkBottomLimit();
     }
 }

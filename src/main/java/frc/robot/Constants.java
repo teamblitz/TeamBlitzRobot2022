@@ -53,7 +53,6 @@ public final class Constants {
         public static final Button kShooter = Button.kRightBumper;  // Should be right bumper  
         public static final Button kShooterReversed = Button.kStart; // Start button
         
-        //not actually used but listed here for reference. Actual binding is done in RobotContainer beginTeleop()
         public static final Button kSemiAutoBallSeek = Button.kLeftBumper; // Auto Ball seek is on left bumper
         public static final Axis kSemiAutoBallTarget = Axis.kLeftTrigger; // Auto target is on left analog trigger
 

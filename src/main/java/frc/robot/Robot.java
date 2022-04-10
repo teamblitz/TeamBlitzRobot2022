@@ -29,47 +29,91 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
   }
 
+  /* ***** --- Autonomous --- ***** */
+
+  // Called at the start of autonomous.
+  @Override
+  public void autonomousInit() {
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    // schedule autonomous commands
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
+    }
+  }
+
+  // Called periodicly durring autonomous
+  @Override
+  public void autonomousPeriodic() {}
+
+  // Called at the end of autonomous
+  @Override
+  public void autonomousExit() {
+    // Cancel autonomous commands
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.cancel();
+    }
+  }
+
+
+  /* ***** --- Teleop --- ***** */
+
+  // Called at the start of teleop
+  @Override
+  public void teleopInit() {
+    System.out.println("TeleopInit");
+  }
+
+  // Called periodicly durring teleop
+  @Override
+  public void teleopPeriodic() {}
+
+  // Called at the end of teleop.
+  @Override
+  public void teleopExit() {}
+
+
+  /* ***** --- Test Mode --- ***** */
+
+  // Called at the start of test mode
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
   }
 
+  // Called periodicly durring test mode
   @Override
-  public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+  public void testPeriodic() {}
 
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
-    // m_robotContainer.beginAutonomous();
-  }
-
+  // Called at the end of test mode
   @Override
-  public void teleopInit() {
-    System.out.println("TeleopInit");
-    // m_robotContainer = new RobotContainer();
+  public void testExit() {}
 
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
-    //m_robotContainer = new RobotContainer();
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
-    // m_robotContainer.beginTeleop();
-    
-  }
-  /**
-   * Exit code for teleop mode should go here.
-   *
-   * <p>Users should override this method for code which will be called each time the robot exits
-   * teleop mode.
-   */
-  public void teleopExit() {
-  }
 
+  /* ***** --- Disabled --- ***** */
+
+  // Called when disabled
+  @Override
+  public void disabledInit() {}
+
+  // Called periodicly when disabled
+  @Override
+  public void disabledPeriodic() {}
+
+  // Called when the robot exits disabled mode
+  @Override
+  public void disabledExit() {}
+
+  
+  /* ***** --- Simulation --- ***** */
+
+  // Called when the robot enters simulation
+  @Override
+  public void simulationInit() {}
+
+  // Called periodicly durring simulation
+  @Override
+  public void simulationPeriodic() {}
 
 }

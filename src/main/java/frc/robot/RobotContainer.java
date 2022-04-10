@@ -109,8 +109,8 @@ public class RobotContainer {
           -m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdrive.value) < 0.5 ? kTurnLowSpeed : kTurnFullSpeed)),
         filter.calculate(
           m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdrive.value) < 0.5 ? kDriveLowSpeed : kDriveFullSpeed)), 
-        m_driveController.getLeftBumper(), //Turns on semiautonomous ball acquire
-        m_driveController.getLeftTriggerAxis() > 0.5), //Turns on semiautonomous targeter on Left Trigger
+        m_driveController.getRawButton(OIConstants.kSemiAutoBallSeek.value), //Turns on semiautonomous ball acquire
+        m_driveController.getRawAxis(OIConstants.kSemiAutoBallTarget.value) > 0.5), //Turns on semiautonomous targeter on Left Trigger
       m_robotDrive).withName("DriveDefalutCommand"));
   }
 

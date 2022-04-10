@@ -4,7 +4,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.BallMoverSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
- public class Shoot extends CommandBase
+
+
+public class Shoot extends CommandBase
 {
 	ShooterSubsystem shooterSubsystem;
     BallMoverSubsystem ballMoverSubsystem;
@@ -15,13 +17,14 @@ import frc.robot.subsystems.ShooterSubsystem;
 	
 
 	public Shoot(final ShooterSubsystem shooterSubsystem, final BallMoverSubsystem ballMoverSubsystem, final long warmupPeriod, final long duration){
-		// Use requires() here to declare subsystem dependencies
-		// eg. requires(chassis);
-		// requires(driveSubsystem);
 		this.shooterSubsystem = shooterSubsystem;
 		this.ballMoverSubsystem = ballMoverSubsystem;
 		this.warmupPeriod = warmupPeriod;
 		this.duration = duration;
+		
+		// Use addRequirements() here to declare subsystem dependencies
+		// eg. addRequirements(chassis);
+		addRequirements(shooterSubsystem, ballMoverSubsystem);
 	}
 
 	// Called just before this Command runs the first time

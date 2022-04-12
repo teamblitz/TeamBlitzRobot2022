@@ -16,7 +16,6 @@ import frc.robot.Robot;
 public class ElevatorSubsystem extends SubsystemBase {
     private DigitalInput toplimitSwitch= new DigitalInput(8);
     private DigitalInput bottomlimitSwitch = new DigitalInput(7);
-    private boolean checkMovement = false;
     /* ***** ----- Talon IDs need to be configured with the Phoenix Tuner ----- ***** */
     
     /* Master Talon */
@@ -99,14 +98,14 @@ public class ElevatorSubsystem extends SubsystemBase {
         System.out.println("Elevator Stop");
     }
 
-    public void checkTopLimit(){
-        if (toplimitSwitch.get() && !(direction == Direction.DOWN)) { // If we are at the top and not moving down
+    private void checkLimits() {
+        if (toplimitSwitch.get() && direction == Direction.UP) { // If we are at the top and moving UP
             haultElevator(); // Stop the elevator
         }
-    }
-
-    public void checkBottomLimit(){
-        if (bottomlimitSwitch.get() && !(direction == Direction.UP)) { // If we are at the bottom and not moving up
+        if (bottomlimitSwitch.get() && direction == Direction.DOWN) { // If we are at the bottom moving DOWN
+            haultElevator(); // Stop the elevator
+        }
+        if (toplimitSwitch.get() || bottomlimitSwitch.get() && direction == Direction.NONE) { // If we are ramping down and touching either limit switch
             haultElevator(); // Stop the elevator
         }
     }
@@ -136,8 +135,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        checkTopLimit();
-        checkBottomLimit();
+        checkLimits();
         updateSpeed();
     }
 }

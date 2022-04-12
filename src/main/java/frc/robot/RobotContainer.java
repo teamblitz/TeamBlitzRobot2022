@@ -95,7 +95,7 @@ public class RobotContainer {
     configureButtonBindings();
     setDefaultCommands();
     CameraServer.startAutomaticCapture();
-    m_PD.setSwitchableChannel(false); // Turn off our light
+    m_vision.lightsOff(); // Turn off our lights/
   }
 
 

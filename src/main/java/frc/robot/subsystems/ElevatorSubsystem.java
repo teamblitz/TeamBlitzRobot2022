@@ -67,9 +67,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void upElevator() {
-        if (Robot.isSimulation()) {
-            System.out.println("upElevator Called");
-        }
+        System.out.println("upElevator Called");
 
         if (!toplimitSwitch.get()) {// If the top limit switch is not true
             direction = Direction.UP; // Tell the elevator to move up.
@@ -78,9 +76,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void downElevator() {
-        if (Robot.isSimulation()) {
-            System.out.println("downElevator Called");
-        }
+        System.out.println("downElevator Called");
 
         if (!bottomlimitSwitch.get()) { // If the bottem limit switch is not true
             direction = Direction.DOWN; // Tell the elevator to move down.
@@ -95,7 +91,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void haultElevator() { // Stops the elevator without ramping.
         direction = Direction.STOP; // Tell the elevator to stop without ramping
-        System.out.println("Elevator Stop");
+        // System.out.println("Elevator Stop");
     }
 
     private void checkLimits() {
@@ -106,7 +102,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             haultElevator(); // Stop the elevator
         }
         if (toplimitSwitch.get() || bottomlimitSwitch.get() && direction == Direction.NONE) { // If we are ramping down and touching either limit switch
-            haultElevator(); // Stop the elevator
+            // haultElevator(); // Stop the elevator
         }
     }
 
@@ -118,8 +114,8 @@ public class ElevatorSubsystem extends SubsystemBase {
                 }
                 break;
             case DOWN:
-                if (!toplimitSwitch.get()) { // If we aren't touching the bottom
-                    m_master.set(ControlMode.PercentOutput, filter.calculate(kDownSpeed)); // Start the elevator down
+                if (!bottomlimitSwitch.get()) { // If we aren't touching the bottom
+                m_master.set(ControlMode.PercentOutput, filter.calculate(kDownSpeed)); // Start the elevator down
                 }
                 break;
             case NONE:

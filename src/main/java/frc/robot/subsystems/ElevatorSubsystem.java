@@ -14,9 +14,8 @@ import frc.robot.Robot;
 
 
 public class ElevatorSubsystem extends SubsystemBase {
-    DigitalInput toplimitSwitch= new DigitalInput(8);
-    DigitalInput bottomlimitSwitch = new DigitalInput(7);
-    boolean checkMovement = false;
+    private DigitalInput toplimitSwitch= new DigitalInput(8);
+    private DigitalInput bottomlimitSwitch = new DigitalInput(7);
     /* ***** ----- Talon IDs need to be configured with the Phoenix Tuner ----- ***** */
     
     /* Master Talon */
@@ -28,13 +27,16 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     // TODO - <<<>>> Did not create limiters for stoping of the elevator. As the moters would keep going a bit as they slowed down, Posiblly resaulting in the moter going too far. 
     // Creates a SlewRateLimiter that limits the rate of change of the signal to 1.75 units per second
-    SlewRateLimiter upFilter = new SlewRateLimiter(1.75);
-    SlewRateLimiter downFilter = new SlewRateLimiter(1.75);
+    SlewRateLimiter filter = new SlewRateLimiter(1.75);
+
+    private final double kUpSpeed = -0.40;
+    private final double kDownSpeed = 0.40;
 
     private enum  Direction{ // Has 3 states
         UP, // Moving up
         DOWN, // Moving down
-        NONE // Not moving
+        NONE, // Not moving, will ramp down
+        STOP // Stoped because at limit switch.
     }
 
     private Direction direction = Direction.NONE; // We arn't moving yet
@@ -49,7 +51,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         m_master.configFactoryDefault();
         m_slave.configFactoryDefault();
 
-        // Set to coast
+        // Set to break
         m_master.setNeutralMode(NeutralMode.Brake); // This might be changed to brake
         m_slave.setNeutralMode(NeutralMode.Brake); // Same with this one
 
@@ -65,65 +67,71 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void upElevator() {
-        if (Robot.isSimulation()) {
-            System.out.println("upElevator Called");
-            }
-        // Drives the motors up (or at least it should)
-        // m_master.set(ControlMode.PercentOutput, upFilter.calculate(-0.6));
-        
+        System.out.println("upElevator Called");
+
         if (!toplimitSwitch.get()) {// If the top limit switch is not true
-            m_master.set(ControlMode.PercentOutput, -0.40); // Turn the moter on.
-            direction = Direction.UP; // We are now moving up
+            direction = Direction.UP; // Tell the elevator to move up.
             System.out.println("Elevator up");
         }
-        checkMovement = true;
     }
 
     public void downElevator() {
-        if (Robot.isSimulation()) {
-            System.out.println("downElevator Called");
-            }
-        // Drives the motors down (or at least it should)
-        // m_master.set(ControlMode.PercentOutput, downFilter.calculate(0.6));
+        System.out.println("downElevator Called");
+
         if (!bottomlimitSwitch.get()) { // If the bottem limit switch is not true
-            m_master.set(ControlMode.PercentOutput, 0.40); // Turn the moter on.
-            direction = Direction.DOWN; // We are now moving dow
+            direction = Direction.DOWN; // Tell the elevator to move down.
             System.out.println("Elevator down");
         }
-        // checkMovement = true;
     }
 
-    public void stopElevator() {
-        // Should stop the motors
-        m_master.set(ControlMode.PercentOutput, 0.0);
-        direction = Direction.NONE; // We are no longer moving
+    public void stopElevator() { // Ramps down the moters
+        direction = Direction.NONE; // Tell the elevator to ramp down the moters
         System.out.println("Elevator Stop");
-        // checkMovement = false;
     }
 
-    public void checkTopLimit(){
-        if (toplimitSwitch.get() && direction == Direction.UP) { // If we are at the top and moving up
-            stopElevator(); // Stop the elevator
-        }
-        // if (toplimitSwitch.get() && checkMovement) { 
-        //     stopElevator();
-        //     System.out.println("Stop Elevator Up");
-        // }
+    public void haultElevator() { // Stops the elevator without ramping.
+        direction = Direction.STOP; // Tell the elevator to stop without ramping
+        // System.out.println("Elevator Stop");
     }
 
-    public void checkBottomLimit(){
-        if (bottomlimitSwitch.get() && direction == Direction.DOWN) { // If we are at the bottom and moving down
-            stopElevator(); // Stop the elevator
+    private void checkLimits() {
+        if (toplimitSwitch.get() && direction == Direction.UP) { // If we are at the top and moving UP
+            haultElevator(); // Stop the elevator
         }
-        // if (bottomlimitSwitch.get() && checkMovement) { 
-        //     stopElevator();
-        //     System.out.println("Stop Elevator Down");
-        // }
+        if (bottomlimitSwitch.get() && direction == Direction.DOWN) { // If we are at the bottom moving DOWN
+            haultElevator(); // Stop the elevator
+        }
+        if (toplimitSwitch.get() || bottomlimitSwitch.get() && direction == Direction.NONE) { // If we are ramping down and touching either limit switch
+            // haultElevator(); // Stop the elevator
+        }
+    }
+
+    public void updateSpeed() { // Set the moters to the wanted direction.
+        switch (direction) {
+            case UP:
+                if (!toplimitSwitch.get()) { // If we aren't touching the top
+                    m_master.set(ControlMode.PercentOutput, filter.calculate(kUpSpeed)); // Start the elevator up
+                }
+                break;
+            case DOWN:
+                if (!bottomlimitSwitch.get()) { // If we aren't touching the bottom
+                m_master.set(ControlMode.PercentOutput, filter.calculate(kDownSpeed)); // Start the elevator down
+                }
+                break;
+            case NONE:
+                m_master.set(ControlMode.PercentOutput, filter.calculate(0.0)); // Set the moters to ramp down
+                break;
+            case STOP:
+                filter.reset(0.0); // reset the slewrate to 0
+                m_master.set(ControlMode.PercentOutput, filter.calculate(0.0)); // Stop the moters without ramping
+                break;
+        }
+        
     }
 
     @Override
     public void periodic() {
-        checkTopLimit();
-        checkBottomLimit();
+        checkLimits();
+        updateSpeed();
     }
 }

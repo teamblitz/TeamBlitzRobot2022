@@ -205,7 +205,7 @@ public class RobotContainer {
         /* Ball Aquire Lighting */
         new ButtonBinder(m_driveController, OIConstants.kSemiAutoBallSeek)
         .whenPressed(new InstantCommand(m_vision::lightsOn)) // Lights on
-        .whenReleased(new InstantCommand(m_vision::lightsOn)); // Lights off
+        .whenReleased(new InstantCommand(m_vision::lightsOff)); // Lights off
       }
     }
 

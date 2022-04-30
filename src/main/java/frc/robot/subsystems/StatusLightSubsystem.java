@@ -42,7 +42,7 @@ public class StatusLightSubsystem extends SubsystemBase{
         // rainbow();
 
         // m_led.setData(m_ledBuffer);
-        System.out.println("Status Light Subsystem Constructor");
+
 
     }
 

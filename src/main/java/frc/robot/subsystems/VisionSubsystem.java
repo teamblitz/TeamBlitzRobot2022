@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -11,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // Should function exactly like the pre existing subsystes. 
 // Outside code using vision must be changed to VisionSubsystem.BallAcquire instead of BallAcquire subsystem. All internal methods and code reamain intact 
 public class VisionSubsystem extends SubsystemBase{
-
     // The object that these variables referance shouldn't change therefor we use the final keyword.
     // Final doesn't stop the object from changing internaly, it just stops the referance variable from changing.
     // This way we don't accdently change them externaly.
@@ -20,6 +20,7 @@ public class VisionSubsystem extends SubsystemBase{
     public final BallAcquirePlan ballAcquirePlan;
     public final BallShooterPlan ballShooterPlan;
     public LimelightCamera getBallLimelight() {return ballLimelight;}
+    
 
     private StatusLightSubsystem m_statusLights;
     private PowerDistribution m_pd;

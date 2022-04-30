@@ -26,15 +26,11 @@ import frc.robot.commands.Target;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
-import frc.robot.subsystems.LimelightTargetSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StatusLightSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.utils.ButtonBinder;
-import frc.robot.subsystems.BallAcquirePlanSubsystem;
 import frc.robot.subsystems.BallMoverSubsystem;
-import frc.robot.subsystems.BallShooterPlanSubsystem;
 import frc.robot.subsystems.InternalBallDetectorSubsystem;
 
 /**
@@ -51,17 +47,17 @@ public class RobotContainer {
   /* ***** --- Subsystems --- ***** */
   private DriveSubsystem m_robotDrive;
 
-  private LimelightSubsystem m_limelight;
+  // private LimelightSubsystem m_limelight;
 
-  private LimelightTargetSubsystem m_limelightTarget;
+  // private LimelightTargetSubsystem m_limelightTarget;
 
   private InternalBallDetectorSubsystem m_internalBallDetector; 
 
   private StatusLightSubsystem m_statusLightSubsystem;
 
-  private BallAcquirePlanSubsystem m_ballAcquire; // Deprecated. Should be safe to remove.
+  // private BallAcquirePlanSubsystem m_ballAcquire; // Deprecated. Should be safe to remove.
 
-  private BallShooterPlanSubsystem m_ballShoot; // Deprecated. Should be safe to remove.
+  // private BallShooterPlanSubsystem m_ballShoot; // Deprecated. Should be safe to remove.
 
   private VisionSubsystem m_vision;
 

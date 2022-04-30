@@ -6,14 +6,26 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
 
 
 
 public class ElevatorSubsystem extends SubsystemBase {
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("Subsystem");
+        
+        builder.addStringProperty("Direction", () -> direction.toString(), null);
+        builder.addBooleanProperty("Ignore top limit", () -> ignoreTopLimit, null);
+        builder.addBooleanProperty("Ignore bottom limit", () -> ignoreBottomLimit, null);
+        super.initSendable(builder);
+    }
+
     private DigitalInput toplimitSwitch= new DigitalInput(8);
     private DigitalInput bottomlimitSwitch = new DigitalInput(7);
     /* ***** ----- Talon IDs need to be configured with the Phoenix Tuner ----- ***** */
@@ -25,12 +37,17 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final WPI_TalonFX m_slave = new WPI_TalonFX(Constants.ElevatorConstants.kSlavePort); // This is set to 7
     
 
-    // TODO - <<<>>> Did not create limiters for stoping of the elevator. As the moters would keep going a bit as they slowed down, Posiblly resaulting in the moter going too far. 
+     
     // Creates a SlewRateLimiter that limits the rate of change of the signal to 1.75 units per second
     SlewRateLimiter filter = new SlewRateLimiter(1.75);
 
     private final double kUpSpeed = -0.40;
     private final double kDownSpeed = 0.40;
+
+    private boolean ignoreTopLimit = false;
+    private boolean ignoreBottomLimit = false;
+    private void setIgnoreTopLimit(boolean value) {ignoreTopLimit = value;}
+    private void setIgnoreBottomLimit(boolean value) {ignoreBottomLimit = value;}
 
     private enum  Direction{ // Has 3 states
         UP, // Moving up
@@ -38,7 +55,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         NONE, // Not moving, will ramp down
         STOP // Stoped because at limit switch.
     }
-
     private Direction direction = Direction.NONE; // We arn't moving yet
 
 
@@ -63,7 +79,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         // If Master is 7 use Clockwise
         m_slave.setInverted(TalonFXInvertType.Clockwise); // If they still move the same way, try clockwise
 
-
+        Shuffleboard.getTab("Subsystems").add(this);
+        System.out.println("TUHTKRJGUOJSLDKTGN IUJSKGHVNSRIUFJKGH PAIN AAHAHAHAHHAHA");
     }
 
     public void upElevator() {
@@ -74,11 +91,11 @@ public class ElevatorSubsystem extends SubsystemBase {
             System.out.println("Elevator up");
         }
     }
-
+    
     public void downElevator() {
         System.out.println("downElevator Called");
 
-        if (!bottomlimitSwitch.get()) { // If the bottem limit switch is not true
+        if (!bottomlimitSwitch.get() || ignoreTopLimit) { // If the bottem limit switch is not true
             direction = Direction.DOWN; // Tell the elevator to move down.
             System.out.println("Elevator down");
         }

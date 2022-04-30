@@ -32,6 +32,8 @@ public final class Constants {
     public static final class ElevatorConstants {
         public static final int kMasterPort = 8;
         public static final int kSlavePort = 7;
+        public static final int kTopLimitPort = 8;
+        public static final int kBottomLimitPort = 7;
     }
     
     public static final class OIConstants {

@@ -10,12 +10,13 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import static frc.robot.Constants.ElevatorConstants;;
 
 
 
-public class ElevatorSubsystem extends SubsystemBase {
+public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable{
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Subsystem");
@@ -26,15 +27,14 @@ public class ElevatorSubsystem extends SubsystemBase {
         super.initSendable(builder);
     }
 
-    private DigitalInput toplimitSwitch= new DigitalInput(8);
-    private DigitalInput bottomlimitSwitch = new DigitalInput(7);
+    private final DigitalInput m_toplimitSwitch;
+    private final DigitalInput m_bottomlimitSwitch;
     /* ***** ----- Talon IDs need to be configured with the Phoenix Tuner ----- ***** */
     
     /* Master Talon */
-    private final WPI_TalonFX m_master = new WPI_TalonFX(Constants.ElevatorConstants.kMasterPort); // This is set to 8
-
+    private final WPI_TalonFX m_master; // This is set to 8
     /* Slave Talon */
-    private final WPI_TalonFX m_slave = new WPI_TalonFX(Constants.ElevatorConstants.kSlavePort); // This is set to 7
+    private final WPI_TalonFX m_slave; // This is set to 7
     
 
      
@@ -57,9 +57,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
     private Direction direction = Direction.NONE; // We arn't moving yet
 
-
-    public ElevatorSubsystem() {
-        
+    // Should only be needed to be called directly durring unit tests, else just use the no args constructor
+    public ElevatorSubsystem(WPI_TalonFX master, WPI_TalonFX slave, DigitalInput topLimitSwitch, DigitalInput bottomLimitSwitch) {
+        m_master = master;
+        m_slave = slave;
+        m_toplimitSwitch = topLimitSwitch;
+        m_bottomlimitSwitch = bottomLimitSwitch;
         /* Please look at the 2021 code and configure the peak/nominal output and stator current limits */
         /* Also maybe configure velocity/PID values */
 
@@ -78,24 +81,30 @@ public class ElevatorSubsystem extends SubsystemBase {
         // if Master is ID 8, use counterclockwise
         // If Master is 7 use Clockwise
         m_slave.setInverted(TalonFXInvertType.Clockwise); // If they still move the same way, try clockwise
+    }
 
-        Shuffleboard.getTab("Subsystems").add(this);
-        System.out.println("TUHTKRJGUOJSLDKTGN IUJSKGHVNSRIUFJKGH PAIN AAHAHAHAHHAHA");
+    // No args constructor for standerd initation of the class
+    public ElevatorSubsystem() {
+        this( // Call our other with these hardwere inputs
+            new WPI_TalonFX(ElevatorConstants.kMasterPort), // Master
+            new WPI_TalonFX(ElevatorConstants.kSlavePort), // Slave
+            new DigitalInput(ElevatorConstants.kTopLimitPort), // Top
+            new DigitalInput(ElevatorConstants.kBottomLimitPort) // Bottom
+        );
     }
 
     public void upElevator() {
         System.out.println("upElevator Called");
 
-        if (!toplimitSwitch.get()) {// If the top limit switch is not true
+        if (!m_toplimitSwitch.get()) {// If the top limit switch is not true
             direction = Direction.UP; // Tell the elevator to move up.
             System.out.println("Elevator up");
         }
     }
-    
     public void downElevator() {
         System.out.println("downElevator Called");
 
-        if (!bottomlimitSwitch.get() || ignoreTopLimit) { // If the bottem limit switch is not true
+        if (!m_bottomlimitSwitch.get() || ignoreTopLimit) { // If the bottem limit switch is not true
             direction = Direction.DOWN; // Tell the elevator to move down.
             System.out.println("Elevator down");
         }
@@ -112,13 +121,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     private void checkLimits() {
-        if (toplimitSwitch.get() && direction == Direction.UP) { // If we are at the top and moving UP
+        if (m_toplimitSwitch.get() && direction == Direction.UP) { // If we are at the top and moving UP
             haultElevator(); // Stop the elevator
         }
-        if (bottomlimitSwitch.get() && direction == Direction.DOWN) { // If we are at the bottom moving DOWN
+        if (m_bottomlimitSwitch.get() && direction == Direction.DOWN) { // If we are at the bottom moving DOWN
             haultElevator(); // Stop the elevator
         }
-        if (toplimitSwitch.get() || bottomlimitSwitch.get() && direction == Direction.NONE) { // If we are ramping down and touching either limit switch
+        if (m_toplimitSwitch.get() || m_bottomlimitSwitch.get() && direction == Direction.NONE) { // If we are ramping down and touching either limit switch
             // haultElevator(); // Stop the elevator
         }
     }
@@ -126,12 +135,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void updateSpeed() { // Set the moters to the wanted direction.
         switch (direction) {
             case UP:
-                if (!toplimitSwitch.get()) { // If we aren't touching the top
+                if (!m_toplimitSwitch.get()) { // If we aren't touching the top
                     m_master.set(ControlMode.PercentOutput, filter.calculate(kUpSpeed)); // Start the elevator up
                 }
                 break;
             case DOWN:
-                if (!bottomlimitSwitch.get()) { // If we aren't touching the bottom
+                if (!m_bottomlimitSwitch.get()) { // If we aren't touching the bottom
                 m_master.set(ControlMode.PercentOutput, filter.calculate(kDownSpeed)); // Start the elevator down
                 }
                 break;
@@ -150,5 +159,15 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void periodic() {
         checkLimits();
         updateSpeed();
+    }
+    
+    // Close all hardwere. needed for testing
+    @Override
+    public void close() {
+        m_master.close();
+        m_slave.close();
+        m_toplimitSwitch.close();
+        m_bottomlimitSwitch.close();
+        CommandScheduler.getInstance().unregisterSubsystem(this);
     }
 }

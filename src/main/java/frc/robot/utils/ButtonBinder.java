@@ -63,7 +63,7 @@ public class ButtonBinder extends Button {
    * Compairs the value of the axis/trigger to 0.5. If above the command is triggered
    *
    * @param joystick The XboxController.
-   * @param axis XboxController Axis enum{@link XboxController.Axis}.
+   * @param axis XboxController Axis enum {@link XboxController.Axis}.
   */
   public ButtonBinder(XboxController joystick, XboxController.Axis axis) {
     super(

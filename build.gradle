@@ -47,6 +47,8 @@ wpi.java.debugJni = false
 // Set this to true to enable desktop support.
 def includeDesktopSupport = false
 
+repositories { mavenCentral() }
+
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
 dependencies {
@@ -68,6 +70,7 @@ dependencies {
     simulationRelease wpi.sim.enableRelease()
 
     testImplementation 'junit:junit:4.12'
+    testImplementation "org.mockito:mockito-core:4.5.1"
 }
 
 // Simulation configuration (e.g. environment variables).

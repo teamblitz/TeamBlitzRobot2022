@@ -136,20 +136,20 @@ public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable{
         switch (direction) {
             case UP:
                 if (!m_toplimitSwitch.get()) { // If we aren't touching the top
-                    m_master.set(ControlMode.PercentOutput, filter.calculate(kUpSpeed)); // Start the elevator up
+                    m_master.set(filter.calculate(kUpSpeed)); // Start the elevator up
                 }
                 break;
             case DOWN:
                 if (!m_bottomlimitSwitch.get()) { // If we aren't touching the bottom
-                m_master.set(ControlMode.PercentOutput, filter.calculate(kDownSpeed)); // Start the elevator down
+                m_master.set(filter.calculate(kDownSpeed)); // Start the elevator down
                 }
                 break;
             case NONE:
-                m_master.set(ControlMode.PercentOutput, filter.calculate(0.0)); // Set the moters to ramp down
+                m_master.set(filter.calculate(0.0)); // Set the moters to ramp down
                 break;
             case STOP:
                 filter.reset(0.0); // reset the slewrate to 0
-                m_master.set(ControlMode.PercentOutput, filter.calculate(0.0)); // Stop the moters without ramping
+                m_master.set(filter.calculate(0.0)); // Stop the moters without ramping
                 break;
         }
         

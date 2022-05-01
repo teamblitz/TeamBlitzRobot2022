@@ -1,17 +1,15 @@
 package frc.robot.subsystems;
 
 
+import edu.wpi.first.hal.HAL;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.simulation.PWMSim;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.utils.Utils;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import org.junit.*;
@@ -22,13 +20,12 @@ public class ElevatorSubsystemTest {
     DigitalInput bottomLimit = mock(DigitalInput.class);
     WPI_TalonFX master;
     WPI_TalonFX slave;
-    TalonFXSimCollection masterSim;
-    TalonFXSimCollection slaveSim;
-    PWMSim h;
 
     
     @Before
     public void setup() {
+        // The following line is 
+        assert HAL.initialize(500, 0); // initialize the HAL, crash if failed
         WPIUtilJNI.setMockTime(0); //Set mock time so we can simulate filters without waiting
         WPIUtilJNI.enableMockTime();
         master = new WPI_TalonFX(ElevatorConstants.kMasterPort); // Master
@@ -54,18 +51,17 @@ public class ElevatorSubsystemTest {
         elevatorSubsystem.close();
         elevatorSubsystem = null;
     }
-    // DOES NOT WORK BECAUSE CLASS VERRY DUMB
-    // @Test
-    // public void checkThatUpMakesElevatorGoUp() {
-    //     // when(topLimit.get()).thenReturn(false);
-    //     // elevatorSubsystem.test();
-    //     // elevatorSubsystem.periodic();
-    //     master.setInverted(true);
 
-    //     master.set(.5);
-    //     System.out.println(master.get());
-    //     // assertTrue(master.getMotorOutputVoltage() != 0.0);
-    // }
+    @Test
+    public void checkThatUpMakesElevatorGoUp() {
+        // when(topLimit.get()).thenReturn(false);
+        // elevatorSubsystem.upElevator();
+        // elevatorSubsystem.periodic();
+        master.set(1.0);
+        System.out.println(master.getMotorOutputVoltage());
+        System.out.println(master.get());
+        assertTrue(master.get() != 0.0);
+    }
     // @Test
     // public void checkThatTopLimitSwitchStopsElevatorGoingUp() {
     //     elevatorSubsystem.upElevator();

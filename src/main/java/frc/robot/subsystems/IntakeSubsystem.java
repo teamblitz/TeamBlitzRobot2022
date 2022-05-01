@@ -9,6 +9,8 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Constants.IntakeSubsystemConstants;;
@@ -16,12 +18,12 @@ import frc.robot.Constants.IntakeSubsystemConstants;;
 /**
  * Add your docs here.
   */
-public class IntakeSubsystem extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase implements AutoCloseable{
   
-  CANSparkMax m_intakeMotor = new CANSparkMax(IntakeSubsystemConstants.kSparkMotorPortIntake, MotorType.kBrushless);
+  CANSparkMax m_intakeMotor;
 
-  public IntakeSubsystem() {
-
+  public IntakeSubsystem(CANSparkMax intakeMotor) {
+    m_intakeMotor = intakeMotor;
     m_intakeMotor.restoreFactoryDefaults();
 
     // ISSUE: This was set under 20 amps due to locked rotor testing with sparkmaxes
@@ -41,7 +43,13 @@ public class IntakeSubsystem extends SubsystemBase {
     // m_intakeArm.setSoftLimit(SoftLimitDirection.kForward, 5);
 
   }
+  public IntakeSubsystem() {
+    this(
+      new CANSparkMax(IntakeSubsystemConstants.kSparkMotorPortIntake, MotorType.kBrushless)
+    );
+  }
 
+  CANSparkMax getIntakeMoter() {return m_intakeMotor;}
 
   public void start() {
     if (Robot.isSimulation()) {
@@ -55,5 +63,10 @@ public class IntakeSubsystem extends SubsystemBase {
       System.out.println("Intake Stop");
     }
     m_intakeMotor.stopMotor();
+  }
+
+  public void close() {
+    m_intakeMotor.close();
+    CommandScheduler.getInstance().unregisterSubsystem(this);
   }
 }

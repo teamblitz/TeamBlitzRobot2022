@@ -11,7 +11,7 @@ public class Utils {
      * @pram iterations How many iterations to run.
      */
     public static void mockRunScheduler(long rate, long iterations) {
-        WPIUtilJNI.setMockTime(0L);
+        WPIUtilJNI.setMockTime(WPIUtilJNI.now());
         for (long i = 0 ; i < iterations ; i++) {
             WPIUtilJNI.setMockTime(WPIUtilJNI.now() + rate * 1000L);
             CommandScheduler.getInstance().run();

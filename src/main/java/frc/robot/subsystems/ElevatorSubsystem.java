@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import static frc.robot.Constants.ElevatorConstants;;
+import static frc.robot.Constants.ElevatorConstants;
 
 
 
@@ -41,8 +41,8 @@ public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable{
     // Creates a SlewRateLimiter that limits the rate of change of the signal to 1.75 units per second
     SlewRateLimiter filter = new SlewRateLimiter(1.75);
 
-    private final double kUpSpeed = -0.40;
-    private final double kDownSpeed = 0.40;
+    // private final double kUpSpeed = -0.40;
+    // private final double kDownSpeed = 0.40;
 
     private boolean ignoreTopLimit = false;
     private boolean ignoreBottomLimit = false;
@@ -136,12 +136,12 @@ public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable{
         switch (direction) {
             case UP:
                 if (!m_toplimitSwitch.get()) { // If we aren't touching the top
-                    m_master.set(filter.calculate(kUpSpeed)); // Start the elevator up
+                    m_master.set(filter.calculate(ElevatorConstants.kUpSpeed)); // Start the elevator up
                 }
                 break;
             case DOWN:
                 if (!m_bottomlimitSwitch.get()) { // If we aren't touching the bottom
-                m_master.set(filter.calculate(kDownSpeed)); // Start the elevator down
+                m_master.set(filter.calculate(ElevatorConstants.kDownSpeed)); // Start the elevator down
                 }
                 break;
             case NONE:

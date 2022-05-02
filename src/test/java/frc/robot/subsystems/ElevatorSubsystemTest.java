@@ -130,8 +130,8 @@ public class ElevatorSubsystemTest {
     @Test
     public void checkThatHaultInstantlyStopsElevator() {
         elevatorSubsystem.upElevator();
-        assertTrue(master.get() != 0); // Make sure we are moving
         Utils.mockRunScheduler(20);
+        assertTrue(master.get() != 0); // Make sure we are moving
         elevatorSubsystem.haultElevator();
         // We must simulate the passage of time.
         // this method does that for us and calls the command schedular at a regular rate
@@ -141,8 +141,8 @@ public class ElevatorSubsystemTest {
     @Test
     public void checkThatStopEventualyStopsElevator() {
         elevatorSubsystem.upElevator();
-        assertTrue(master.get() != 0); // make sure we are moving
         Utils.mockRunScheduler(20);
+        assertTrue(master.get() != 0); // make sure we are moving
         elevatorSubsystem.stopElevator();
         // We must simulate the passage of time.
         // this method does that for us and calls the command schedular at a regular rate

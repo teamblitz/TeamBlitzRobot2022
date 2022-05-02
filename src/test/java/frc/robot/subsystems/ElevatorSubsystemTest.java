@@ -9,7 +9,6 @@ import frc.robot.utils.Utils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -19,7 +18,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import org.junit.*;
-import org.junit.experimental.theories.Theory;
 
 public class ElevatorSubsystemTest {
     private ElevatorSubsystem elevatorSubsystem;
@@ -132,11 +130,23 @@ public class ElevatorSubsystemTest {
     @Test
     public void checkThatHaultInstantlyStopsElevator() {
         elevatorSubsystem.upElevator();
+        assertTrue(master.get() != 0); // Make sure we are moving
         Utils.mockRunScheduler(20);
         elevatorSubsystem.haultElevator();
         // We must simulate the passage of time.
         // this method does that for us and calls the command schedular at a regular rate
         Utils.mockRunScheduler(1); // Command scheduler should only need to run once to stop the elevator
+        assertEquals(0, master.get(), 0.0);
+    }
+    @Test
+    public void checkThatStopEventualyStopsElevator() {
+        elevatorSubsystem.upElevator();
+        assertTrue(master.get() != 0); // make sure we are moving
+        Utils.mockRunScheduler(20);
+        elevatorSubsystem.stopElevator();
+        // We must simulate the passage of time.
+        // this method does that for us and calls the command schedular at a regular rate
+        Utils.mockRunScheduler(20);
         assertEquals(0, master.get(), 0.0);
     }
     @Test
@@ -161,5 +171,12 @@ public class ElevatorSubsystemTest {
         elevatorSubsystem.upElevator();
         Utils.mockRunScheduler(20);
         assertEquals(ElevatorConstants.kUpSpeed, master.get(), 0.0);  
+    }
+    @Test
+    public void checkThatTopLimitSwitchDoesNotStopElevatorFromGoingDown() {
+        when(topLimit.get()).thenReturn(true);
+        elevatorSubsystem.downElevator();
+        Utils.mockRunScheduler(20);
+        assertEquals(ElevatorConstants.kDownSpeed, master.get(), 0.0);  
     }
 }

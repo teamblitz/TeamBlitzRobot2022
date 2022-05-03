@@ -71,7 +71,9 @@ public final class Constants {
         public static final int kSparkMotorPortIntake = 11;
     }
 
-    public static final class ShooterSubsystemConstants {
+    public static final class ShooterConstants {
         public static final int kSparkMotorPortShooter = 12;
+        public static final float kSpeed = 0.45f;
+        public static final float kReverseSpeed = -0.3f;
     }
 }

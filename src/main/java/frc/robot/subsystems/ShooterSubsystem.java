@@ -3,12 +3,13 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.Constants.ShooterSubsystemConstants;
+import frc.robot.Constants.ShooterConstants;
 
-public class ShooterSubsystem extends SubsystemBase {
-  CANSparkMax m_shooter = new CANSparkMax(ShooterSubsystemConstants.kSparkMotorPortShooter, MotorType.kBrushless);
+public class ShooterSubsystem extends SubsystemBase implements AutoCloseable{
+  CANSparkMax m_shooter = new CANSparkMax(ShooterConstants.kSparkMotorPortShooter, MotorType.kBrushless);
 
   public ShooterSubsystem() {
 
@@ -27,7 +28,7 @@ public class ShooterSubsystem extends SubsystemBase {
     if (Robot.isSimulation()) {
     System.out.println("Shooter Start");
     }
-    m_shooter.set(0.45);
+    m_shooter.set(ShooterConstants.kSpeed);
   }
 
   // Enables Shooter Wheel
@@ -35,7 +36,7 @@ public class ShooterSubsystem extends SubsystemBase {
     if (Robot.isSimulation()) {
       System.out.println("Shooter Stop");
     }
-    m_shooter.set(-0.31);
+    m_shooter.set(ShooterConstants.kReverseSpeed);
   }
 
     
@@ -51,5 +52,15 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  CANSparkMax getShooter() { // Needed for unit testing
+    return m_shooter;
+  }
+
+  @Override
+  public void close() {
+    m_shooter.close(); // Disasemble the shooter
+    CommandScheduler.getInstance().unregisterSubsystem(this); // De-regester the subsystem
   }
 }

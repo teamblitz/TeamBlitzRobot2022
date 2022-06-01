@@ -158,50 +158,50 @@ public class RobotContainer {
         // We can chain the the methods as any command binders will return the button they were called on.
         /* ***** --- Elevator Subsystem --- ***** */
       
-        new ButtonBinder(m_driveController, OIConstants.kUpElevator)
-        .whenPressed(new InstantCommand(m_elevator::upElevator, m_elevator)) // Raise elevator
-        .whenReleased(new InstantCommand(m_elevator::stopElevator, m_elevator)); // Stop raising elevator when button is released
+        ButtonBinder.bindButton(m_driveController, OIConstants.kUpElevator)
+        .whenActive(new InstantCommand(m_elevator::upElevator, m_elevator)) // Raise elevator
+        .whenInactive(new InstantCommand(m_elevator::stopElevator, m_elevator)); // Stop raising elevator when button is released
 
-        new ButtonBinder(m_driveController, OIConstants.kDownElevator)
-        .whenPressed(new InstantCommand(m_elevator::downElevator, m_elevator)) // Lower elevator
-        .whenReleased(new InstantCommand(m_elevator::stopElevator, m_elevator)); // Stop lowering elevator when button is released
+        ButtonBinder.bindButton(m_driveController, OIConstants.kDownElevator)
+        .whenActive(new InstantCommand(m_elevator::downElevator, m_elevator)) // Lower elevator
+        .whenInactive(new InstantCommand(m_elevator::stopElevator, m_elevator)); // Stop lowering elevator when button is released
 
         /* ***** --- Intake Subsystem --- ***** */
-        new ButtonBinder(m_driveController, OIConstants.kIntake)
-        .whenPressed(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
-        .whenReleased(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
+        ButtonBinder.bindButton(m_driveController, OIConstants.kIntake)
+        .whenActive(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
+        .whenInactive(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
         
-        new ButtonBinder(m_driveController, OIConstants.kSemiAutoBallSeek) // Enable intake when we press down the SemiAutoBallSeek button
-        .whenPressed(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
-        .whenReleased(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
+        ButtonBinder.bindButton(m_driveController, OIConstants.kSemiAutoBallSeek) // Enable intake when we press down the SemiAutoBallSeek button
+        .whenActive(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
+        .whenInactive(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
         
         /* ***** --- BallMover Subsystem --- ***** */
-        new ButtonBinder(m_driveController, OIConstants.kBallMover)
-        .whenPressed(new InstantCommand(m_ballMover::start, m_ballMover)) // Start ball mover
-        .whenReleased(new InstantCommand(m_ballMover::stop, m_ballMover)); // Stop ball mover
+        ButtonBinder.bindButton(m_driveController, OIConstants.kBallMover)
+        .whenActive(new InstantCommand(m_ballMover::start, m_ballMover)) // Start ball mover
+        .whenInactive(new InstantCommand(m_ballMover::stop, m_ballMover)); // Stop ball mover
         
-        new ButtonBinder(m_driveController, OIConstants.kBallMoverReversed)
-        .whenPressed(new InstantCommand(m_ballMover::reverse, m_ballMover)) // Reverse ball mover
-        .whenReleased(new InstantCommand(m_ballMover::stop, m_ballMover)); // Stop ball mover
+        ButtonBinder.bindButton(m_driveController, OIConstants.kBallMoverReversed)
+        .whenActive(new InstantCommand(m_ballMover::reverse, m_ballMover)) // Reverse ball mover
+        .whenInactive(new InstantCommand(m_ballMover::stop, m_ballMover)); // Stop ball mover
         
   
         /* ***** --- Shooter Subsystem --- ***** */
-        new ButtonBinder(m_driveController, OIConstants.kShooter)
-        .whenPressed(new InstantCommand(m_shooter::start, m_shooter)) // Start shooter
-        .whenReleased(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
+        ButtonBinder.bindButton(m_driveController, OIConstants.kShooter)
+        .whenActive(new InstantCommand(m_shooter::start, m_shooter)) // Start shooter
+        .whenInactive(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
 
-        new ButtonBinder(m_driveController, OIConstants.kShooterReversed)
-        .whenPressed(new InstantCommand(m_shooter::reverse, m_shooter)) // Reverse shooter
-        .whenReleased(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
+        ButtonBinder.bindButton(m_driveController, OIConstants.kShooterReversed)
+        .whenActive(new InstantCommand(m_shooter::reverse, m_shooter)) // Reverse shooter
+        .whenInactive(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
 
-        new ButtonBinder(m_driveController, OIConstants.kSemiAutoBallTarget)
-        .whenPressed(new InstantCommand(m_shooter::start, m_shooter)) // Start shooter
-        .whenReleased(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
+        ButtonBinder.bindButton(m_driveController, OIConstants.kSemiAutoBallTarget)
+        .whenActive(new InstantCommand(m_shooter::start, m_shooter)) // Start shooter
+        .whenInactive(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
 
         /* Ball Aquire Lighting */
-        new ButtonBinder(m_driveController, OIConstants.kSemiAutoBallSeek)
-        .whenPressed(new InstantCommand(m_vision::lightsOn)) // Lights on
-        .whenReleased(new InstantCommand(m_vision::lightsOff)); // Lights off
+        ButtonBinder.bindButton(m_driveController, OIConstants.kSemiAutoBallSeek)
+        .whenActive(new InstantCommand(m_vision::lightsOn)) // Lights on
+        .whenInactive(new InstantCommand(m_vision::lightsOff)); // Lights off
       }
     }
 

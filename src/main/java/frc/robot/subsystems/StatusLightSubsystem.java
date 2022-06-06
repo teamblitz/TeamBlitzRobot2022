@@ -6,10 +6,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 
-public class StatusLightSubsystem extends SubsystemBase{
+public class StatusLightSubsystem extends SubsystemBase {
 
-    private AddressableLED m_led;
-    private AddressableLEDBuffer m_ledBuffer;
+    private final AddressableLED m_led;
+    private final AddressableLEDBuffer m_ledBuffer;
+
     // Constants
     private final long kNumberOfLEDs = 22;
     private final double kHalfWidth = ((double)kNumberOfLEDs - 1.0)/2.0;

@@ -12,14 +12,15 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.Constants.BallMoverSubsystemConstants;;
+import frc.robot.Constants.BallMoverSubsystemConstants;
 
+// TODO: Doesn't actualy use master and slave. instead set right as a master and have left follow it inverted.
 public class BallMoverSubsystem extends SubsystemBase {
 
   // Master
-  CANSparkMax m_ballMoverR = new CANSparkMax(BallMoverSubsystemConstants.kSparkMotorPortBallMoverR, MotorType.kBrushless);
+  private final CANSparkMax m_ballMoverR = new CANSparkMax(BallMoverSubsystemConstants.kSparkMotorPortBallMoverR, MotorType.kBrushless);
   // Slave
-  CANSparkMax m_ballMoverL = new CANSparkMax(BallMoverSubsystemConstants.kSparkMotorPortBallMoverL, MotorType.kBrushless);
+  private final CANSparkMax m_ballMoverL = new CANSparkMax(BallMoverSubsystemConstants.kSparkMotorPortBallMoverL, MotorType.kBrushless);
 
   public BallMoverSubsystem() {
     m_ballMoverR.restoreFactoryDefaults();
@@ -33,6 +34,7 @@ public class BallMoverSubsystem extends SubsystemBase {
     m_ballMoverR.setSmartCurrentLimit(15);
     m_ballMoverL.setSmartCurrentLimit(15);
   }
+
   // Enables BallMover Wheels
   public void start() {
     if (Robot.isSimulation()) {
@@ -58,10 +60,5 @@ public class BallMoverSubsystem extends SubsystemBase {
       }
     m_ballMoverR.set(0.0);
     m_ballMoverL.set(0.0);
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
   }
 }

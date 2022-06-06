@@ -47,17 +47,9 @@ public class RobotContainer {
   /* ***** --- Subsystems --- ***** */
   private DriveSubsystem m_robotDrive;
 
-  // private LimelightSubsystem m_limelight;
-
-  // private LimelightTargetSubsystem m_limelightTarget;
-
   private InternalBallDetectorSubsystem m_internalBallDetector; 
 
   private StatusLightSubsystem m_statusLightSubsystem;
-
-  // private BallAcquirePlanSubsystem m_ballAcquire; // Deprecated. Should be safe to remove.
-
-  // private BallShooterPlanSubsystem m_ballShoot; // Deprecated. Should be safe to remove.
 
   private VisionSubsystem m_vision;
 
@@ -73,7 +65,6 @@ public class RobotContainer {
   private XboxController m_driveController;
 
   // Controller Constants: 
-  // TODO - <<<>>> Move to Constants
   private final double kDriveLowSpeed = 0.75;
   private final double kDriveFullSpeed = 1.0;
 
@@ -81,19 +72,17 @@ public class RobotContainer {
   private final double kTurnFullSpeed = .60;
 
   // Drive SlewRateLimiter
-  SlewRateLimiter filter = new SlewRateLimiter(1.75);
+  private final SlewRateLimiter filter = new SlewRateLimiter(1.75);
   // Turn SlewRateLimiter
-  SlewRateLimiter filterRotation = new SlewRateLimiter(1.75);
+  private final SlewRateLimiter filterRotation = new SlewRateLimiter(1.75);
 
   public RobotContainer() {
-
     configureSubsystems();
     configureButtonBindings();
     setDefaultCommands();
     CameraServer.startAutomaticCapture();
     m_vision.lightsOff(); // Turn off our lights/
   }
-
 
   private void setDefaultCommands() {
     // Set defalut command for drive
@@ -117,17 +106,9 @@ public class RobotContainer {
 
     m_driveController = new XboxController(OIConstants.kDriveControllerPort);
 
-    // m_limelight = new LimelightSubsystem();
-
-    // m_limelightTarget = new LimelightTargetSubsystem();
-
     m_internalBallDetector = new InternalBallDetectorSubsystem();
 
     m_statusLightSubsystem = new StatusLightSubsystem();
-
-    // m_ballAcquire = new BallAcquirePlanSubsystem(m_limelight, m_PD, m_statusLightSubsystem);
-
-    // m_ballShoot = new BallShooterPlanSubsystem(m_limelightTarget, m_statusLightSubsystem);
 
     m_vision = new VisionSubsystem(m_statusLightSubsystem, m_PD);
     

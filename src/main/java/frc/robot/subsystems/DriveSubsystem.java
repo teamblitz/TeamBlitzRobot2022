@@ -19,18 +19,17 @@ import frc.robot.Constants;
 
 
 public class DriveSubsystem extends SubsystemBase {
-  private static final int 
-  leftDeviceID = Constants.DriveConstants.kLeftMasterPort, 
-  leftSlaveDeviceID = Constants.DriveConstants.kLeftSlavePort;  // Should be 6 master, 5 slave
+  private final int 
+    leftDeviceID = Constants.DriveConstants.kLeftMasterPort, 
+    leftSlaveDeviceID = Constants.DriveConstants.kLeftSlavePort,  // Should be 6 master, 5 slave
+    rightDeviceID = Constants.DriveConstants.kRightMasterPort, 
+    rightSlaveDeviceID = Constants.DriveConstants.kRightSlavePort;  // Should be 4 master, 3 slave
+  
+  private final CANSparkMax m_leftMotor, m_leftMotorSlave;
+  private final CANSparkMax m_rightMotor, m_rightMotorSlave;
+  private final VisionSubsystem m_vision;
 
-  private static final int 
-  rightDeviceID = Constants.DriveConstants.kRightMasterPort, 
-  rightSlaveDeviceID = Constants.DriveConstants.kRightSlavePort;  // Should be 4 master, 3 slave
-  private CANSparkMax m_leftMotor, m_leftMotorSlave;
-  private CANSparkMax m_rightMotor, m_rightMotorSlave;
-  private VisionSubsystem m_vision;
-
-  private DifferentialDrive m_drive;
+  private final DifferentialDrive m_drive;
  
   /**
    * Creates a new DriveSubsystem.
@@ -83,14 +82,7 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     m_drive.feed();
-    // if (getDefaultCommand() != null) {
-    // SmartDashboard.putString("Default Command", getDefaultCommand().getName());
-    // }
-    // if (getCurrentCommand() != null) {
-    // SmartDashboard.putString("Current Command", getCurrentCommand().getName());
-    // }
   }
-
 
   /**
    * Drives the robot using one of several control methods.
@@ -98,13 +90,6 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fwd the commanded forward movement
    * @param rot the commanded rotation
    */
-
-    public void doNothing(final double fwd, final double rot, final boolean semiAutonomousState) {
-    }
-
-    public void feed(){ //Feeds our moters
-      m_drive.feed();
-    }
 
     public void performDrive(final double fwd, final double rot, final boolean semiAutonomousState, final boolean targetingState) {
   
@@ -125,7 +110,6 @@ public class DriveSubsystem extends SubsystemBase {
       }
   }
 
-
   /**
    * Drives the robot using arcade controls.
    *
@@ -135,7 +119,6 @@ public class DriveSubsystem extends SubsystemBase {
  public void arcadeDrive(final double fwd, final double rot) {
     m_drive.arcadeDrive(fwd, rot);
   }
-
 
   /**
    * Controls the left and right sides of the drive directly with voltages.

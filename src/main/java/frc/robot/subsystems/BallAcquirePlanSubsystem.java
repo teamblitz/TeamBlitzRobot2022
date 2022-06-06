@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 @Deprecated(forRemoval=true)
+/**
+*    @deprecated Please use {@link VisionSubsystem} and it's inner classes instead.
+*    As it has up to date vision code.
+**/
 public class BallAcquirePlanSubsystem extends SubsystemBase {
-    /**
-    *    @deprecated Please use {@link VisionSubsystem} and it's inner classes instead.
-    *    As it has up to date vision code.
-    **/
 
     // all of the below can be tinkered with for tuning
     private double m_autoRotationScaleFactor = 0.3;

@@ -9,21 +9,19 @@ import frc.robot.subsystems.InternalBallDetectorSubsystem;
 
 
 public class SeekBall extends CommandBase {
-	private DriveSubsystem driveSubsystem;
-    private IntakeSubsystem intakeSubsystem;
-	private VisionSubsystem vision;
-	private InternalBallDetectorSubsystem internalBallDetectorSubsystem;
+
+	private final DriveSubsystem driveSubsystem;
+    private final IntakeSubsystem intakeSubsystem;
+	private final VisionSubsystem vision;
+	private final InternalBallDetectorSubsystem internalBallDetectorSubsystem;
     
+	private long startTime;
+    private long ballLastSeen;
+	private boolean	seenBall;
+	private boolean valid;
 
-	
-	long	startTime;
-    long    ballLastSeen;
-	boolean	seenBall;
-	boolean valid;
-	long notSeenTimeout;
-	long timeout;
-
-	
+	private final long notSeenTimeout;
+	private final long timeout;
 
 	public SeekBall(final DriveSubsystem driveSubsystem, final IntakeSubsystem intakeSubsystem, VisionSubsystem vision, InternalBallDetectorSubsystem internalBallDetectorSubsystem, long notSeenTimeout, long timeout){
 		this.driveSubsystem = driveSubsystem;
@@ -48,16 +46,11 @@ public class SeekBall extends CommandBase {
 		valid = false;
 		vision.lightsOn();
 		intakeSubsystem.start();
-		
 	}
-
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	public void execute() {
-		// final long Cur_Time = System.currentTimeMillis();
-
-		
 		if (vision.ballLimelight.getValid() > 0){ //if limelight sees the ball then this returns true
 			valid = true;
 
@@ -69,10 +62,7 @@ public class SeekBall extends CommandBase {
 			System.out.printf("No Ball, Ending in %d miliseconds %n", notSeenTimeout - (System.currentTimeMillis() - ballLastSeen)); //Prints how long until the command will end due to no ball being seen
 
 		}
-
-		
 	}
-
 
     // Called when isFinished returns ture
 	@Override
@@ -88,6 +78,4 @@ public class SeekBall extends CommandBase {
     public boolean isFinished() {
 		return internalBallDetectorSubsystem.ballSeen() || ((System.currentTimeMillis() - ballLastSeen) > notSeenTimeout) || (System.currentTimeMillis() - startTime > timeout);
 	}
-
-
 }

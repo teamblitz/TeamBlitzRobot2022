@@ -3,14 +3,14 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-// Condenses all Limelight and Plan Subsystems into one Subsystem to decrease verbosity
-// Should function exactly like the pre existing subsystes. 
-// Outside code using vision must be changed to VisionSubsystem.BallAcquire instead of BallAcquire subsystem. All internal methods and code reamain intact 
+/** Condenses all Limelight and Plan Subsystems into one Subsystem to decrease verbosity
+ * Should function exactly like the pre existing subsystes. 
+ * Outside code using vision must be changed to VisionSubsystem.BallAcquire instead of BallAcquire subsystem. All internal methods and code reamain intact 
+ */ 
 public class VisionSubsystem extends SubsystemBase{
     // The object that these variables referance shouldn't change therefor we use the final keyword.
     // Final doesn't stop the object from changing internaly, it just stops the referance variable from changing.
@@ -19,17 +19,14 @@ public class VisionSubsystem extends SubsystemBase{
     public final LimelightCamera targetLimelight;
     public final BallAcquirePlan ballAcquirePlan;
     public final BallShooterPlan ballShooterPlan;
-    public LimelightCamera getBallLimelight() {return ballLimelight;}
-    
 
-    private StatusLightSubsystem m_statusLights;
-    private PowerDistribution m_pd;
+    private final StatusLightSubsystem m_statusLights;
+    private final PowerDistribution m_pd;
 
     public VisionSubsystem(StatusLightSubsystem statusLights, PowerDistribution pd) {
 
         m_statusLights = statusLights;
         m_pd = pd;
-
 
         ballLimelight = new LimelightCamera("limelight", 0); // Idealy these values would come from constants
         targetLimelight = new LimelightCamera("limelight-target", 7);
@@ -38,6 +35,7 @@ public class VisionSubsystem extends SubsystemBase{
         ballAcquirePlan = new BallAcquirePlan(ballLimelight, m_statusLights);
         ballShooterPlan = new BallShooterPlan(targetLimelight, m_statusLights);
     }
+
     @Override
     public void periodic() {
         // Call the nested classes execute method for internal calculation
@@ -46,13 +44,15 @@ public class VisionSubsystem extends SubsystemBase{
         ballAcquirePlan.execute();
         ballShooterPlan.execute();
     }
-    public void statusLightsOff () {
+
+    public void statusLightsOff() {
         m_statusLights.clear();
     }
 
     public void lightsOn() {
         m_pd.setSwitchableChannel(true);
     }
+
     public void lightsOff() {
         m_pd.setSwitchableChannel(false);
     }
@@ -62,10 +62,10 @@ public class VisionSubsystem extends SubsystemBase{
     // Instantiated for each limelight
     public class LimelightCamera {
 
-        private NetworkTableEntry m_tve, m_txe, m_tye, m_tae;
-        private double m_tv, m_tx, m_ty, m_ta;
+        private final NetworkTableEntry m_tve, m_txe, m_tye, m_tae;
+        private final NetworkTable table; // This must be accesable outside of the constructor
         
-        private NetworkTable table; // This must be accesable outside of the constructor
+        private double m_tv, m_tx, m_ty, m_ta;
 
         // Private to ensure this is not instantiated elsewhere. Change this if moved
         private LimelightCamera(String networkTable, Number pipeline) {
@@ -80,12 +80,10 @@ public class VisionSubsystem extends SubsystemBase{
             m_tae = table.getEntry("ta");
         }
 
-
         public double getValid() { return(m_tv);}
         public double getX() { return(m_tx);}
         public double getY() { return(m_ty);}
         public double getArea() { return(m_ta);}
-
 
         // returns 0 for blue, 1 for red
         // TODO - <<<>>> Move this out of this class as it has nothing to do with limelight
@@ -105,7 +103,6 @@ public class VisionSubsystem extends SubsystemBase{
 
         }
 
-
         public void execute() { // We must call this manualy
             // read values periodically
             // We only need to do this if we are putting to shuffleboard. else we can do this in the getter methods.
@@ -120,25 +117,24 @@ public class VisionSubsystem extends SubsystemBase{
             SmartDashboard.putNumber("LimelightY", m_ty);
             SmartDashboard.putNumber("LimelightArea", m_ta);
         }
-
     }
     
     // Instantiated only once
     public class BallAcquirePlan {
         // all of the below can be tinkered with for tuning
         // Should idealy be in constants.
-        private double m_autoRotationScaleFactor = 0.3;
-        private double m_autoMoveScaleFactor = 0.9;
-        private double m_Kp = -0.1f; // Why are we using the float indicator here? this variable is a double.
-        private double m_min_command = 0.05f;
-        private double m_maxHeadingError = 10.0;
-        private double m_maxAreaFraction = 25.0;
-        private double m_maxDriveSpeedFraction = 0.45; // how fast we allow the autodrive code to dictate we want to go
+        private final double m_autoRotationScaleFactor = 0.3;
+        private final double m_autoMoveScaleFactor = 0.9;
+        private final double m_Kp = -0.1f; // Why are we using the float indicator here? this variable is a double.
+        private final double m_min_command = 0.05f;
+        private final double m_maxHeadingError = 10.0;
+        private final double m_maxAreaFraction = 25.0;
+        private final double m_maxDriveSpeedFraction = 0.45; // how fast we allow the autodrive code to dictate we want to go
 
-        private LimelightCamera m_limelight;
+        private final LimelightCamera m_limelight;
         // We do have this instantiated in the outer class. This will over-ride that instantation for within this class,
         // Keep this here for compatibilty reasons incase we move the class.
-        private StatusLightSubsystem m_statusLights; 
+        private final StatusLightSubsystem m_statusLights; 
 
         // these are the calculated movement directives for autodrive
         private double m_fwd = 0;
@@ -152,7 +148,6 @@ public class VisionSubsystem extends SubsystemBase{
 
         public double getFwd() {return(m_fwd);}
         public double getRot() {return(m_rot);}
-
 
         public void execute() { // We must call this ourselfs.
 
@@ -198,10 +193,7 @@ public class VisionSubsystem extends SubsystemBase{
                 
                 // we could post the debug info to the Shuffleboard if we wanted
                 SmartDashboard.putNumber("AutoMove", (m_autoRotationScaleFactor * driveSpeedFraction));
-                
-                
             }
-
         }
 
         public void statusLights() {
@@ -213,18 +205,18 @@ public class VisionSubsystem extends SubsystemBase{
     public class BallShooterPlan {
         // all of the below can be tinkered with for tuning
         // These should Idealy be in constants.
-        private double m_autoRotationScaleFactor = 0.3;
-        private double m_autoMoveScaleFactor = 0.9;
-        private double m_Kp = -0.1f; // Why are we using the float indicator here? this variable is a double.
-        private double m_min_command = 0.05f;
-        private double m_maxHeadingError = 10.0;
-        private double m_maxOffsetFraction = 2.0;
-        private double m_maxDriveSpeedFraction = 0.45; // how fast we allow the autodrive code to dictate we want to go
+        private final double m_autoRotationScaleFactor = 0.3;
+        private final double m_autoMoveScaleFactor = 0.9;
+        private final double m_Kp = -0.1f; // Why are we using the float indicator here? this variable is a double.
+        private final double m_min_command = 0.05f;
+        private final double m_maxHeadingError = 10.0;
+        private final double m_maxOffsetFraction = 2.0;
+        private final double m_maxDriveSpeedFraction = 0.45; // how fast we allow the autodrive code to dictate we want to go
 
-        private LimelightCamera m_limelight;
+        private final LimelightCamera m_limelight;
         // We do have this instantiated in the outer class. This will over-ride that instantation for within this class,
         // Keep this here for compatibilty reasons incase we move the class.
-        private StatusLightSubsystem m_statusLights; 
+        private final StatusLightSubsystem m_statusLights; 
 
         // these are the calculated movement directives for autodrive
         private double m_fwd = 0;
@@ -239,7 +231,6 @@ public class VisionSubsystem extends SubsystemBase{
         public double getFwd() {return(m_fwd);}
         public double getRot() {return(m_rot);}
         
-
         public void execute() { // We must call this manualy
             // TODO <<<>>> set correct pipeline number
             // No need to update this periodicly
@@ -289,14 +280,11 @@ public class VisionSubsystem extends SubsystemBase{
                 // we could post the debug info to the Shuffleboard if we wanted
                 SmartDashboard.putNumber("AutoTarget", (m_autoRotationScaleFactor * driveSpeedFraction * -1));
                 SmartDashboard.putNumber("GetFwd", (m_fwd));
-
             }
-
         }
 
         public void statusLights() {
             m_statusLights.setStatusLights(m_limelight.getX() / 25.0, 1.0 - Math.abs(m_limelight.getY())/20.0, 2);
         }
     }
-
 }

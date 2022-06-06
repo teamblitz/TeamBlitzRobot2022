@@ -1,32 +1,19 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.ElevatorConstants;
 
 
 
-public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable{
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        builder.setSmartDashboardType("Subsystem");
-        
-        builder.addStringProperty("Direction", () -> direction.toString(), null);
-        builder.addBooleanProperty("Ignore top limit", () -> ignoreTopLimit, null);
-        builder.addBooleanProperty("Ignore bottom limit", () -> ignoreBottomLimit, null);
-        super.initSendable(builder);
-    }
-
+public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable {
+    
     private final DigitalInput m_toplimitSwitch;
     private final DigitalInput m_bottomlimitSwitch;
     /* ***** ----- Talon IDs need to be configured with the Phoenix Tuner ----- ***** */
@@ -39,7 +26,7 @@ public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable{
 
      
     // Creates a SlewRateLimiter that limits the rate of change of the signal to 1.75 units per second
-    SlewRateLimiter filter = new SlewRateLimiter(1.75);
+    private final SlewRateLimiter filter = new SlewRateLimiter(1.75);
 
     // private final double kUpSpeed = -0.40;
     // private final double kDownSpeed = 0.40;
@@ -49,7 +36,7 @@ public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable{
     private void setIgnoreTopLimit(boolean value) {ignoreTopLimit = value;}
     private void setIgnoreBottomLimit(boolean value) {ignoreBottomLimit = value;}
 
-    private enum  Direction{ // Has 3 states
+    private enum Direction{ // Has 3 states
         UP, // Moving up
         DOWN, // Moving down
         NONE, // Not moving, will ramp down
@@ -94,16 +81,13 @@ public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable{
     }
 
     public void upElevator() {
-        System.out.println("upElevator Called");
-
         if (!m_toplimitSwitch.get()) {// If the top limit switch is not true
             direction = Direction.UP; // Tell the elevator to move up.
             System.out.println("Elevator up");
         }
     }
+    
     public void downElevator() {
-        System.out.println("downElevator Called");
-
         if (!m_bottomlimitSwitch.get() || ignoreTopLimit) { // If the bottem limit switch is not true
             direction = Direction.DOWN; // Tell the elevator to move down.
             System.out.println("Elevator down");
@@ -152,7 +136,6 @@ public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable{
                 m_master.set(filter.calculate(0.0)); // Stop the moters without ramping
                 break;
         }
-        
     }
 
     @Override

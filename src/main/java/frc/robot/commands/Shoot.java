@@ -6,15 +6,14 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 
 
-public class Shoot extends CommandBase
-{
-	ShooterSubsystem shooterSubsystem;
-    BallMoverSubsystem ballMoverSubsystem;
-	long	duration;
-    long    warmupPeriod;
-	long	startTime;
-
+public class Shoot extends CommandBase {
 	
+	private final ShooterSubsystem shooterSubsystem;
+    private final BallMoverSubsystem ballMoverSubsystem;
+	private final long duration;
+    private final long warmupPeriod;
+
+	private long startTime;
 
 	public Shoot(final ShooterSubsystem shooterSubsystem, final BallMoverSubsystem ballMoverSubsystem, final long warmupPeriod, final long duration){
 		this.shooterSubsystem = shooterSubsystem;
@@ -35,20 +34,15 @@ public class Shoot extends CommandBase
         shooterSubsystem.start();
 	}
 
-
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	public void execute() {
-		// 
-		System.out.println("Shoot Main Loop");
-
 		final long Cur_Time = System.currentTimeMillis();
         if (Cur_Time - startTime > warmupPeriod) {
             ballMoverSubsystem.start();
         }
-		
+	
 	}
-
 
     // Called when isFinished returns ture
 	@Override
@@ -59,11 +53,8 @@ public class Shoot extends CommandBase
     }
 
 	// Make this return true when this Command no longer needs to run execute()
-	
 	@Override
     public boolean isFinished() {
 		return System.currentTimeMillis() - startTime > (duration);
 	}
-
-
 }

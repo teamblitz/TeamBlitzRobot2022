@@ -8,8 +8,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Constants.ShooterConstants;
 
-public class ShooterSubsystem extends SubsystemBase implements AutoCloseable{
-  CANSparkMax m_shooter = new CANSparkMax(ShooterConstants.kSparkMotorPortShooter, MotorType.kBrushless);
+public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
+  
+  private final CANSparkMax m_shooter = new CANSparkMax(ShooterConstants.kSparkMotorPortShooter, MotorType.kBrushless);
 
   public ShooterSubsystem() {
 
@@ -21,8 +22,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable{
     // 60A Limit - Motor failure at approximately 5.5s
     // 80A Limit* - Motor failure at approximately 2.0s
     // m_shooter.setSmartCurrentLimit(15);  // Do not uncomment this unless you modify the speed below
-
   }
+
   // Enables Shooter Wheel
   public void start() {
     if (Robot.isSimulation()) {
@@ -39,19 +40,12 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable{
     m_shooter.set(ShooterConstants.kReverseSpeed);
   }
 
-    
-
   // Disable Shooter Wheels
   public void stop() {
     if (Robot.isSimulation()) {
       System.out.println("Shooter Stop");
     }
     m_shooter.set(0.0);
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
   }
 
   CANSparkMax getShooter() { // Needed for unit testing

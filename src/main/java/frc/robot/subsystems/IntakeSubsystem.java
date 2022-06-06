@@ -20,7 +20,7 @@ import frc.robot.Constants.IntakeSubsystemConstants;;
   */
 public class IntakeSubsystem extends SubsystemBase implements AutoCloseable{
   
-  CANSparkMax m_intakeMotor;
+  private final CANSparkMax m_intakeMotor;
 
   public IntakeSubsystem(CANSparkMax intakeMotor) {
     m_intakeMotor = intakeMotor;

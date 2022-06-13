@@ -76,4 +76,7 @@ public final class Constants {
         public static final float kSpeed = 0.45f;
         public static final float kReverseSpeed = -0.3f;
     }
+    public static class TelementryConstants {
+        public static final String kSubsystemTab = "Subsystems";
+    }
 }

@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -36,12 +37,8 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable{
 
     m_intakeMotor.setSmartCurrentLimit(15);
     
-    // m_intakeArm.enableSoftLimit(SoftLimitDirection.kForward, true);
-    // m_intakeArm.enableSoftLimit(SoftLimitDirection.kReverse, true);
-
-    // m_intakeArm.setSoftLimit(SoftLimitDirection.kReverse, 5);
-    // m_intakeArm.setSoftLimit(SoftLimitDirection.kForward, 5);
-
+    // Start automatic updating of this motors speed
+    Shuffleboard.getTab("Motors").addNumber("Intake", m_intakeMotor::get);
   }
   public IntakeSubsystem() {
     this(

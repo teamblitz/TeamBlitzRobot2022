@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -86,8 +87,9 @@ public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable {
         // if Master is ID 8, use counterclockwise
         // If Master is 7 use Clockwise
         m_slave.setInverted(TalonFXInvertType.Clockwise); // If they still move the same way, try clockwise  
-        
-        ShuffleboardLayout layout = Shuffleboard.getTab(TelementryConstants.kSubsystemTab).getLayout("Elevator");
+
+        ShuffleboardLayout layout = Shuffleboard.getTab(TelementryConstants.kSubsystemTab).getLayout("Elevator", BuiltInLayouts.kGrid);
+        layout.addNumber("Speed", m_master::get);
         ignoreTopLimit = layout.add("Ignore Top Limit", false).withWidget(BuiltInWidgets.kToggleButton).getEntry();
         ignoreBottomLimit = layout.add("Ignore Bottom Limit", false).withWidget(BuiltInWidgets.kToggleButton).getEntry();
     }

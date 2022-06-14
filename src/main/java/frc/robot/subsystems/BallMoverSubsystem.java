@@ -10,9 +10,13 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Constants.BallMoverSubsystemConstants;
+import frc.robot.Constants.TelementryConstants;
 
 // TODO: Doesn't actualy use master and slave. instead set right as a master and have left follow it inverted.
 public class BallMoverSubsystem extends SubsystemBase {
@@ -33,6 +37,10 @@ public class BallMoverSubsystem extends SubsystemBase {
     // 80A Limit* - Motor failure at approximately 2.0s
     m_ballMoverR.setSmartCurrentLimit(15);
     m_ballMoverL.setSmartCurrentLimit(15);
+
+    ShuffleboardLayout layout = Shuffleboard.getTab(TelementryConstants.kSubsystemTab).getLayout("Ball Mover", BuiltInLayouts.kGrid);
+    layout.addNumber("Left", m_ballMoverL::get);
+    layout.addNumber("Right", m_ballMoverR::get);
   }
 
   // Enables BallMover Wheels

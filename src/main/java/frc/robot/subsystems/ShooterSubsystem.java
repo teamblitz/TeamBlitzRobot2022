@@ -4,10 +4,12 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.TelementryConstants;
 
 public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   
@@ -25,7 +27,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     // m_shooter.setSmartCurrentLimit(15);  // Do not uncomment this unless you modify the speed below
 
     // Start automatic updating of this motors speed
-    Shuffleboard.getTab("Motors").addNumber("Shooter", m_shooter::get);
+    Shuffleboard.getTab(TelementryConstants.kSubsystemTab).addNumber("Shooter", m_shooter::get);
   }
   // Enables Shooter Wheel
   public void start() {

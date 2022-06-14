@@ -14,7 +14,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.Constants.IntakeSubsystemConstants;;
+import frc.robot.Constants.IntakeSubsystemConstants;
+import frc.robot.Constants.TelementryConstants;;
 
 /**
  * Add your docs here.
@@ -38,7 +39,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable{
     m_intakeMotor.setSmartCurrentLimit(15);
     
     // Start automatic updating of this motors speed
-    Shuffleboard.getTab("Motors").addNumber("Intake", m_intakeMotor::get);
+    Shuffleboard.getTab(TelementryConstants.kSubsystemTab).addNumber("Intake", m_intakeMotor::get);
   }
   public IntakeSubsystem() {
     this(

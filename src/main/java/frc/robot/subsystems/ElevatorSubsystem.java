@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.TelementryConstants;
+import frc.robot.StatusManager;
 import frc.robot.Constants.ElevatorConstants;
 
 
@@ -39,6 +40,8 @@ import frc.robot.Constants.ElevatorConstants;
  * Limit switches can be ignored by setting the "ignore ___ limit" values on shuffleboard
  */
 public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable {
+
+    StatusManager status = StatusManager.getInstance();
     
     private final DigitalInput m_toplimitSwitch;
     private final DigitalInput m_bottomlimitSwitch;
@@ -75,10 +78,14 @@ public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable {
         // Configure factory defaults
         m_master.configFactoryDefault();
         m_slave.configFactoryDefault();
+        status.logCTREError(m_master);
+        status.logCTREError(m_slave);
 
         // Set to break
-        m_master.setNeutralMode(NeutralMode.Brake); // This might be changed to brake
-        m_slave.setNeutralMode(NeutralMode.Brake); // Same with this one
+        m_master.setNeutralMode(NeutralMode.Brake); 
+        m_slave.setNeutralMode(NeutralMode.Brake); 
+        status.logCTREError(m_master);
+        status.logCTREError(m_slave);
 
         // Make slave follow master
         m_slave.follow(m_master);
@@ -157,7 +164,7 @@ public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable {
             applliedSpeed = filter.calculate(0); // Calculate the speed that should be applied
         }
         m_master.set(applliedSpeed);
-        
+        status.logCTREError(m_master);
     }
 
     private boolean atTop() {

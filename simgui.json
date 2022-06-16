@@ -1,4 +1,13 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "SPARK MAX [12]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -24,6 +33,20 @@
           "visible": true
         }
       }
+    }
+  },
+  "NetworkTables": {
+    "Shuffleboard": {
+      "Subsystems": {
+        "open": true
+      },
+      "open": true
+    },
+    "dashboard": {
+      "motors": {
+        "open": true
+      },
+      "open": true
     }
   }
 }

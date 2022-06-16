@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.StatusManager;
 import frc.robot.Constants.BallMoverSubsystemConstants;
 import frc.robot.Constants.TelementryConstants;
 
@@ -25,6 +26,8 @@ public class BallMoverSubsystem extends SubsystemBase {
   private final CANSparkMax m_ballMoverR = new CANSparkMax(BallMoverSubsystemConstants.kSparkMotorPortBallMoverR, MotorType.kBrushless);
   // Slave
   private final CANSparkMax m_ballMoverL = new CANSparkMax(BallMoverSubsystemConstants.kSparkMotorPortBallMoverL, MotorType.kBrushless);
+
+  private final StatusManager status = StatusManager.getInstance();
 
   public BallMoverSubsystem() {
     m_ballMoverR.restoreFactoryDefaults();
@@ -41,6 +44,9 @@ public class BallMoverSubsystem extends SubsystemBase {
     ShuffleboardLayout layout = Shuffleboard.getTab(TelementryConstants.kSubsystemTab).getLayout("Ball Mover", BuiltInLayouts.kGrid);
     layout.addNumber("Left", m_ballMoverL::get);
     layout.addNumber("Right", m_ballMoverR::get);
+
+    status.addSpark(m_ballMoverL);
+    status.addSpark(m_ballMoverR);
   }
 
   // Enables BallMover Wheels
@@ -49,7 +55,10 @@ public class BallMoverSubsystem extends SubsystemBase {
       System.out.println("Ball Mover Start");
       }
     m_ballMoverR.set(0.45);
+    status.logRevError(m_ballMoverR);
     m_ballMoverL.set(-0.45);
+    status.logRevError(m_ballMoverL);
+
   }
 
   // This could reverse BallMover Wheels
@@ -58,7 +67,10 @@ public class BallMoverSubsystem extends SubsystemBase {
       System.out.println("Ball Mover Reverse");
       }
     m_ballMoverR.set(-0.45);
+    status.logRevError(m_ballMoverR);
     m_ballMoverL.set(0.45);
+    status.logRevError(m_ballMoverL);
+
    }
 
   // Disable BallMover Wheels
@@ -67,6 +79,9 @@ public class BallMoverSubsystem extends SubsystemBase {
       System.out.println("Ball Mover Stop");
       }
     m_ballMoverR.set(0.0);
+    status.logRevError(m_ballMoverR);
     m_ballMoverL.set(0.0);
+    status.logRevError(m_ballMoverL);
+
   }
 }

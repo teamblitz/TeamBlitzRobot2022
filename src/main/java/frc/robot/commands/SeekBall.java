@@ -56,7 +56,6 @@ public class SeekBall extends CommandBase {
 
 			ballLastSeen = System.currentTimeMillis(); //updates ball last seen. as we are seeing it now.
 			driveSubsystem.performDrive(0, 0, true, false);
-			// System.out.println("SeekBall Valid");
 		}
 		else{
 			System.out.printf("No Ball, Ending in %d miliseconds %n", notSeenTimeout - (System.currentTimeMillis() - ballLastSeen)); //Prints how long until the command will end due to no ball being seen

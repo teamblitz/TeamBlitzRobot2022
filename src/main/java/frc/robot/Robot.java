@@ -7,18 +7,25 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  private RobotContainer m_robotContainer;  // Leave this anyways. 
+  private RobotContainer m_robotContainer;
+  private StatusManager statusManager;
 
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+
+    DataLogManager.log("Robot Start up at: " + Timer.getFPGATimestamp());
+    statusManager = StatusManager.getInstance();
+    addPeriodic(statusManager, .2, .01);
   }
 
   @Override

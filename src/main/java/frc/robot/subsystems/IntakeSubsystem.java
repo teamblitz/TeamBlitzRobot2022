@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.StatusManager;
 import frc.robot.Constants.IntakeSubsystemConstants;
 import frc.robot.Constants.TelementryConstants;;
 
@@ -24,9 +25,12 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable{
   
   private final CANSparkMax m_intakeMotor;
 
+  private StatusManager status = StatusManager.getInstance();
+
   public IntakeSubsystem(CANSparkMax intakeMotor) {
     m_intakeMotor = intakeMotor;
     m_intakeMotor.restoreFactoryDefaults();
+    status.logRevError(m_intakeMotor);
 
     // ISSUE: This was set under 20 amps due to locked rotor testing with sparkmaxes
     // Time to Failure Summary
@@ -37,9 +41,12 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable{
     // Advice: Keep at a 20A limit.
 
     m_intakeMotor.setSmartCurrentLimit(15);
+    status.logRevError(m_intakeMotor);
     
     // Start automatic updating of this motors speed
     Shuffleboard.getTab(TelementryConstants.kSubsystemTab).addNumber("Intake", m_intakeMotor::get);
+
+    status.addSpark(m_intakeMotor);
   }
   public IntakeSubsystem() {
     this(
@@ -54,6 +61,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable{
       System.out.println("Intake Start");
     }
     m_intakeMotor.set(1.0);
+    status.logRevError(m_intakeMotor);
   }
 
   public void stop() {
@@ -61,6 +69,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable{
       System.out.println("Intake Stop");
     }
     m_intakeMotor.stopMotor();
+    status.logRevError(m_intakeMotor);
   }
 
   public void close() {

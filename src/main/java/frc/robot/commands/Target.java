@@ -44,7 +44,6 @@ public class Target extends CommandBase {
 			valid = true;
 			targetLastSeen = System.currentTimeMillis(); //updates ball last seen. as we are seeing it now.
 			driveSubsystem.performDrive(0, 0, false, true);
-			// System.out.println("Target Valid");
 		}
 		else{
 			System.out.printf("No Target, is the limelight obstructed? Ending in %d miliseconds %n", timeout - (System.currentTimeMillis() - targetLastSeen)); //Prints how long until the command will end due to no target

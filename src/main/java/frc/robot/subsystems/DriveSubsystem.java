@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.StatusManager;
 
 
 public class DriveSubsystem extends SubsystemBase {
@@ -31,6 +32,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final DifferentialDrive m_drive;
  
+  private final StatusManager status = StatusManager.getInstance();
+
   /**
    * Creates a new DriveSubsystem.
    */
@@ -65,20 +68,27 @@ public class DriveSubsystem extends SubsystemBase {
   m_leftMotorSlave.restoreFactoryDefaults();
   m_rightMotorSlave.restoreFactoryDefaults();
 
+  
   // left side
   // setup slave relationship on motors on same side
   m_leftMotor.follow(ExternalFollower.kFollowerDisabled, 0);
   // Enable for dual motors
   m_leftMotorSlave.follow(ExternalFollower.kFollowerSparkMax, leftDeviceID);
- 
+  
   // right side
   m_rightMotor.follow(ExternalFollower.kFollowerDisabled, 0);
   // Enable for dual motors
   m_rightMotorSlave.follow(ExternalFollower.kFollowerSparkMax, rightDeviceID);
-
+  
   m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor); 
-  }
-    
+  
+  
+  status.addSpark(m_leftMotor);
+  status.addSpark(m_rightMotor);
+  status.addSpark(m_leftMotorSlave);
+  status.addSpark(m_rightMotorSlave);
+}
+
   @Override
   public void periodic() {
     m_drive.feed();

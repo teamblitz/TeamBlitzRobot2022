@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -15,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
+  private Command m_autonomousCommands;
   private RobotContainer m_robotContainer;
   private StatusManager statusManager;
 
@@ -23,7 +22,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_robotContainer = new RobotContainer();
 
-    DataLogManager.log("Robot Start up at: " + Timer.getFPGATimestamp());
+    System.out.println("Robot Start up at: " + Timer.getFPGATimestamp());
     statusManager = StatusManager.getInstance();
     addPeriodic(statusManager, .2, .01);
   }
@@ -42,11 +41,11 @@ public class Robot extends TimedRobot {
   // Called at the start of autonomous.
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommands = m_robotContainer.getAutonomousCommands();
 
     // schedule autonomous commands
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+    if (m_autonomousCommands != null) {
+      m_autonomousCommands.schedule();
     }
   }
 
@@ -58,8 +57,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousExit() {
     // Cancel autonomous commands
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    if (m_autonomousCommands != null) {
+      m_autonomousCommands.cancel();
     }
   }
 

@@ -186,7 +186,7 @@ public class RobotContainer {
       }
     }
 
-    public Command getAutonomousCommand() { // Autonomous code goes here
+    public Command getAutonomousCommands() { // Autonomous code goes here
       return new SequentialCommandGroup(
         new Shoot(m_shooter, m_ballMover, 1000, 3000), //Warmup time, Total duration
         new SeekBall(m_robotDrive, m_intakeRoller, m_vision, m_internalBallDetector, 500, 3000), //Time with no ball seen before ending, Total duration

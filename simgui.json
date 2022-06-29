@@ -37,14 +37,16 @@
   },
   "NetworkTables": {
     "Shuffleboard": {
-      "Subsystems": {
-        "open": true
-      },
+      "open": true
+    },
+    "SmartDashboard": {
       "open": true
     },
     "dashboard": {
       "motors": {
-        "open": true
+        "11": {
+          "open": true
+        }
       },
       "open": true
     }

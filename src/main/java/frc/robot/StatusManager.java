@@ -86,7 +86,6 @@ public class StatusManager implements Runnable {
         sparkMotors.add(motor);
         table.getSubTable("/"+motor.getDeviceId()).getEntry("type").setString("Spark");
     }
-    PowerDistribution m_pd = new PowerDistribution(1, ModuleType.kRev);
 
     NetworkTable table = NetworkTableInstance.getDefault().getTable("/dashboard/motors");
     

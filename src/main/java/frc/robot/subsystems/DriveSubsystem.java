@@ -75,10 +75,13 @@ public class DriveSubsystem extends SubsystemBase {
   // Enable for dual motors
   m_leftMotorSlave.follow(ExternalFollower.kFollowerSparkMax, leftDeviceID);
   
+  m_leftMotor.setInverted(true);
   // right side
   m_rightMotor.follow(ExternalFollower.kFollowerDisabled, 0);
   // Enable for dual motors
   m_rightMotorSlave.follow(ExternalFollower.kFollowerSparkMax, rightDeviceID);
+
+  
   
   m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor); 
   
@@ -106,16 +109,16 @@ public class DriveSubsystem extends SubsystemBase {
       // decide who is in control and execute their drive operations
       if(semiAutonomousState)
       {
-        arcadeDrive(m_vision.ballAcquirePlan.getRot(), m_vision.ballAcquirePlan.getFwd()); // Again, our arcade drive is reversed for some reason, so we reverse this.
+        arcadeDrive(m_vision.ballAcquirePlan.getFwd(), m_vision.ballAcquirePlan.getRot(), false); // Again, our arcade drive is reversed for some reason, so we reverse this.
         m_vision.ballAcquirePlan.statusLights();
       }
       else if (targetingState){
-        arcadeDrive(m_vision.ballShooterPlan.getRot(), m_vision.ballShooterPlan.getFwd());
+        arcadeDrive(m_vision.ballShooterPlan.getFwd(), m_vision.ballShooterPlan.getRot(), false);
         m_vision.ballShooterPlan.statusLights();
       }
       else
       {
-        arcadeDrive(fwd, rot);
+        arcadeDrive(fwd, rot, true);
         m_vision.statusLightsOff(); // Turn off status lights
       }
   }
@@ -126,8 +129,8 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fwd the commanded forward movement
    * @param rot the commanded rotation
    */
- public void arcadeDrive(final double fwd, final double rot) {
-    m_drive.arcadeDrive(fwd, rot);
+ public void arcadeDrive(final double fwd, final double rot, boolean squareInputs) {
+    m_drive.arcadeDrive(fwd, rot, squareInputs);
   }
 
   /**

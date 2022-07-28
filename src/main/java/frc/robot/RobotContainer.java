@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,6 +24,7 @@ import frc.robot.commands.DriveStraightWithDelay;
 import frc.robot.commands.SeekBall;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.Target;
+import frc.robot.commands.tests.DriveTest;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -82,6 +84,8 @@ public class RobotContainer {
     setDefaultCommands();
     CameraServer.startAutomaticCapture();
     m_vision.lightsOff(); // Turn off our lights/
+
+    SmartDashboard.putData("Drive test", new DriveTest(m_robotDrive));
   }
 
   private void setDefaultCommands() {
@@ -90,10 +94,10 @@ public class RobotContainer {
       new RunCommand(() -> m_robotDrive
       // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
       .performDrive(
-        filterRotation.calculate(
-          -m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdrive.value) < 0.5 ? kTurnLowSpeed : kTurnFullSpeed)),
         filter.calculate(
-          m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdrive.value) < 0.5 ? kDriveLowSpeed : kDriveFullSpeed)), 
+          -m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdrive.value) < 0.5 ? kDriveLowSpeed : kDriveFullSpeed)), 
+        filterRotation.calculate(
+          m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdrive.value) < 0.5 ? kTurnLowSpeed : kTurnFullSpeed)),
         m_driveController.getRawButton(OIConstants.kSemiAutoBallSeek.value), //Turns on semiautonomous ball acquire
         m_driveController.getRawAxis(OIConstants.kSemiAutoBallTarget.value) > 0.5), //Turns on semiautonomous targeter on Left Trigger
       m_robotDrive).withName("DriveDefalutCommand"));
@@ -152,9 +156,9 @@ public class RobotContainer {
         .whenActive(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
         .whenInactive(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
         
-        ButtonBinder.bindButton(m_driveController, OIConstants.kSemiAutoBallSeek) // Enable intake when we press down the SemiAutoBallSeek button
-        .whenActive(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
-        .whenInactive(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
+        // ButtonBinder.bindButton(m_driveController, OIConstants.kSemiAutoBallSeek) // Enable intake when we press down the SemiAutoBallSeek button
+        // .whenActive(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
+        // .whenInactive(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
         
         /* ***** --- BallMover Subsystem --- ***** */
         ButtonBinder.bindButton(m_driveController, OIConstants.kBallMover)

@@ -100,8 +100,8 @@ public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable {
         ignoreTopLimit = layout.add("Ignore Top Limit", false).withWidget(BuiltInWidgets.kToggleButton).getEntry();
         ignoreBottomLimit = layout.add("Ignore Bottom Limit", false).withWidget(BuiltInWidgets.kToggleButton).getEntry();
         
-        status.addCTRE(m_master);
-        status.addCTRE(m_slave);
+        status.addMotor(m_master, "ELV_M");
+        status.addMotor(m_slave, "ELV_S");
     }
 
     // No args constructor for standerd initation of the class

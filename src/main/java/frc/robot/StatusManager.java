@@ -14,8 +14,6 @@ import com.revrobotics.REVLibError;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 /**
@@ -52,7 +50,7 @@ public class StatusManager implements Runnable {
         logRevError(motor.getLastError(), motor.getDeviceId());
     }
 
-    public synchronized void logRevError(REVLibError error, int id) {
+    public void logRevError(REVLibError error, int id) {
         canMotorStatus.put(id, error.toString());
         if (error == REVLibError.kOk) return;
         if (lastError.get(id) == null 
@@ -67,7 +65,7 @@ public class StatusManager implements Runnable {
         logCTREError(motor.getLastError(), motor.getDeviceID());
     }
 
-    public synchronized void logCTREError(ErrorCode errorCode, int deviceId) {
+    public void logCTREError(ErrorCode errorCode, int deviceId) {
         canMotorStatus.put(deviceId, errorCode.toString());
         if (errorCode == ErrorCode.OK) return;
         if (lastError.get(deviceId) == null 

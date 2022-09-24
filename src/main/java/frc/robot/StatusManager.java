@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * Keeps track of motor status and convays errors to the dash board
+ * Keeps track of motor status and conveys errors to the dashboard
  */
 public class StatusManager implements Runnable {
     private static StatusManager instance;
@@ -53,7 +53,7 @@ public class StatusManager implements Runnable {
     }
 
     /**
-     * Should Run Periodicaly 5 times a second
+     * Should Run Periodically 5 times a second
      */
     @Override
     public void run() {
@@ -68,7 +68,7 @@ public class StatusManager implements Runnable {
         canMotorStatus.put(id, error.toString());
         if (error == REVLibError.kOk) return;
         if (lastError.get(id) == null 
-            || lastError.get(id) + errorCooldownMs < System.currentTimeMillis() 
+            || lastError.get(id) + errorCooldownMs < System.currentTimeMillis()
         ) {
             System.out.println("Error: " + error.toString() + " on Spark + " + id);
             lastError.put(id, System.currentTimeMillis());
@@ -83,7 +83,7 @@ public class StatusManager implements Runnable {
         canMotorStatus.put(deviceId, errorCode.toString());
         if (errorCode == ErrorCode.OK) return;
         if (lastError.get(deviceId) == null 
-            || lastError.get(deviceId) + errorCooldownMs < System.currentTimeMillis() 
+            || lastError.get(deviceId) + errorCooldownMs < System.currentTimeMillis()
         ) {
             System.out.println("Error: " + errorCode.toString() + " on CTRE Motor + " + deviceId);
             lastError.put(deviceId, System.currentTimeMillis());

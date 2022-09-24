@@ -17,24 +17,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
-<<<<<<< HEAD
-import com.ctre.phoenix.ErrorCode;
-import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.REVLibError;
-
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
-
-=======
->>>>>>> status-manager
 /**
  * Keeps track of motor status and conveys errors to the dashboard
  */
@@ -49,8 +32,10 @@ public class StatusManager implements Runnable {
     private final Set<MotorController> motors = new HashSet<>();
 
     private final Map<MotorController, NetworkTableEntry> motorStatus = new HashMap<>();
+    private final ShuffleboardTab tab = Shuffleboard.getTab("Motors");
 
-    private StatusManager() {}
+    private StatusManager() {
+    }
 
     public static StatusManager getInstance() {
         if (instance == null) {
@@ -75,7 +60,7 @@ public class StatusManager implements Runnable {
         canMotorStatus.put(id, error.toString());
         if (error == REVLibError.kOk) return;
         if (lastError.get(id) == null
-            || lastError.get(id) + errorCooldownMs < System.currentTimeMillis()
+                || lastError.get(id) + errorCooldownMs < System.currentTimeMillis()
         ) {
             System.out.println("Error: " + error.toString() + " on Spark + " + id);
             lastError.put(id, System.currentTimeMillis());
@@ -90,16 +75,14 @@ public class StatusManager implements Runnable {
         canMotorStatus.put(deviceId, errorCode.toString());
         if (errorCode == ErrorCode.OK) return;
         if (lastError.get(deviceId) == null
-            || lastError.get(deviceId) + errorCooldownMs < System.currentTimeMillis()
+                || lastError.get(deviceId) + errorCooldownMs < System.currentTimeMillis()
         ) {
             System.out.println("Error: " + errorCode.toString() + " on CTRE Motor + " + deviceId);
             lastError.put(deviceId, System.currentTimeMillis());
         }
     }
 
-    private final ShuffleboardTab tab = Shuffleboard.getTab("Motors");
-
-    public void addMotor(MotorController motor, String name){
+    public void addMotor(MotorController motor, String name) {
         motors.add(motor);
         motorStatus.put(motor, tab.add(name + " status", "none").withWidget(BuiltInWidgets.kBooleanBox).getEntry());
 
@@ -115,7 +98,7 @@ public class StatusManager implements Runnable {
                 } else {
                     motorStatus.get(motor).setBoolean(true);
                 }
-                SmartDashboard.putString(sparkMax.getDeviceId() +"", sparkMax.getFirmwareString());
+                SmartDashboard.putString(sparkMax.getDeviceId() + "", sparkMax.getFirmwareString());
                 /* Eventually we could check/log motor faults here. */
 
             } else if (motor instanceof BaseMotorController) { // If the motor is a CTRE motor

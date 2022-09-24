@@ -84,7 +84,7 @@ public class StatusManager implements Runnable {
 
     public void addMotor(MotorController motor, String name) {
         motors.add(motor);
-        motorStatus.put(motor, tab.add(name + " status", "none").withWidget(BuiltInWidgets.kBooleanBox).getEntry());
+        motorStatus.put(motor, tab.add(name + " status", false).withWidget(BuiltInWidgets.kBooleanBox).getEntry());
 
     }
 

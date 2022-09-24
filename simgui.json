@@ -30,7 +30,8 @@
       "/LiveWindow/Ungrouped/Talon FX [7]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [8]": "Motor Controller",
       "/LiveWindow/VisionSubsystem": "Subsystem",
-      "/Shuffleboard/Subsystems/ElevatorSubsystem": "Subsystem"
+      "/Shuffleboard/Subsystems/ElevatorSubsystem": "Subsystem",
+      "/SmartDashboard/Drive test": "Command"
     },
     "windows": {
       "/FMSInfo": {

@@ -5,6 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e4b29837-2749-42d1-8ee6-86e56af39337" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simgui.json" beforeDir="false" afterPath="$PROJECT_DIR$/simgui.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/StatusManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/StatusManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -31,7 +33,7 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;advanced.settings&quot;
   }
 }</component>
-  <component name="RunManager" selected="Gradle.TeamBlitzRobot2022 [build]">
+  <component name="RunManager" selected="Gradle.TeamBlitzRobot2022 [simulateJava]">
     <configuration name="TeamBlitzRobot2022 [build]" type="GradleRunConfiguration" factoryName="Gradle" nameIsGenerated="true">
       <ExternalSystemSettings>
         <option name="executionName" />

@@ -1,11 +1,28 @@
 package frc.robot;
 
 
+import com.ctre.phoenix.ErrorCode;
+import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVLibError;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+<<<<<<< HEAD
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.revrobotics.CANSparkMax;
@@ -16,8 +33,10 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
+=======
+>>>>>>> status-manager
 /**
- * Keeps track of motor status and convays errors to the dash board
+ * Keeps track of motor status and conveys errors to the dashboard
  */
 public class StatusManager implements Runnable {
     private static StatusManager instance;
@@ -26,8 +45,10 @@ public class StatusManager implements Runnable {
 
     private final Map<Integer, String> canMotorStatus = new HashMap<>();
     private final Map<Integer, Long> lastError = new HashMap<>();
-    private final Set<BaseMotorController> ctreMotors = new HashSet<>();
-    private final Set<CANSparkMax> sparkMotors = new HashSet<>();
+
+    private final Set<MotorController> motors = new HashSet<>();
+
+    private final Map<MotorController, NetworkTableEntry> motorStatus = new HashMap<>();
 
     private StatusManager() {}
 
@@ -39,11 +60,11 @@ public class StatusManager implements Runnable {
     }
 
     /**
-     * Should Run Periodicaly 5 times a second
+     * Should Run Periodically 5 times a second
      */
     @Override
     public void run() {
-        updateNT();
+        checkMotors();
     }
 
     public void logRevError(CANSparkMax motor) {
@@ -53,14 +74,14 @@ public class StatusManager implements Runnable {
     public void logRevError(REVLibError error, int id) {
         canMotorStatus.put(id, error.toString());
         if (error == REVLibError.kOk) return;
-        if (lastError.get(id) == null 
-            || lastError.get(id) + errorCooldownMs < System.currentTimeMillis() 
+        if (lastError.get(id) == null
+            || lastError.get(id) + errorCooldownMs < System.currentTimeMillis()
         ) {
             System.out.println("Error: " + error.toString() + " on Spark + " + id);
             lastError.put(id, System.currentTimeMillis());
         }
     }
-    
+
     public void logCTREError(BaseMotorController motor) {
         logCTREError(motor.getLastError(), motor.getDeviceID());
     }
@@ -68,54 +89,48 @@ public class StatusManager implements Runnable {
     public void logCTREError(ErrorCode errorCode, int deviceId) {
         canMotorStatus.put(deviceId, errorCode.toString());
         if (errorCode == ErrorCode.OK) return;
-        if (lastError.get(deviceId) == null 
-            || lastError.get(deviceId) + errorCooldownMs < System.currentTimeMillis() 
+        if (lastError.get(deviceId) == null
+            || lastError.get(deviceId) + errorCooldownMs < System.currentTimeMillis()
         ) {
             System.out.println("Error: " + errorCode.toString() + " on CTRE Motor + " + deviceId);
             lastError.put(deviceId, System.currentTimeMillis());
         }
     }
 
-    public void addCTRE(BaseMotorController motor) {
-        ctreMotors.add(motor);
-        table.getSubTable("/"+motor.getDeviceID()).getEntry("type").setString("CTRE");
-    }
-    public void addSpark(CANSparkMax motor) {
-        sparkMotors.add(motor);
-        table.getSubTable("/"+motor.getDeviceId()).getEntry("type").setString("Spark");
-    }
+    private final ShuffleboardTab tab = Shuffleboard.getTab("Motors");
 
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("/dashboard/motors");
-    
-    private void updateNT() {
-        canMotorStatus.forEach((k,v) -> {
-            table.getSubTable("/"+k).getEntry("error").setString(v.charAt(0) == 'k' ? v.substring(1) : v); // move the map to nt
-        });
-        sparkMotors.forEach((m) -> {
-            table.getSubTable("/"+m.getDeviceId()).getEntry("speed").setNumber(m.get());
-            table.getSubTable("/"+m.getDeviceId()).getEntry("temp").setNumber(m.getMotorTemperature());
-            table.getSubTable("/"+m.getDeviceId()).getEntry("appliedOutput").setNumber(m.getAppliedOutput());
-            table.getSubTable("/"+m.getDeviceId()).getEntry("outputCurrent").setNumber(m.getOutputCurrent());
-            table.getSubTable("/"+m.getDeviceId()).getEntry("busVoltage").setNumber(m.getBusVoltage());
-            table.getSubTable("/"+m.getDeviceId()).getEntry("status").setString(Robot.isSimulation() ? "sim" : 
-                                                                                DriverStation.isDisabled() ? "disabled" :
-                                                                                m.get() != 0 && m.getAppliedOutput() == 0 ? "noResponse" :
-                                                                                m.getMotorTemperature() == 25 ? "temp" :
-                                                                                m.getBusVoltage() < 11 ? "BusVolts ": "ok");
-        });
-        ctreMotors.forEach((m) -> {
-            MotorController mc = (MotorController) m;  // If this errors than somthing is wrong. Should work with tallons
-            table.getSubTable("/"+m.getDeviceID()).getEntry("speed").setNumber(mc.get());
-            table.getSubTable("/"+m.getDeviceID()).getEntry("temp").setNumber(m.getTemperature());
-            table.getSubTable("/"+m.getDeviceID()).getEntry("motorOutputPercent").setNumber(m.getMotorOutputPercent());
-            table.getSubTable("/"+m.getDeviceID()).getEntry("motorOutputVolts").setNumber(m.getMotorOutputVoltage());
-            table.getSubTable("/"+m.getDeviceID()).getEntry("busVoltage").setNumber(m.getBusVoltage());
-            table.getSubTable("/"+m.getDeviceID()).getEntry("status").setString(Robot.isSimulation() ? "sim" : 
-                                                                                DriverStation.isDisabled() ? "disabled" :
-                                                                                mc.get() != 0 && m.getMotorOutputPercent() == 0 || mc.get() != 0 && m.getMotorOutputVoltage() == 0 ? "noResponse" :
-                                                                                m.getTemperature() == 0 ? "temp" :
-                                                                                m.getBusVoltage() < 11 ? "BusVolts ": "ok");
-        });
+    public void addMotor(MotorController motor, String name){
+        motors.add(motor);
+        motorStatus.put(motor, tab.add(name + " status", "none").withWidget(BuiltInWidgets.kBooleanBox).getEntry());
 
     }
+
+    private void checkMotors() {
+        for (MotorController motor : motors) {
+            if (motor instanceof CANSparkMax) { // If the motor is a sparkMax
+                CANSparkMax sparkMax = (CANSparkMax) motor;
+                /* If the spark returns 0 as a firmware version,  */
+                if (sparkMax.getFirmwareVersion() == 0) {
+                    motorStatus.get(motor).setBoolean(false);
+                } else {
+                    motorStatus.get(motor).setBoolean(true);
+                }
+                SmartDashboard.putString(sparkMax.getDeviceId() +"", sparkMax.getFirmwareString());
+                /* Eventually we could check/log motor faults here. */
+
+            } else if (motor instanceof BaseMotorController) { // If the motor is a CTRE motor
+                BaseMotorController CTREMotor = (BaseMotorController) motor;
+                // TODO: This has not been tested on the tallons.
+                if (CTREMotor.getFirmwareVersion() == 0) {
+                    motorStatus.get(motor).setBoolean(false);
+                } else {
+                    motorStatus.get(motor).setBoolean(true);
+                }
+
+                /* Eventually we could check/log motor faults here. */
+            }
+
+        }
+    }
+
 }

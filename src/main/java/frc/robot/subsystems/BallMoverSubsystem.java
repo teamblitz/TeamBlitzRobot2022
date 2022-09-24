@@ -45,8 +45,8 @@ public class BallMoverSubsystem extends SubsystemBase {
     layout.addNumber("Left", m_ballMoverL::get);
     layout.addNumber("Right", m_ballMoverR::get);
 
-    status.addSpark(m_ballMoverL);
-    status.addSpark(m_ballMoverR);
+    status.addMotor(m_ballMoverL, "bllMvrL");
+    status.addMotor(m_ballMoverR, "bllMvrR");
   }
 
   // Enables BallMover Wheels

@@ -46,7 +46,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable{
     // Start automatic updating of this motors speed
     Shuffleboard.getTab(TelementryConstants.kSubsystemTab).addNumber("Intake", m_intakeMotor::get);
 
-    status.addSpark(m_intakeMotor);
+    status.addMotor(m_intakeMotor, "Intake");
   }
   public IntakeSubsystem() {
     this(

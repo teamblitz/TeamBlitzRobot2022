@@ -5,6 +5,11 @@
         "header": {
           "open": true
         }
+      },
+      "Talon FX[7]": {
+        "header": {
+          "open": true
+        }
       }
     }
   },
@@ -37,6 +42,9 @@
   },
   "NetworkTables": {
     "Shuffleboard": {
+      "Motors": {
+        "open": true
+      },
       "open": true
     },
     "SmartDashboard": {

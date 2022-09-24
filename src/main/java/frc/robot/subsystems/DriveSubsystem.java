@@ -86,10 +86,10 @@ public class DriveSubsystem extends SubsystemBase {
   m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor); 
   
   
-  status.addSpark(m_leftMotor);
-  status.addSpark(m_rightMotor);
-  status.addSpark(m_leftMotorSlave);
-  status.addSpark(m_rightMotorSlave);
+  status.addMotor(m_leftMotor, "leftDriveM");
+  status.addMotor(m_rightMotor, "rightDriveM");
+  status.addMotor(m_leftMotorSlave, "leftDriveS");
+  status.addMotor(m_rightMotorSlave, "rightDriveS");
 }
 
   @Override

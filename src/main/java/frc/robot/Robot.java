@@ -49,7 +49,7 @@ public class Robot extends TimedRobot {
     }
   }
 
-  // Called periodicly durring autonomous
+  // Called periodically during autonomous
   @Override
   public void autonomousPeriodic() {}
 

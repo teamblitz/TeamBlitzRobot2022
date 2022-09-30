@@ -91,4 +91,32 @@ public class ButtonBinder {
       () -> joystick.getRawAxis(axis.value) >= .5
     );
   }
+
+  /**
+   * Returns a trigger that is active when the specified button is active.
+   * 
+   * @param joystick The Controller.
+   * @param button XboxController Button enum{@link XboxController.Button}.
+  */
+  public static Trigger bindButton(SaitekX52Joystick joystick, SaitekX52Joystick.Button button) {
+    requireNonNullParam(joystick, "joystick", "bindButton");
+    requireNonNullParam(button, "button", "bindButton");
+    return new Trigger(
+      () -> joystick.getRawButton(button.value)
+    );
+  }
+
+  /**
+   * Returns a trigger that is active when the specified xbox axis is active.
+   * 
+   * @param joystick The XboxController.
+   * @param axis XboxController Axis enum{@link XboxController.Axis}.
+  */
+  public static Trigger bindButton(SaitekX52Joystick joystick, SaitekX52Joystick.Axis axis) {
+    requireNonNullParam(joystick, "joystick", "bindButton");
+    requireNonNullParam(axis, "axis", "bindButton");
+    return new Trigger(
+      () -> joystick.getRawAxis(axis.value) >= .5
+    );
+  }
 }

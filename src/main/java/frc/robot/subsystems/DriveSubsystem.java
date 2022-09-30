@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ExternalFollower;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -130,7 +131,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rot the commanded rotation
    */
  public void arcadeDrive(final double fwd, final double rot, boolean squareInputs) {
-    m_drive.arcadeDrive(fwd, rot, squareInputs);
+    m_drive.arcadeDrive(MathUtil.clamp(fwd, -1, 1), MathUtil.clamp(rot, -1, 1), squareInputs);
   }
 
   /**

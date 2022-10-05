@@ -32,7 +32,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final VisionSubsystem m_vision;
 
   private final DifferentialDrive m_drive;
- 
+
   private final StatusManager status = StatusManager.getInstance();
 
   /**
@@ -130,7 +130,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fwd the commanded forward movement
    * @param rot the commanded rotation
    */
- public void arcadeDrive(final double fwd, final double rot, boolean squareInputs) {
+public void arcadeDrive(final double fwd, final double rot, boolean squareInputs) {
     m_drive.arcadeDrive(MathUtil.clamp(fwd, -1, 1), MathUtil.clamp(rot, -1, 1), squareInputs);
   }
 

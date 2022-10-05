@@ -72,6 +72,14 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable{
     status.logRevError(m_intakeMotor);
   }
 
+  public void reverse() {
+    if (Robot.isSimulation()) {
+      System.out.println("Intake Reverse");
+    }
+    m_intakeMotor.set(-1.0);
+    status.logRevError(m_intakeMotor);
+  }
+
   public void close() {
     m_intakeMotor.close();
     CommandScheduler.getInstance().unregisterSubsystem(this);

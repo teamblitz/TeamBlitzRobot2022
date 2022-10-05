@@ -34,6 +34,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StatusLightSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.utils.ButtonBinder;
+import frc.robot.utils.ButtonBox;
 import frc.robot.utils.SaitekX52Joystick;
 import frc.robot.subsystems.BallMoverSubsystem;
 import frc.robot.subsystems.InternalBallDetectorSubsystem;
@@ -69,13 +70,13 @@ public class RobotContainer {
   /* ***** --- Controllers --- ***** */
   private XboxController m_xboxController;
   private SaitekX52Joystick m_saitekController;
-  private GenericHID m_buttonBoard;
+  private ButtonBox m_buttonBoard;
 
   // Controller Constants: 
   private final double kDriveLowSpeed = 0.75;
   private final double kDriveFullSpeed = 1.0;
   private final double kDriveMinSpeed = kDriveLowSpeed/2;
-  private final double kDriveMultiplyer = kDriveLowSpeed/2;
+  private final double kDriveMultiplyer = kDriveFullSpeed - kDriveMinSpeed;
   
 
   
@@ -90,17 +91,17 @@ public class RobotContainer {
 
   public RobotContainer() {
     configureSubsystems();
-    configureButtonBindings();
     setDefaultCommands();
     CameraServer.startAutomaticCapture();
     m_vision.lightsOff(); // Turn off our lights/
-
+    
     SmartDashboard.putData("Drive test", new DriveTest(m_robotDrive));
-
+    
     if (OIConstants.useXboxController) m_xboxController = new XboxController(OIConstants.kDriveControllerPort);
     else if (OIConstants.useSaitekController) m_saitekController = new SaitekX52Joystick(OIConstants.kDriveControllerPort);
-    m_buttonBoard = new GenericHID(OIConstants.kButtonBoxPort);
-
+    m_buttonBoard = new ButtonBox(OIConstants.kButtonBoxPort);
+    
+    configureButtonBindings();
     // Warn if more than one, or no drive controllers are enabled
     // If this gives a VSC Warning "Dead Code" this is good, as our check is oaky
     // move to unit tests latter
@@ -131,11 +132,11 @@ public class RobotContainer {
         // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
         .performDrive(
           filter.calculate(
-            -m_saitekController.getY() * kDriveMultiplyer + kDriveMinSpeed), 
+            -m_saitekController.getY() * (((-m_saitekController.getRawAxis(SaitekX52Joystick.Axis.kThrotle.value)+1)/2) * kDriveMultiplyer + kDriveMinSpeed)),
           filterRotation.calculate(
             m_saitekController.getX() * (m_xboxController.getRawAxis(OIConstants.XboxMappings.kOverdrive.value) < 0.5 ? kTurnLowSpeed : kTurnFullSpeed)),
           m_xboxController.getRawButton(OIConstants.XboxMappings.kSemiAutoBallSeek.value), //Turns on semiautonomous ball acquire
-          m_xboxController.getRawAxis(OIConstants.XboxMappings.kSemiAutoBallTarget.value) > 0.5), //Turns on semiautonomous targeter on Left Trigger
+          m_xboxController.getRawButton(OIConstants.XboxMappings.kSemiAutoBallTarget.value)), //Turns on semiautonomous targeter on Left Trigger
         m_robotDrive).withName("DriveDefalutCommand"));    }
   }
 
@@ -240,10 +241,14 @@ public class RobotContainer {
         ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kIntake).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kIntake))
         .whenActive(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
         .whenInactive(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
+
+        ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kIntakeReversed).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kIntakeReversed))
+        .whenActive(new InstantCommand(m_intakeRoller::reverse, m_ballMover)) // Reverse ball mover
+        .whenInactive(new InstantCommand(m_intakeRoller::stop, m_ballMover)); // Stop ball mover
         
-        // ButtonBinder.bindButton(m_driveController, OIConstants.kSemiAutoBallSeek) // Enable intake when we press down the SemiAutoBallSeek button
-        // .whenActive(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
-        // .whenInactive(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
+        ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kSemiAutoBallSeek).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kSemiAutoBallSeek)) // Enable intake when we press down the SemiAutoBallSeek button
+        .whenActive(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
+        .whenInactive(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
         
         /* ***** --- BallMover Subsystem --- ***** */
         ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kBallMover).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kBallMover))

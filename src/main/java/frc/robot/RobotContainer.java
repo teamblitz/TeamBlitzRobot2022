@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DriveStraightWithDelay;
@@ -67,6 +68,11 @@ public class RobotContainer {
 
   private BallMoverSubsystem m_ballMover;
 
+  /* ***** --- Commands --- ***** */
+
+  private Command intakeCommand;
+
+
   /* ***** --- Controllers --- ***** */
   private XboxController m_xboxController;
   private SaitekX52Joystick m_saitekController;
@@ -91,6 +97,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     configureSubsystems();
+    buildCommands();
     setDefaultCommands();
     CameraServer.startAutomaticCapture();
     m_vision.lightsOff(); // Turn off our lights/
@@ -102,12 +109,7 @@ public class RobotContainer {
     m_buttonBoard = new ButtonBox(OIConstants.kButtonBoxPort);
     
     configureButtonBindings();
-    // Warn if more than one, or no drive controllers are enabled
-    // If this gives a VSC Warning "Dead Code" this is good, as our check is oaky
-    // move to unit tests latter
-    if (!(OIConstants.useXboxController ^ OIConstants.useSaitekController)) {
-      DriverStation.reportWarning("The number of enabled drive controllers is not equal to 1. (Team Blitz Warn.)", false);
-    }
+  
   }
 
   private void setDefaultCommands() {
@@ -160,6 +162,11 @@ public class RobotContainer {
     m_ballMover = new BallMoverSubsystem();
 
     m_shooter = new ShooterSubsystem();
+
+  }
+
+  public void buildCommands () {
+    intakeCommand = new StartEndCommand(() -> {m_intakeRoller.start(); m_ballMover.startIntake();}, () -> {m_intakeRoller.stop(); m_ballMover.start();}, m_intakeRoller, m_ballMover);
 
   }
 
@@ -239,12 +246,10 @@ public class RobotContainer {
 
         /* ***** --- Intake Subsystem --- ***** */
         ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kIntake).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kIntake))
-        .whenActive(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
-        .whenInactive(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
+        .whileActiveOnce(intakeCommand); // Start intake
 
         ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kIntakeReversed).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kIntakeReversed))
-        .whenActive(new InstantCommand(m_intakeRoller::reverse, m_ballMover)) // Reverse ball mover
-        .whenInactive(new InstantCommand(m_intakeRoller::stop, m_ballMover)); // Stop ball mover
+        .whileActiveOnce(intakeCommand); // Start intake
         
         ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kSemiAutoBallSeek).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kSemiAutoBallSeek)) // Enable intake when we press down the SemiAutoBallSeek button
         .whenActive(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake

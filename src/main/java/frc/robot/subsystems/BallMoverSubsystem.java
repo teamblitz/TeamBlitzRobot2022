@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
@@ -23,30 +24,32 @@ import frc.robot.Constants.TelementryConstants;
 public class BallMoverSubsystem extends SubsystemBase {
 
   // Master
-  private final CANSparkMax m_ballMoverR = new CANSparkMax(BallMoverSubsystemConstants.kSparkMotorPortBallMoverR, MotorType.kBrushless);
+  private final CANSparkMax m_ballMoverM = new CANSparkMax(BallMoverSubsystemConstants.kSparkMotorPortBallMoverR, MotorType.kBrushless);
   // Slave
-  private final CANSparkMax m_ballMoverL = new CANSparkMax(BallMoverSubsystemConstants.kSparkMotorPortBallMoverL, MotorType.kBrushless);
+  private final CANSparkMax m_ballMoverS = new CANSparkMax(BallMoverSubsystemConstants.kSparkMotorPortBallMoverL, MotorType.kBrushless);
 
   private final StatusManager status = StatusManager.getInstance();
 
   public BallMoverSubsystem() {
-    m_ballMoverR.restoreFactoryDefaults();
-    m_ballMoverL.restoreFactoryDefaults();
+    m_ballMoverM.restoreFactoryDefaults();
+    m_ballMoverS.restoreFactoryDefaults();
     // ISSUE: This was set under 20 amps due to locked rotor testing with sparkmaxes
     // Time to Failure Summary
     // 20A Limit - Motor survived full 220s test.
     // 40A Limit - Motor failure at approximately 27s.
     // 60A Limit - Motor failure at approximately 5.5s
     // 80A Limit* - Motor failure at approximately 2.0s
-    m_ballMoverR.setSmartCurrentLimit(15);
-    m_ballMoverL.setSmartCurrentLimit(15);
+    m_ballMoverM.setSmartCurrentLimit(15);
+    m_ballMoverS.setSmartCurrentLimit(15);
+
+    m_ballMoverS.follow(m_ballMoverM, true);
 
     ShuffleboardLayout layout = Shuffleboard.getTab(TelementryConstants.kSubsystemTab).getLayout("Ball Mover", BuiltInLayouts.kGrid);
-    layout.addNumber("Left", m_ballMoverL::get);
-    layout.addNumber("Right", m_ballMoverR::get);
+    layout.addNumber("Left", m_ballMoverS::get);
+    layout.addNumber("Right", m_ballMoverM::get);
 
-    status.addMotor(m_ballMoverL, "bllMvrL");
-    status.addMotor(m_ballMoverR, "bllMvrR");
+    status.addMotor(m_ballMoverS, "bllMvrL");
+    status.addMotor(m_ballMoverM, "bllMvrR");
   }
 
   // Enables BallMover Wheels
@@ -54,11 +57,18 @@ public class BallMoverSubsystem extends SubsystemBase {
     if (Robot.isSimulation()) {
       System.out.println("Ball Mover Start");
       }
-    m_ballMoverR.set(0.50);
-    status.logRevError(m_ballMoverR);
-    m_ballMoverL.set(-0.50);
-    status.logRevError(m_ballMoverL);
+    set(.5);
+  }
 
+  private void set(double speed) {
+    speed = MathUtil.clamp(speed, -1, 1);
+    m_ballMoverM.set(speed);
+    status.logRevError(m_ballMoverM);
+  }
+
+  // Sets the ball mover for intake
+  public void startIntake() {
+    set(.3);
   }
 
   // This could reverse BallMover Wheels
@@ -66,10 +76,7 @@ public class BallMoverSubsystem extends SubsystemBase {
     if (Robot.isSimulation()) {
       System.out.println("Ball Mover Reverse");
       }
-    m_ballMoverR.set(-0.30);
-    status.logRevError(m_ballMoverR);
-    m_ballMoverL.set(0.30);
-    status.logRevError(m_ballMoverL);
+    set(-.3);
 
    }
 
@@ -78,10 +85,7 @@ public class BallMoverSubsystem extends SubsystemBase {
     if (Robot.isSimulation()) {
       System.out.println("Ball Mover Stop");
       }
-    m_ballMoverR.set(0.0);
-    status.logRevError(m_ballMoverR);
-    m_ballMoverL.set(0.0);
-    status.logRevError(m_ballMoverL);
+    set(0);
 
   }
 }

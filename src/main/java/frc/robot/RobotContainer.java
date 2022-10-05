@@ -134,9 +134,9 @@ public class RobotContainer {
           filter.calculate(
             -m_saitekController.getY() * (((-m_saitekController.getRawAxis(SaitekX52Joystick.Axis.kThrotle.value)+1)/2) * kDriveMultiplyer + kDriveMinSpeed)),
           filterRotation.calculate(
-            m_saitekController.getX() * (m_xboxController.getRawAxis(OIConstants.XboxMappings.kOverdrive.value) < 0.5 ? kTurnLowSpeed : kTurnFullSpeed)),
-          m_xboxController.getRawButton(OIConstants.XboxMappings.kSemiAutoBallSeek.value), //Turns on semiautonomous ball acquire
-          m_xboxController.getRawButton(OIConstants.XboxMappings.kSemiAutoBallTarget.value)), //Turns on semiautonomous targeter on Left Trigger
+            m_saitekController.getRawAxis(SaitekX52Joystick.Axis.kZRot.value)),
+          false, //Turns on semiautonomous ball acquire
+          false), //Turns on semiautonomous targeter on Left Trigger
         m_robotDrive).withName("DriveDefalutCommand"));    }
   }
 

@@ -162,13 +162,10 @@ public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable {
         SmartDashboard.putNumber("Wanted", wantedSpeed);
         if (Math.signum(wantedSpeed) == Math.signum(ElevatorConstants.kUpSpeed) && !atTop()) { // If we want to move upwards and we arn't at the top
             applliedSpeed = filter.calculate(wantedSpeed); // Calculate the speed that should be applied
-            System.out.println("Sign down");
         } else if (Math.signum(wantedSpeed) == Math.signum(ElevatorConstants.kDownSpeed) && !atBottom()) { // If we want to move downwards and we arn't at the bottom
             applliedSpeed = filter.calculate(wantedSpeed); // Calculate the speed that should be applied
-            System.out.println("Sign up");
         } else {
             applliedSpeed = filter.calculate(0); // Calculate the speed that should be applied
-            System.out.println("sign stop");
         }
         SmartDashboard.putNumber("Applyed", applliedSpeed);
         m_master.set(applliedSpeed);

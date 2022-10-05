@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -158,24 +159,28 @@ public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable {
 
     public void updateSpeed() { // Set the moters to the wanted direction.
         // Math.signum returns -1.0 if the number is negigtive, 1.0 if positive and 0.0 if 0
-
+        SmartDashboard.putNumber("Wanted", wantedSpeed);
         if (Math.signum(wantedSpeed) == Math.signum(ElevatorConstants.kUpSpeed) && !atTop()) { // If we want to move upwards and we arn't at the top
             applliedSpeed = filter.calculate(wantedSpeed); // Calculate the speed that should be applied
+            System.out.println("Sign down");
         } else if (Math.signum(wantedSpeed) == Math.signum(ElevatorConstants.kDownSpeed) && !atBottom()) { // If we want to move downwards and we arn't at the bottom
             applliedSpeed = filter.calculate(wantedSpeed); // Calculate the speed that should be applied
+            System.out.println("Sign up");
         } else {
             applliedSpeed = filter.calculate(0); // Calculate the speed that should be applied
+            System.out.println("sign stop");
         }
+        SmartDashboard.putNumber("Applyed", applliedSpeed);
         m_master.set(applliedSpeed);
         status.logCTREError(m_master);
     }
 
     private boolean atTop() {
-        return m_toplimitSwitch.get() && !ignoreTopLimit.getBoolean(false);
+        return !m_toplimitSwitch.get() && !ignoreTopLimit.getBoolean(false);
     }
     
     private boolean atBottom() {
-        return m_toplimitSwitch.get() && !ignoreBottomLimit.getBoolean(false);
+        return !m_bottomlimitSwitch.get() && !ignoreBottomLimit.getBoolean(false);
     }
 
     @Override

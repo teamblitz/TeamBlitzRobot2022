@@ -54,9 +54,9 @@ public class BallMoverSubsystem extends SubsystemBase {
     if (Robot.isSimulation()) {
       System.out.println("Ball Mover Start");
       }
-    m_ballMoverR.set(0.45);
+    m_ballMoverR.set(0.65);
     status.logRevError(m_ballMoverR);
-    m_ballMoverL.set(-0.45);
+    m_ballMoverL.set(-0.65);
     status.logRevError(m_ballMoverL);
 
   }

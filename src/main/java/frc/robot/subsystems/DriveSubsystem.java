@@ -76,7 +76,7 @@ public class DriveSubsystem extends SubsystemBase {
   // Enable for dual motors
   m_leftMotorSlave.follow(ExternalFollower.kFollowerSparkMax, leftDeviceID);
   
-  m_leftMotor.setInverted(true);
+  m_leftMotor.setInverted(false);
   // right side
   m_rightMotor.follow(ExternalFollower.kFollowerDisabled, 0);
   // Enable for dual motors

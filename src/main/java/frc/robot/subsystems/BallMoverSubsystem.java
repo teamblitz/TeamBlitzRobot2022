@@ -10,15 +10,24 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.BallMoverSubsystemConstants;;
+import frc.robot.Robot;
+import frc.robot.StatusManager;
+import frc.robot.Constants.BallMoverSubsystemConstants;
+import frc.robot.Constants.TelementryConstants;
 
+// TODO: Doesn't actualy use master and slave. instead set right as a master and have left follow it inverted.
 public class BallMoverSubsystem extends SubsystemBase {
 
   // Master
-  CANSparkMax m_ballMoverR = new CANSparkMax(BallMoverSubsystemConstants.kSparkMotorPortBallMoverR, MotorType.kBrushless);
+  private final CANSparkMax m_ballMoverR = new CANSparkMax(BallMoverSubsystemConstants.kSparkMotorPortBallMoverR, MotorType.kBrushless);
   // Slave
-  CANSparkMax m_ballMoverL = new CANSparkMax(BallMoverSubsystemConstants.kSparkMotorPortBallMoverL, MotorType.kBrushless);
+  private final CANSparkMax m_ballMoverL = new CANSparkMax(BallMoverSubsystemConstants.kSparkMotorPortBallMoverL, MotorType.kBrushless);
+
+  private final StatusManager status = StatusManager.getInstance();
 
   public BallMoverSubsystem() {
     m_ballMoverR.restoreFactoryDefaults();
@@ -31,29 +40,48 @@ public class BallMoverSubsystem extends SubsystemBase {
     // 80A Limit* - Motor failure at approximately 2.0s
     m_ballMoverR.setSmartCurrentLimit(15);
     m_ballMoverL.setSmartCurrentLimit(15);
+
+    ShuffleboardLayout layout = Shuffleboard.getTab(TelementryConstants.kSubsystemTab).getLayout("Ball Mover", BuiltInLayouts.kGrid);
+    layout.addNumber("Left", m_ballMoverL::get);
+    layout.addNumber("Right", m_ballMoverR::get);
+
+    status.addMotor(m_ballMoverL, "bllMvrL");
+    status.addMotor(m_ballMoverR, "bllMvrR");
   }
+
   // Enables BallMover Wheels
   public void start() {
-    System.out.println("BallMoverSubsystem::start");
-    m_ballMoverR.set(0.45);
-    m_ballMoverL.set(-0.45);
+    if (Robot.isSimulation()) {
+      System.out.println("Ball Mover Start");
+      }
+    m_ballMoverR.set(0.50);
+    status.logRevError(m_ballMoverR);
+    m_ballMoverL.set(-0.50);
+    status.logRevError(m_ballMoverL);
+
   }
 
   // This could reverse BallMover Wheels
   public void reverse(){
-    m_ballMoverR.set(-0.45);
-    m_ballMoverL.set(0.45);
+    if (Robot.isSimulation()) {
+      System.out.println("Ball Mover Reverse");
+      }
+    m_ballMoverR.set(-0.30);
+    status.logRevError(m_ballMoverR);
+    m_ballMoverL.set(0.30);
+    status.logRevError(m_ballMoverL);
+
    }
 
   // Disable BallMover Wheels
   public void stop() {
-    System.out.println("BallMoverSubsystem::stop");
+    if (Robot.isSimulation()) {
+      System.out.println("Ball Mover Stop");
+      }
     m_ballMoverR.set(0.0);
+    status.logRevError(m_ballMoverR);
     m_ballMoverL.set(0.0);
-  }
+    status.logRevError(m_ballMoverL);
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
   }
 }

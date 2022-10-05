@@ -1,45 +1,39 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.BallAcquirePlanSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.InternalBallDetectorSubsystem;
 
- public class SeekBall extends CommandBase
-{
-	DriveSubsystem driveSubsystem;
-    IntakeSubsystem intakeSubsystem;
-    BallAcquirePlanSubsystem ballAcquirePlanSubsystem;
-    LimelightSubsystem limelightSubsystem;
-	InternalBallDetectorSubsystem internalBallDetectorSubsystem;
-	PowerDistribution PD;
+
+
+public class SeekBall extends CommandBase {
+
+	private final DriveSubsystem driveSubsystem;
+    private final IntakeSubsystem intakeSubsystem;
+	private final VisionSubsystem vision;
+	private final InternalBallDetectorSubsystem internalBallDetectorSubsystem;
     
+	private long startTime;
+    private long ballLastSeen;
+	private boolean	seenBall;
+	private boolean valid;
 
-	
-	long	startTime;
-    long    ballLastSeen;
-	boolean	seenBall;
-	boolean valid;
-	long notSeenTimeout;
-	long timeout;
+	private final long notSeenTimeout;
+	private final long timeout;
 
-	
-
-	public SeekBall(final DriveSubsystem driveSubsystem, final IntakeSubsystem intakeSubsystem, final BallAcquirePlanSubsystem ballAcquirePlanSubsystem, final LimelightSubsystem limelightSubsystem, long notSeenTimeout, long timeout, InternalBallDetectorSubsystem internalBallDetectorSubsystem, PowerDistribution PD){
-		// Use requires() here to declare subsystem dependencies
-		// eg. requires(chassis);
-		// requires(driveSubsystem);
+	public SeekBall(final DriveSubsystem driveSubsystem, final IntakeSubsystem intakeSubsystem, VisionSubsystem vision, InternalBallDetectorSubsystem internalBallDetectorSubsystem, long notSeenTimeout, long timeout){
 		this.driveSubsystem = driveSubsystem;
 		this.intakeSubsystem = intakeSubsystem;
-        this.ballAcquirePlanSubsystem = ballAcquirePlanSubsystem;
-        this.limelightSubsystem = limelightSubsystem;
+        this.vision = vision;
 		this.internalBallDetectorSubsystem = internalBallDetectorSubsystem;
+
 		this.notSeenTimeout = notSeenTimeout;
 		this.timeout = timeout;
-		this.PD = PD;
+		// Use addRequirements() here to declare subsystem dependencies
+		// eg. addRequirements(chassis);
+		addRequirements(driveSubsystem, intakeSubsystem);
 	}
 
 	// Called just before this Command runs the first time
@@ -50,40 +44,31 @@ import frc.robot.subsystems.InternalBallDetectorSubsystem;
         ballLastSeen = System.currentTimeMillis();
 		seenBall = false;
 		valid = false;
-		PD.setSwitchableChannel(true);
+		vision.lightsOn();
 		intakeSubsystem.start();
-		
 	}
-
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	public void execute() {
-		// final long Cur_Time = System.currentTimeMillis();
-
-		
-		if (limelightSubsystem.getValid() > 0){ //if limelight sees the ball then this returns true
+		if (vision.ballLimelight.getValid() > 0){ //if limelight sees the ball then this returns true
 			valid = true;
 
 			ballLastSeen = System.currentTimeMillis(); //updates ball last seen. as we are seeing it now.
 			driveSubsystem.performDrive(0, 0, true, false);
-			// System.out.println("SeekBall Valid");
 		}
 		else{
 			System.out.printf("No Ball, Ending in %d miliseconds %n", notSeenTimeout - (System.currentTimeMillis() - ballLastSeen)); //Prints how long until the command will end due to no ball being seen
 
 		}
-
-		
 	}
-
 
     // Called when isFinished returns ture
 	@Override
     public void end(boolean interrupted) {
 		intakeSubsystem.stop();
 		driveSubsystem.performDrive(0, 0, false, false);
-		PD.setSwitchableChannel(false);
+		vision.lightsOff();
 		System.out.println("Ending SeekBall");
     }
 
@@ -92,6 +77,4 @@ import frc.robot.subsystems.InternalBallDetectorSubsystem;
     public boolean isFinished() {
 		return internalBallDetectorSubsystem.ballSeen() || ((System.currentTimeMillis() - ballLastSeen) > notSeenTimeout) || (System.currentTimeMillis() - startTime > timeout);
 	}
-
-
 }

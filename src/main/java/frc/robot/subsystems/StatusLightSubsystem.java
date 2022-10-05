@@ -6,10 +6,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 
-public class StatusLightSubsystem extends SubsystemBase{
+public class StatusLightSubsystem extends SubsystemBase {
 
-    private AddressableLED m_led;
-    private AddressableLEDBuffer m_ledBuffer;
+    private final AddressableLED m_led;
+    private final AddressableLEDBuffer m_ledBuffer;
+
     // Constants
     private final long kNumberOfLEDs = 22;
     private final double kHalfWidth = ((double)kNumberOfLEDs - 1.0)/2.0;
@@ -42,7 +43,7 @@ public class StatusLightSubsystem extends SubsystemBase{
         // rainbow();
 
         // m_led.setData(m_ledBuffer);
-        System.out.println("Status Light Subsystem Constructor");
+
 
     }
 
@@ -51,21 +52,22 @@ public class StatusLightSubsystem extends SubsystemBase{
         // setStatusLights(0, .5, 0);
     }
     
-    private void rainbow() {
+
+    // private void rainbow() {
         
-        // For every pixel
-        for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-          // Calculate the hue - hue is easier for rainbows because the color
-          // shape is a circle so only one value needs to precess
-          final var hue = (m_rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
-          // Set the value
-          m_ledBuffer.setHSV(i, hue, 255, 128);
-        }
-        // Increase by to make the rainbow "move"
-        m_rainbowFirstPixelHue += 3;
-        // Check bounds
-        m_rainbowFirstPixelHue %= 180;
-    }
+    //     // For every pixel
+    //     for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+    //       // Calculate the hue - hue is easier for rainbows because the color
+    //       // shape is a circle so only one value needs to precess
+    //       final var hue = (m_rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
+    //       // Set the value
+    //       m_ledBuffer.setHSV(i, hue, 255, 128);
+    //     }
+    //     // Increase by to make the rainbow "move"
+    //     m_rainbowFirstPixelHue += 3;
+    //     // Check bounds
+    //     m_rainbowFirstPixelHue %= 180;
+    // }
     
 
 

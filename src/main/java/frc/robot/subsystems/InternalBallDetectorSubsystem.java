@@ -5,7 +5,6 @@ import java.lang.Math;
 
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -18,12 +17,12 @@ import com.revrobotics.ColorSensorV3;
 public class InternalBallDetectorSubsystem extends SubsystemBase {
     
     // Constants
-    private static final Color kRedTarget = new Color(.52, .34, .13);
-    private static final Color kBlueTarget = new Color(.15, .38, .46);
+    private final Color kRedTarget = new Color(.52, .34, .13);
+    private final Color kBlueTarget = new Color(.15, .38, .46);
     
     // Do we see red or blue at all?
-    private Boolean isRed = false;
-    private Boolean isBlue = false;
+    private boolean isRed = false;
+    private boolean isBlue = false;
 
     private StopWatch timer = new StopWatch();
      /**
@@ -56,8 +55,8 @@ public class InternalBallDetectorSubsystem extends SubsystemBase {
 
     }
     
-    public Boolean ballSeen() {return isRed || isBlue;}
-    public Integer lastSeen() {return timer.getDurationMs();}
+    public boolean ballSeen() {return isRed || isBlue;}
+    public int lastSeen() {return timer.getDurationMs();}
     
     
     // Used for debuging only

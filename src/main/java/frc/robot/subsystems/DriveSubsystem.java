@@ -7,36 +7,39 @@
 
 package frc.robot.subsystems;
 
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ExternalFollower;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.StatusManager;
 
 
 public class DriveSubsystem extends SubsystemBase {
-  private static final int 
-  leftDeviceID = Constants.DriveConstants.kLeftMasterPort, 
-  leftSlaveDeviceID = Constants.DriveConstants.kLeftSlavePort;  // Should be 6 master, 5 slave
+  private final int 
+    leftDeviceID = Constants.DriveConstants.kLeftMasterPort, 
+    leftSlaveDeviceID = Constants.DriveConstants.kLeftSlavePort,  // Should be 6 master, 5 slave
+    rightDeviceID = Constants.DriveConstants.kRightMasterPort, 
+    rightSlaveDeviceID = Constants.DriveConstants.kRightSlavePort;  // Should be 4 master, 3 slave
+  
+  private final CANSparkMax m_leftMotor, m_leftMotorSlave;
+  private final CANSparkMax m_rightMotor, m_rightMotorSlave;
+  private final VisionSubsystem m_vision;
 
-  private static final int 
-  rightDeviceID = Constants.DriveConstants.kRightMasterPort, 
-  rightSlaveDeviceID = Constants.DriveConstants.kRightSlavePort;  // Should be 4 master, 3 slave
-  private CANSparkMax m_leftMotor, m_leftMotorSlave;
-  private CANSparkMax m_rightMotor, m_rightMotorSlave;
-  private BallAcquirePlanSubsystem m_ballAcquire;
-  private BallShooterPlanSubsystem m_ballShoot;
+  private final DifferentialDrive m_drive;
 
-  private DifferentialDrive m_drive;
- 
+  private final StatusManager status = StatusManager.getInstance();
+
   /**
    * Creates a new DriveSubsystem.
    */
-  public DriveSubsystem(BallAcquirePlanSubsystem ballAcquire, BallShooterPlanSubsystem ballShoot) {
-    m_ballAcquire = ballAcquire;
-    m_ballShoot = ballShoot;
+  public DriveSubsystem(VisionSubsystem vision) {
+    m_vision = vision;
     // *********** PUT NON-TUNABLE PARAMETERS BELOW THIS LINE **********
     /**
    * SPARK MAX controllers are intialized over CAN by constructing a CANSparkMax object
@@ -66,25 +69,34 @@ public class DriveSubsystem extends SubsystemBase {
   m_leftMotorSlave.restoreFactoryDefaults();
   m_rightMotorSlave.restoreFactoryDefaults();
 
+  
   // left side
   // setup slave relationship on motors on same side
   m_leftMotor.follow(ExternalFollower.kFollowerDisabled, 0);
   // Enable for dual motors
   m_leftMotorSlave.follow(ExternalFollower.kFollowerSparkMax, leftDeviceID);
- 
+  
+  m_leftMotor.setInverted(false);
   // right side
   m_rightMotor.follow(ExternalFollower.kFollowerDisabled, 0);
   // Enable for dual motors
   m_rightMotorSlave.follow(ExternalFollower.kFollowerSparkMax, rightDeviceID);
 
+  
+  
   m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor); 
-  }
-    
+  
+  
+  status.addMotor(m_leftMotor, "leftDriveM");
+  status.addMotor(m_rightMotor, "rightDriveM");
+  status.addMotor(m_leftMotorSlave, "leftDriveS");
+  status.addMotor(m_rightMotorSlave, "rightDriveS");
+}
+
   @Override
   public void periodic() {
-    
-    }
-
+    m_drive.feed();
+  }
 
   /**
    * Drives the robot using one of several control methods.
@@ -93,32 +105,24 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rot the commanded rotation
    */
 
-    public void doNothing(final double fwd, final double rot, final boolean semiAutonomousState) {
-    }
-
-    public void seed(){ //Feeds our moters
-      m_drive.feed();
-    }
-
     public void performDrive(final double fwd, final double rot, final boolean semiAutonomousState, final boolean targetingState) {
   
       // decide who is in control and execute their drive operations
       if(semiAutonomousState)
       {
-        arcadeDrive(m_ballAcquire.getRot(), m_ballAcquire.getFwd()); // Again, our arcade drive is reversed for some reason, so we reverse this.
-        m_ballAcquire.statusLights(true);
+        arcadeDrive(m_vision.ballAcquirePlan.getFwd(), m_vision.ballAcquirePlan.getRot(), false); // Again, our arcade drive is reversed for some reason, so we reverse this.
+        m_vision.ballAcquirePlan.statusLights();
       }
       else if (targetingState){
-        arcadeDrive(m_ballShoot.getRot(), m_ballShoot.getFwd());
-        m_ballShoot.statusLights();
+        arcadeDrive(m_vision.ballShooterPlan.getFwd(), m_vision.ballShooterPlan.getRot(), false);
+        m_vision.ballShooterPlan.statusLights();
       }
       else
       {
-        arcadeDrive(fwd, rot);
-        m_ballAcquire.statusLights(false); // Turn off status lights
+        arcadeDrive(fwd, rot, true);
+        m_vision.statusLightsOff(); // Turn off status lights
       }
   }
-
 
   /**
    * Drives the robot using arcade controls.
@@ -126,10 +130,9 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fwd the commanded forward movement
    * @param rot the commanded rotation
    */
- public void arcadeDrive(final double fwd, final double rot) {
-    m_drive.arcadeDrive(fwd, rot);
+public void arcadeDrive(final double fwd, final double rot, boolean squareInputs) {
+    m_drive.arcadeDrive(MathUtil.clamp(fwd, -1, 1), MathUtil.clamp(rot, -1, 1), squareInputs);
   }
-
 
   /**
    * Controls the left and right sides of the drive directly with voltages.

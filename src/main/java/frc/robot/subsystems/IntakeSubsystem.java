@@ -9,19 +9,28 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.IntakeSubsystemConstants;;
+import frc.robot.Robot;
+import frc.robot.StatusManager;
+import frc.robot.Constants.IntakeSubsystemConstants;
+import frc.robot.Constants.TelementryConstants;;
 
 /**
  * Add your docs here.
   */
-public class IntakeSubsystem extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase implements AutoCloseable{
   
-  CANSparkMax m_intakeMotor = new CANSparkMax(IntakeSubsystemConstants.kSparkMotorPortIntake, MotorType.kBrushless);
+  private final CANSparkMax m_intakeMotor;
 
-  public IntakeSubsystem() {
+  private StatusManager status = StatusManager.getInstance();
 
+  public IntakeSubsystem(CANSparkMax intakeMotor) {
+    m_intakeMotor = intakeMotor;
     m_intakeMotor.restoreFactoryDefaults();
+    status.logRevError(m_intakeMotor);
 
     // ISSUE: This was set under 20 amps due to locked rotor testing with sparkmaxes
     // Time to Failure Summary
@@ -32,23 +41,47 @@ public class IntakeSubsystem extends SubsystemBase {
     // Advice: Keep at a 20A limit.
 
     m_intakeMotor.setSmartCurrentLimit(15);
+    status.logRevError(m_intakeMotor);
     
-    // m_intakeArm.enableSoftLimit(SoftLimitDirection.kForward, true);
-    // m_intakeArm.enableSoftLimit(SoftLimitDirection.kReverse, true);
+    // Start automatic updating of this motors speed
+    Shuffleboard.getTab(TelementryConstants.kSubsystemTab).addNumber("Intake", m_intakeMotor::get);
 
-    // m_intakeArm.setSoftLimit(SoftLimitDirection.kReverse, 5);
-    // m_intakeArm.setSoftLimit(SoftLimitDirection.kForward, 5);
-
+    status.addMotor(m_intakeMotor, "Intake");
+  }
+  public IntakeSubsystem() {
+    this(
+      new CANSparkMax(IntakeSubsystemConstants.kSparkMotorPortIntake, MotorType.kBrushless)
+    );
   }
 
+  CANSparkMax getIntakeMoter() {return m_intakeMotor;}
 
   public void start() {
-    System.out.println("IntakeSubsystem::startIntake");
+    if (Robot.isSimulation()) {
+      System.out.println("Intake Start");
+    }
     m_intakeMotor.set(1.0);
+    status.logRevError(m_intakeMotor);
   }
 
   public void stop() {
-    System.out.println("IntakeSubsystem::stopIntake");
+    if (Robot.isSimulation()) {
+      System.out.println("Intake Stop");
+    }
     m_intakeMotor.stopMotor();
+    status.logRevError(m_intakeMotor);
+  }
+
+  public void reverse() {
+    if (Robot.isSimulation()) {
+      System.out.println("Intake Reverse");
+    }
+    m_intakeMotor.set(-1.0);
+    status.logRevError(m_intakeMotor);
+  }
+
+  public void close() {
+    m_intakeMotor.close();
+    CommandScheduler.getInstance().unregisterSubsystem(this);
   }
 }

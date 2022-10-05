@@ -7,6 +7,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.utils.ButtonBox;
+import frc.robot.utils.SaitekX52Joystick;
+
 /**
 * The Constants class provides a convenient place for teams to hold robot-wide
 * numerical or boolean constants. This class should not be used for any other
@@ -29,28 +33,75 @@ public final class Constants {
     public static final class ElevatorConstants {
         public static final int kMasterPort = 8;
         public static final int kSlavePort = 7;
+        public static final int kTopLimitPort = 0;
+        public static final int kBottomLimitPort = 1;
+        public static final float kUpSpeed = -0.4f;
+        public static final float kDownSpeed = 0.4f;
     }
     
     public static final class OIConstants {
-        public static final boolean kUseAuxController = false;
-        public static final int kDriveControllerPort = 0;
+
+        // Choose 1, not both.
+        public static final boolean useXboxController = false;
+        public static final boolean useSaitekController = true;
+        
+        public static final int kDriveControllerPort = 0; 
+        public static final int kButtonBoxPort = 1;
         
         // Xbox buttons:
-        public static final int kOverdriveRightTriggerAxis = 3;
         
-        public static final int kUpElevator = 4; // Should be the Y button
-        public static final int kDownElevator = 1; // Should be the A button
-        
-        public static final int kIntake = 2; // Should be the B button
-        public static final int kBallMover = 3; // Should be the X button
-        public static final int kBallMoverReversed = 7; // Back Button
-        public static final int kShooter = 6;  // Should be right bumper  
-        public static final int kShooterReversed = 8; // Start button
-        
-        //not actually used but listed here for reference. Actual binding is done in RobotContainer beginTeleop()
-        public static final int kSemiAutoBallSeek = 5; // Auto Ball seek is on left bumper
-        public static final int kSemiAutoBallTarget = 0; // Auto target is on left analog trigger
+        public static final class XboxMappings {
 
+            // We can do Button.kA.value to get the value of button A.
+            // We could make the constants enums and do .value when binding
+            public static final XboxController.Axis kOverdrive =  XboxController.Axis.kRightTrigger;
+            
+            public static final XboxController.Button kUpElevator = XboxController.Button.kY; // Should be the Y button
+            public static final XboxController.Button kDownElevator = XboxController.Button.kA; // Should be the A button
+            
+            public static final XboxController.Button kIntake = XboxController.Button.kB; // Should be the B button
+            public static final XboxController.Button kBallMover = XboxController.Button.kX; // Should be the X button
+            public static final XboxController.Button kBallMoverReversed = XboxController.Button.kBack; // Back Button
+            public static final XboxController.Button kShooter = XboxController.Button.kRightBumper;  // Should be right bumper  
+            public static final XboxController.Button kShooterReversed = XboxController.Button.kStart; // Start button
+            
+            public static final XboxController.Button kSemiAutoBallSeek = XboxController.Button.kLeftBumper; // Auto Ball seek is on left bumper
+            public static final XboxController.Axis kSemiAutoBallTarget = XboxController.Axis.kLeftTrigger; // Auto target is on left analog trigger
+        }
+
+        public static final class SaitekMappings {
+            // We can do Button.kA.value to get the value of button A.
+            // We could make the constants enums and do .value when binding
+            public static final SaitekX52Joystick.Axis kThrotle = SaitekX52Joystick.Axis.kThrotle;
+            
+            public static final SaitekX52Joystick.Button kUpElevator = SaitekX52Joystick.Button.kT1; 
+            public static final SaitekX52Joystick.Button kDownElevator = SaitekX52Joystick.Button.kT2;
+            
+            public static final SaitekX52Joystick.Button kIntake = SaitekX52Joystick.Button.kUpperTrigger1;
+            public static final SaitekX52Joystick.Button kIntakeReversed = SaitekX52Joystick.Button.kI;
+            public static final SaitekX52Joystick.Button kBallMover = SaitekX52Joystick.Button.kLowerTrigger;
+            public static final SaitekX52Joystick.Button kBallMoverReversed = SaitekX52Joystick.Button.kI;
+            public static final SaitekX52Joystick.Button kShooter = SaitekX52Joystick.Button.kFire;  
+            public static final SaitekX52Joystick.Button kShooterReversed = SaitekX52Joystick.Button.kI;
+            
+            public static final SaitekX52Joystick.Button kSemiAutoBallSeek = SaitekX52Joystick.Button.kA;
+            public static final SaitekX52Joystick.Button kSemiAutoBallTarget = SaitekX52Joystick.Button.kB;
+        }
+
+        public static final class ButtonBoxMappings {
+            public static final int kUpElevator = ButtonBox.Button.kL1.value;
+            public static final int kDownElevator = ButtonBox.Button.kL2.value;
+            
+            public static final int kIntake = ButtonBox.Button.kX.value;
+            public static final int kIntakeReversed = ButtonBox.Button.kL3.value;
+            public static final int kBallMover = ButtonBox.Button.kY.value;
+            public static final int kBallMoverReversed = ButtonBox.Button.kR3.value;
+            public static final int kShooter = ButtonBox.Button.kR1.value; 
+            public static final int kShooterReversed = ButtonBox.Button.kB.value;
+
+            public static final int kSemiAutoBallSeek = ButtonBox.Button.kA.value;
+            public static final int kSemiAutoBallTarget = ButtonBox.Button.kR2.value;
+        }
     }
     
     public static final class BallMoverSubsystemConstants {
@@ -62,7 +113,12 @@ public final class Constants {
         public static final int kSparkMotorPortIntake = 11;
     }
 
-    public static final class ShooterSubsystemConstants {
+    public static final class ShooterConstants {
         public static final int kSparkMotorPortShooter = 12;
+        public static final float kSpeed = 0.45f;
+        public static final float kReverseSpeed = -0.3f;
+    }
+    public static class TelementryConstants {
+        public static final String kSubsystemTab = "Subsystems";
     }
 }

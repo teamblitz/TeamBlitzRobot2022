@@ -6,6 +6,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.BallMoverSubsystem;
 
+@Deprecated(forRemoval = true) // Don't use.
 public class AutonomousCommand extends CommandBase {
     
     DriveSubsystem driveSubsystem;

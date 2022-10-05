@@ -7,35 +7,36 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
-// import frc.robot.commands.AutonomousCommand; //test thing
 import frc.robot.commands.DriveStraightWithDelay;
 import frc.robot.commands.SeekBall;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.Target;
+import frc.robot.commands.tests.DriveTest;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LimelightSubsystem;
-import frc.robot.subsystems.LimelightTargetSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.StatusLightSubsystem;
-import frc.robot.subsystems.BallAcquirePlanSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.utils.ButtonBinder;
+import frc.robot.utils.ButtonBox;
+import frc.robot.utils.SaitekX52Joystick;
 import frc.robot.subsystems.BallMoverSubsystem;
-import frc.robot.subsystems.BallShooterPlanSubsystem;
 import frc.robot.subsystems.InternalBallDetectorSubsystem;
 
 /**
@@ -49,117 +50,115 @@ public class RobotContainer {
   // Power Board
   private PowerDistribution m_PD;
 
-  // Chassis drive subsystem:
+  /* ***** --- Subsystems --- ***** */
   private DriveSubsystem m_robotDrive;
 
-  // Limelight subsystem:
-  private LimelightSubsystem m_limelight;
-
-  // Targeting Limelight subsystem
-  private LimelightTargetSubsystem m_limelightTarget;
-
-  // Color sensor
   private InternalBallDetectorSubsystem m_internalBallDetector; 
 
-  // Status Light Leds
   private StatusLightSubsystem m_statusLightSubsystem;
 
-  // Ball Acquire subsystem:
-  private BallAcquirePlanSubsystem m_ballAcquire;
+  private VisionSubsystem m_vision;
 
-  // Ball Shooter Plan Subsystem
-  private BallShooterPlanSubsystem m_ballShoot;
-
-  // Elevator Subsystem:
   private ElevatorSubsystem m_elevator;
 
-  // Shooter Subsystem
   private ShooterSubsystem m_shooter;
 
-  // Controllers:
-  private XboxController m_driveController;
-
-  // Controller Constants:
   private IntakeSubsystem m_intakeRoller;
+
   private BallMoverSubsystem m_ballMover;
 
+  /* ***** --- Controllers --- ***** */
+  private XboxController m_xboxController;
+  private SaitekX52Joystick m_saitekController;
+  private ButtonBox m_buttonBoard;
+
+  // Controller Constants: 
   private final double kDriveLowSpeed = 0.75;
   private final double kDriveFullSpeed = 1.0;
+  private final double kDriveMinSpeed = kDriveLowSpeed/2;
+  private final double kDriveMultiplyer = kDriveFullSpeed - kDriveMinSpeed;
+  
+
+  
 
   private final double kTurnLowSpeed = 0.45;
   private final double kTurnFullSpeed = .60;
 
-  public RobotContainer() {
+  // Drive SlewRateLimiter
+  private final SlewRateLimiter filter = new SlewRateLimiter(1.75);
+  // Turn SlewRateLimiter
+  private final SlewRateLimiter filterRotation = new SlewRateLimiter(1.75);
 
+  public RobotContainer() {
     configureSubsystems();
-    configureButtonBindings();
+    setDefaultCommands();
     CameraServer.startAutomaticCapture();
-    m_robotDrive.setDefaultCommand(new RunCommand(() -> m_robotDrive.seed(), m_robotDrive));
-    m_PD.setSwitchableChannel(false); // Turn off our light
+    m_vision.lightsOff(); // Turn off our lights/
+    
+    SmartDashboard.putData("Drive test", new DriveTest(m_robotDrive));
+    
+    if (OIConstants.useXboxController) m_xboxController = new XboxController(OIConstants.kDriveControllerPort);
+    else if (OIConstants.useSaitekController) m_saitekController = new SaitekX52Joystick(OIConstants.kDriveControllerPort);
+    m_buttonBoard = new ButtonBox(OIConstants.kButtonBoxPort);
+    
+    configureButtonBindings();
+    // Warn if more than one, or no drive controllers are enabled
+    // If this gives a VSC Warning "Dead Code" this is good, as our check is oaky
+    // move to unit tests latter
+    if (!(OIConstants.useXboxController ^ OIConstants.useSaitekController)) {
+      DriverStation.reportWarning("The number of enabled drive controllers is not equal to 1. (Team Blitz Warn.)", false);
+    }
   }
 
-  // public void beginTeleop(){
-  //   System.out.println("Enabling controller for Teleop");
+  private void setDefaultCommands() {
+    // Set defalut command for drive
 
-  // /** SlewRateLimiter
-  //   * Creates a SlewRateLimiter that limits the rate of change of the signal to 1.75 units per second for forward and backward
-  //   * Essemtaly stoping jerking of the robot during arcade drive
-  //   * Do Not delete unless removed below
-  //   */
+    if (OIConstants.useXboxController) {
+      m_robotDrive.setDefaultCommand(
+        new RunCommand(() -> m_robotDrive
+        // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
+        .performDrive(
+          filter.calculate(
+            -m_xboxController.getLeftY() * (m_xboxController.getRawAxis(OIConstants.XboxMappings.kOverdrive.value) < 0.5 ? kDriveLowSpeed : kDriveFullSpeed)), 
+          filterRotation.calculate(
+            m_xboxController.getRightX() * (m_xboxController.getRawAxis(OIConstants.XboxMappings.kOverdrive.value) < 0.5 ? kTurnLowSpeed : kTurnFullSpeed)),
+          m_xboxController.getRawButton(OIConstants.XboxMappings.kSemiAutoBallSeek.value), //Turns on semiautonomous ball acquire
+          m_xboxController.getRawAxis(OIConstants.XboxMappings.kSemiAutoBallTarget.value) > 0.5), //Turns on semiautonomous targeter on Left Trigger
+        m_robotDrive).withName("DriveDefalutCommand"));
+    } else if (OIConstants.useSaitekController) {
+      
+      m_robotDrive.setDefaultCommand(
+        new RunCommand(() -> m_robotDrive
+        // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
+        .performDrive(
+          filter.calculate(
+            -m_saitekController.getY() * (((-m_saitekController.getRawAxis(SaitekX52Joystick.Axis.kThrotle.value)+1)/2) * kDriveMultiplyer + kDriveMinSpeed)),
+          filterRotation.calculate(
+            m_saitekController.getRawAxis(SaitekX52Joystick.Axis.kZRot.value)),
+          false, //Turns on semiautonomous ball acquire
+          false), //Turns on semiautonomous targeter on Left Trigger
+        m_robotDrive).withName("DriveDefalutCommand"));    }
+  }
 
-  //   // Drive SlewRateLimiter
-  //   SlewRateLimiter filter = new SlewRateLimiter(1.75);
-  //   // Turn SlewRateLimiter
-  //   SlewRateLimiter filterRotation = new SlewRateLimiter(1.75);
-
-  //   m_robotDrive.setDefaultCommand(
-  //     new RunCommand(() -> m_robotDrive
-  //     // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
-  //       .performDrive(
-  //         filter.calculate(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)),
-  //         filterRotation.calculate(m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed)), 
-  //         m_driveController.getLeftBumper(), //Turns on semiautonomous ball acquire
-  //         m_driveController.getLeftTriggerAxis() > 0.5), //Turns on semiautonomous targeter on Left Trigger
-  //       m_robotDrive));
-  // }
-
-
-
-// Below code stops the xbox controller. In theory the doNothing thing doesn't need args but we couldn't make it work. Will refine latter
-  // public void beginAutonomous() {
-  //   // below does nothing
-  //   m_robotDrive.setDefaultCommand(
-  //     new RunCommand(() -> m_robotDrive
-  //       .doNothing(-m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed),
-  //       -m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kLowSpeed : kFullSpeed), m_driveController.getLeftBumper()),
-  //       m_robotDrive));
-  //   //m_robotDrive.getDefaultCommand().cancel();
-  // }
 
   private void configureSubsystems() {
 
     m_PD = new PowerDistribution(1, ModuleType.kRev);
 
-    m_driveController = new XboxController(OIConstants.kDriveControllerPort);
-
-    m_limelight = new LimelightSubsystem();
-
-    m_limelightTarget = new LimelightTargetSubsystem();
-
     m_internalBallDetector = new InternalBallDetectorSubsystem();
 
     m_statusLightSubsystem = new StatusLightSubsystem();
 
-    m_ballAcquire = new BallAcquirePlanSubsystem(m_limelight, m_PD, m_statusLightSubsystem);
-
-    m_ballShoot = new BallShooterPlanSubsystem(m_limelightTarget, m_statusLightSubsystem);
+    m_vision = new VisionSubsystem(m_statusLightSubsystem, m_PD);
     
-    m_robotDrive = new DriveSubsystem(m_ballAcquire, m_ballShoot);
+    m_robotDrive = new DriveSubsystem(m_vision);
 
     m_elevator = new ElevatorSubsystem();
 
     m_intakeRoller = new IntakeSubsystem();
+
     m_ballMover = new BallMoverSubsystem();
+
     m_shooter = new ShooterSubsystem();
 
   }
@@ -172,102 +171,124 @@ public class RobotContainer {
     * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
     */
     private void configureButtonBindings() {
-      if (OIConstants.kUseAuxController) {
-        // TODO - if we decide to use an aux controller then set that up
-        // I believe we decided against the aux controller, but double check with Cole/Jason -AC
-        return;
-      }
-      else {
+      if (OIConstants.useXboxController) {
+
+        // Create saitek button mapping
+
+        // We can chain the the methods as any command binders will return the button they were called on.
         /* ***** --- Elevator Subsystem --- ***** */
-        // Using the driver station, we know that "A" is button 1 and "Y" is button 4 (see constants)
       
-        // Raise elevator
-        new JoystickButton(m_driveController, OIConstants.kUpElevator)
-        .whenPressed(new InstantCommand(m_elevator::upElevator, m_elevator)); // TODO - <<<>>> This needs to be a whenHeld for slewrate limiter to work
-        // Stop raising elevator when button is released
-        new JoystickButton(m_driveController, OIConstants.kUpElevator)
-        .whenReleased(new InstantCommand(m_elevator::stopElevator, m_elevator));
+        ButtonBinder.bindButton(m_xboxController, OIConstants.XboxMappings.kUpElevator).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kUpElevator))
+        .whenActive(new InstantCommand(m_elevator::upElevator, m_elevator)) // Raise elevator
+        .whenInactive(new InstantCommand(m_elevator::stopElevator, m_elevator)); // Stop raising elevator when button is released
 
-        // Lower elevator
-        new JoystickButton(m_driveController, OIConstants.kDownElevator)
-        .whenPressed(new InstantCommand(m_elevator::downElevator, m_elevator));
-        // Stop lowering elevator when button is released
-        new JoystickButton(m_driveController, OIConstants.kDownElevator)
-        .whenReleased(new InstantCommand(m_elevator::stopElevator, m_elevator));
+        ButtonBinder.bindButton(m_xboxController, OIConstants.XboxMappings.kDownElevator).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kDownElevator))
+        .whenActive(new InstantCommand(m_elevator::downElevator, m_elevator)) // Lower elevator
+        .whenInactive(new InstantCommand(m_elevator::stopElevator, m_elevator)); // Stop lowering elevator when button is released
 
-        
         /* ***** --- Intake Subsystem --- ***** */
-        new JoystickButton(m_driveController, OIConstants.kIntake)
-        .whenPressed(new InstantCommand(m_intakeRoller::start, m_intakeRoller).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kIntake + " Pressed")));
-        // When button (B) on the joystick is held, the intake motor will start. Before lowering it will say "Joystick Button (2) Pressed"
-        new JoystickButton(m_driveController, OIConstants.kIntake)
-        .whenReleased(new InstantCommand(m_intakeRoller::stop, m_intakeRoller).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kIntake + " Released")));
-        // When button (B) on the joystick is released, the intake motor will stop. Before stopping it will say "Joystick Button (2) Released"
+        ButtonBinder.bindButton(m_xboxController, OIConstants.XboxMappings.kIntake).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kIntake))
+        .whenActive(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
+        .whenInactive(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
+        
+        // ButtonBinder.bindButton(m_driveController, OIConstants.kSemiAutoBallSeek) // Enable intake when we press down the SemiAutoBallSeek button
+        // .whenActive(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
+        // .whenInactive(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
         
         /* ***** --- BallMover Subsystem --- ***** */
-        new JoystickButton(m_driveController, OIConstants.kBallMover)
-        .whenPressed(new InstantCommand(m_ballMover::start, m_ballMover).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kBallMover + " Pressed")));
-        // When button (X) on the joystick is held, the ball mover will start. Before raising it will say "Joystick Button (3) Pressed"
-        new JoystickButton(m_driveController, OIConstants.kBallMover)
-        .whenReleased(new InstantCommand(m_ballMover::stop, m_ballMover).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kBallMover + " Released")));
-        // When button (X) on the joystick is released, the feeder arm will stop raising. Before stopping it will say "Joystick Button (10) Released"
-        new JoystickButton(m_driveController, OIConstants.kBallMoverReversed)
-        .whenPressed(new InstantCommand(m_ballMover::reverse, m_ballMover).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kBallMoverReversed + " Pressed")));
-        // When button (Back) on the joystick is pressed, the feeder will stop. Before stopping it will say "Joystick Button (10) Released"
-        new JoystickButton(m_driveController, OIConstants.kBallMoverReversed)
-        .whenReleased(new InstantCommand(m_ballMover::stop, m_ballMover).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kBallMoverReversed + " Released")));
-        // When button (Back) on the joystick is released, the feeder arm will stop raising. Before stopping it will say "Joystick Button (10) Released"
+        ButtonBinder.bindButton(m_xboxController, OIConstants.XboxMappings.kBallMover).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kBallMover))
+        .whenActive(new InstantCommand(m_ballMover::start, m_ballMover)) // Start ball mover
+        .whenInactive(new InstantCommand(m_ballMover::stop, m_ballMover)); // Stop ball mover
+        
+        ButtonBinder.bindButton(m_xboxController, OIConstants.XboxMappings.kBallMoverReversed).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kBallMoverReversed))
+        .whenActive(new InstantCommand(m_ballMover::reverse, m_ballMover)) // Reverse ball mover
+        .whenInactive(new InstantCommand(m_ballMover::stop, m_ballMover)); // Stop ball mover
         
   
         /* ***** --- Shooter Subsystem --- ***** */
-        new JoystickButton(m_driveController, OIConstants.kShooter)
-        .whenPressed(new InstantCommand(m_shooter::start, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooter + " Pressed")));
-        // When the right bumper (RB) on the joystick is held, the shooter will start.
-        new JoystickButton(m_driveController, OIConstants.kShooter)
-        .whenReleased(new InstantCommand(m_shooter::stop, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooter + " Released")));
-        // When the right bumber (RB) on the joystick is released, the shooter will stop.
-        new JoystickButton(m_driveController, OIConstants.kShooterReversed)
-        .whenPressed(new InstantCommand(m_shooter::reverse, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooterReversed + " Pressed")));
-        // When the start button on the xbox is pressed, the shooter will reverse.
-        new JoystickButton(m_driveController, OIConstants.kShooterReversed)
-        .whenReleased(new InstantCommand(m_shooter::stop, m_shooter).beforeStarting(() -> System.out.println("Joystick Button " + OIConstants.kShooterReversed + " Released")));
-        // When the start button on the joystick is released, the shooter will stop.
+        ButtonBinder.bindButton(m_xboxController, OIConstants.XboxMappings.kShooter).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kShooter))
+        .whenActive(new InstantCommand(m_shooter::start, m_shooter)) // Start shooter
+        .whenInactive(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
+
+        ButtonBinder.bindButton(m_xboxController, OIConstants.XboxMappings.kShooterReversed).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kShooterReversed))
+        .whenActive(new InstantCommand(m_shooter::reverse, m_shooter)) // Reverse shooter
+        .whenInactive(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
+
+        ButtonBinder.bindButton(m_xboxController, OIConstants.XboxMappings.kSemiAutoBallTarget).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kSemiAutoBallTarget))
+        .whenActive(new InstantCommand(m_shooter::start, m_shooter)) // Start shooter
+        .whenInactive(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
 
         /* Ball Aquire Lighting */
-        new JoystickButton(m_driveController, OIConstants.kSemiAutoBallSeek)
-        .whenPressed(new InstantCommand(m_ballAcquire::lightsOn, m_ballAcquire)); // TODO - <<<>>> Add light control command
-        new JoystickButton(m_driveController, OIConstants.kSemiAutoBallSeek)
-        .whenReleased(new InstantCommand(m_ballAcquire::lightsOff, m_ballAcquire));
+        ButtonBinder.bindButton(m_xboxController, OIConstants.XboxMappings.kSemiAutoBallSeek).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kSemiAutoBallSeek))
+        .whenActive(new InstantCommand(m_vision::lightsOn)) // Lights on
+        .whenInactive(new InstantCommand(m_vision::lightsOff)); // Lights off
+      } else if (OIConstants.useSaitekController) {
+        
+        // Create xbox button mapping
+
+        // We can chain the the methods as any command binders will return the button they were called on.
+        /* ***** --- Elevator Subsystem --- ***** */
+      
+        ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kUpElevator).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kUpElevator))
+        .whenActive(new InstantCommand(m_elevator::upElevator, m_elevator)) // Raise elevator
+        .whenInactive(new InstantCommand(m_elevator::stopElevator, m_elevator)); // Stop raising elevator when button is released
+
+        ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kDownElevator).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kDownElevator))
+        .whenActive(new InstantCommand(m_elevator::downElevator, m_elevator)) // Lower elevator
+        .whenInactive(new InstantCommand(m_elevator::stopElevator, m_elevator)); // Stop lowering elevator when button is released
+
+        /* ***** --- Intake Subsystem --- ***** */
+        ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kIntake).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kIntake))
+        .whenActive(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
+        .whenInactive(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
+
+        ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kIntakeReversed).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kIntakeReversed))
+        .whenActive(new InstantCommand(m_intakeRoller::reverse, m_ballMover)) // Reverse ball mover
+        .whenInactive(new InstantCommand(m_intakeRoller::stop, m_ballMover)); // Stop ball mover
+        
+        ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kSemiAutoBallSeek).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kSemiAutoBallSeek)) // Enable intake when we press down the SemiAutoBallSeek button
+        .whenActive(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
+        .whenInactive(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
+        
+        /* ***** --- BallMover Subsystem --- ***** */
+        ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kBallMover).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kBallMover))
+        .whenActive(new InstantCommand(m_ballMover::start, m_ballMover)) // Start ball mover
+        .whenInactive(new InstantCommand(m_ballMover::stop, m_ballMover)); // Stop ball mover
+        
+        ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kBallMoverReversed).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kBallMoverReversed))
+        .whenActive(new InstantCommand(m_ballMover::reverse, m_ballMover)) // Reverse ball mover
+        .whenInactive(new InstantCommand(m_ballMover::stop, m_ballMover)); // Stop ball mover
+        
+  
+        /* ***** --- Shooter Subsystem --- ***** */
+        ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kShooter).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kShooter))
+        .whenActive(new InstantCommand(m_shooter::start, m_shooter)) // Start shooter
+        .whenInactive(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
+
+        ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kShooterReversed).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kShooterReversed))
+        .whenActive(new InstantCommand(m_shooter::reverse, m_shooter)) // Reverse shooter
+        .whenInactive(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
+
+        ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kSemiAutoBallTarget).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kSemiAutoBallTarget))
+        .whenActive(new InstantCommand(m_shooter::start, m_shooter)) // Start shooter
+        .whenInactive(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
+
+        /* Ball Aquire Lighting */
+        ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kSemiAutoBallSeek).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kSemiAutoBallSeek))
+        .whenActive(new InstantCommand(m_vision::lightsOn)) // Lights on
+        .whenInactive(new InstantCommand(m_vision::lightsOff)); // Lights off
       }
     }
 
-    public Command getAutonomousCommand() { // Autonomous code goes here
-      //return new AutonomousCommand(m_robotDrive, 0.5, m_shooter, m_ballMover);
+    public Command getAutonomousCommands() { // Autonomous code goes here
       return new SequentialCommandGroup(
         new Shoot(m_shooter, m_ballMover, 1000, 3000), //Warmup time, Total duration
-        new SeekBall(m_robotDrive, m_intakeRoller, m_ballAcquire, m_limelight, 1000, 5000, m_internalBallDetector, m_PD), //Time with no ball seen before ending, Total duration
-        new Target(m_robotDrive, m_ballShoot, m_limelightTarget, 1000, 3000), // Not seen timeout, total duration.
+        new SeekBall(m_robotDrive, m_intakeRoller, m_vision, m_internalBallDetector, 500, 3000), //Time with no ball seen before ending, Total duration
+        new Target(m_robotDrive, m_vision, 1000, 3000), // Not seen timeout, total duration.
         new Shoot(m_shooter, m_ballMover, 1000, 3000), //Warmup time, Total duration
         new DriveStraightWithDelay(m_robotDrive, m_internalBallDetector, 500, .5, 0) // duration, speed, delay. 1000 worked at scrimage. keeping it at 2000 to be safe.
       );
     }
 
-    public Command getTeleopCommand() { //Returns commands we want scheduled durring teleoperated period
-      // Drive SlewRateLimiter
-      SlewRateLimiter filter = new SlewRateLimiter(1.75);
-      // Turn SlewRateLimiter
-      SlewRateLimiter filterRotation = new SlewRateLimiter(1.75);
-
-      return new RunCommand(() -> m_robotDrive
-      // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
-        .performDrive(
-          filterRotation.calculate(
-            -m_driveController.getRightX() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kTurnLowSpeed : kTurnFullSpeed)),
-          filter.calculate(
-            m_driveController.getLeftY() * (m_driveController.getRawAxis(OIConstants.kOverdriveRightTriggerAxis) < 0.5 ? kDriveLowSpeed : kDriveFullSpeed)), 
-          m_driveController.getLeftBumper(), //Turns on semiautonomous ball acquire
-          m_driveController.getLeftTriggerAxis() > 0.5), //Turns on semiautonomous targeter on Left Trigger
-        m_robotDrive);
-    }
   }
 

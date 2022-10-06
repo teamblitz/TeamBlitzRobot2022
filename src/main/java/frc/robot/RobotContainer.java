@@ -136,7 +136,7 @@ public class RobotContainer {
           filter.calculate(
             -m_saitekController.getY() * (((-m_saitekController.getRawAxis(SaitekX52Joystick.Axis.kThrotle.value)+1)/2) * kDriveMultiplyer + kDriveMinSpeed)),
           filterRotation.calculate(
-            m_saitekController.getRawAxis(SaitekX52Joystick.Axis.kZRot.value)),
+            kTurnLowSpeed * m_saitekController.getRawAxis(SaitekX52Joystick.Axis.kZRot.value)),
           false, //Turns on semiautonomous ball acquire
           false), //Turns on semiautonomous targeter on Left Trigger
         m_robotDrive).withName("DriveDefalutCommand"));    }
@@ -166,7 +166,7 @@ public class RobotContainer {
   }
 
   public void buildCommands () {
-    intakeCommand = new StartEndCommand(() -> {m_intakeRoller.start(); m_ballMover.startIntake();}, () -> {m_intakeRoller.stop(); m_ballMover.start();}, m_intakeRoller, m_ballMover);
+    intakeCommand = new StartEndCommand(m_intakeRoller::start, m_intakeRoller::stop, m_intakeRoller);
 
   }
 
@@ -249,11 +249,11 @@ public class RobotContainer {
         .whileActiveOnce(intakeCommand); // Start intake
 
         ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kIntakeReversed).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kIntakeReversed))
-        .whileActiveOnce(intakeCommand); // Start intake
+        .whenActive(new InstantCommand(m_intakeRoller::reverse, m_intakeRoller)) // Start intake
+        .whenInactive(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
         
         ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kSemiAutoBallSeek).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kSemiAutoBallSeek)) // Enable intake when we press down the SemiAutoBallSeek button
-        .whenActive(new InstantCommand(m_intakeRoller::start, m_intakeRoller)) // Start intake
-        .whenInactive(new InstantCommand(m_intakeRoller::stop, m_intakeRoller)); // Stop intake
+        .whileActiveOnce(intakeCommand); // Start intake
         
         /* ***** --- BallMover Subsystem --- ***** */
         ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kBallMover).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kBallMover))

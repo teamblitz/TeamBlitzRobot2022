@@ -77,12 +77,12 @@ public final class Constants {
             public static final SaitekX52Joystick.Button kUpElevator = SaitekX52Joystick.Button.kT1; 
             public static final SaitekX52Joystick.Button kDownElevator = SaitekX52Joystick.Button.kT2;
             
-            public static final SaitekX52Joystick.Button kIntake = SaitekX52Joystick.Button.kUpperTrigger1;
-            public static final SaitekX52Joystick.Button kIntakeReversed = SaitekX52Joystick.Button.kI;
-            public static final SaitekX52Joystick.Button kBallMover = SaitekX52Joystick.Button.kLowerTrigger;
-            public static final SaitekX52Joystick.Button kBallMoverReversed = SaitekX52Joystick.Button.kI;
-            public static final SaitekX52Joystick.Button kShooter = SaitekX52Joystick.Button.kFire;  
-            public static final SaitekX52Joystick.Button kShooterReversed = SaitekX52Joystick.Button.kI;
+            public static final SaitekX52Joystick.Button kIntake = SaitekX52Joystick.Button.kFire;
+            public static final SaitekX52Joystick.Button kIntakeReversed = SaitekX52Joystick.Button.kHatDown;
+            public static final SaitekX52Joystick.Button kBallMover = SaitekX52Joystick.Button.kUpperTrigger1;
+            public static final SaitekX52Joystick.Button kBallMoverReversed = SaitekX52Joystick.Button.kHatDown;
+            public static final SaitekX52Joystick.Button kShooter = SaitekX52Joystick.Button.kLowerTrigger;  
+            public static final SaitekX52Joystick.Button kShooterReversed = SaitekX52Joystick.Button.kHatDown;
             
             public static final SaitekX52Joystick.Button kSemiAutoBallSeek = SaitekX52Joystick.Button.kA;
             public static final SaitekX52Joystick.Button kSemiAutoBallTarget = SaitekX52Joystick.Button.kB;
@@ -115,7 +115,7 @@ public final class Constants {
 
     public static final class ShooterConstants {
         public static final int kSparkMotorPortShooter = 12;
-        public static final float kSpeed = 0.45f;
+        public static final float kSpeed = 0.75f;
         public static final float kReverseSpeed = -0.3f;
     }
     public static class TelementryConstants {

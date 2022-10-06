@@ -68,7 +68,7 @@ public class BallMoverSubsystem extends SubsystemBase {
 
   // Sets the ball mover for intake
   public void startIntake() {
-    set(.3);
+    set(.5);
   }
 
   // This could reverse BallMover Wheels

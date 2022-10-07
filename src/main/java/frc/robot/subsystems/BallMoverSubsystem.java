@@ -76,7 +76,7 @@ public class BallMoverSubsystem extends SubsystemBase {
     if (Robot.isSimulation()) {
       System.out.println("Ball Mover Reverse");
       }
-    set(-.3);
+    set(-.5);
 
    }
 

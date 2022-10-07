@@ -14,6 +14,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -91,6 +93,11 @@ public class DriveSubsystem extends SubsystemBase {
   status.addMotor(m_rightMotor, "rightDriveM");
   status.addMotor(m_leftMotorSlave, "leftDriveS");
   status.addMotor(m_rightMotorSlave, "rightDriveS");
+  ShuffleboardTab tab = Shuffleboard.getTab("Motors");
+  tab.addNumber("LeftDriveM", ()->m_leftMotor.getEncoder().getVelocity());
+  tab.addNumber("LeftDriveS", ()->m_leftMotorSlave.getEncoder().getVelocity());
+  tab.addNumber("RightDriveM", ()->m_rightMotor.getEncoder().getVelocity());
+  tab.addNumber("RightDriveS", ()->m_rightMotorSlave.getEncoder().getVelocity());
 }
 
   @Override

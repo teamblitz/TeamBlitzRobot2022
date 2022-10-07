@@ -188,8 +188,8 @@ public class VisionSubsystem extends SubsystemBase{
                 driveSpeedFraction = Math.min(m_maxDriveSpeedFraction, driveSpeedFraction);
         
                 // negate steering adjust because camera and ball feeder face the rear
-                m_rot = m_autoRotationScaleFactor * -steering_adjust;
-                m_fwd = m_autoMoveScaleFactor * driveSpeedFraction;
+                m_rot = m_autoRotationScaleFactor * steering_adjust;
+                m_fwd = m_autoMoveScaleFactor * -driveSpeedFraction;
                 
                 // we could post the debug info to the Shuffleboard if we wanted
                 SmartDashboard.putNumber("AutoMove", (m_autoRotationScaleFactor * driveSpeedFraction));

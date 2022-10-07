@@ -1,21 +1,23 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxRelativeEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.StatusManager;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.TelementryConstants;
 
 public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   
   private final CANSparkMax m_shooter = new CANSparkMax(ShooterConstants.kSparkMotorPortShooter, MotorType.kBrushless);
+
+  private final RelativeEncoder m_encoder = m_shooter.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, 42);
   
   private final StatusManager status = StatusManager.getInstance();
 
@@ -35,6 +37,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     status.addMotor(m_shooter, "Shoot");
 
     Shuffleboard.getTab("test").addNumber("Shooter faults", m_shooter::getFaults);
+    Shuffleboard.getTab("Video").addNumber("Shooter rpm", ()->m_encoder.getVelocity());
   }
   // Enables Shooter Wheel
   public void start() {

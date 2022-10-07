@@ -66,6 +66,9 @@ public class SaitekX52Joystick extends GenericHID {
         kThrotleKnobRight(25),
         kThrotleKnobDown(26),
         kThrotleKnobLeft(27),
+        kModeRed(28),
+        kModePink(29),
+        kModeBlue(30),
         kI(31);
 
 

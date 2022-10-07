@@ -7,12 +7,12 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DriveStraightWithDelay;
 import frc.robot.commands.SeekBall;
@@ -95,14 +94,17 @@ public class RobotContainer {
   // Turn SlewRateLimiter
   private final SlewRateLimiter filterRotation = new SlewRateLimiter(1.75);
 
+  private final ShuffleboardTab cmdTab = Shuffleboard.getTab("Tests");
+
   public RobotContainer() {
     configureSubsystems();
     buildCommands();
     setDefaultCommands();
     CameraServer.startAutomaticCapture();
-    m_vision.lightsOff(); // Turn off our lights/
+    m_vision.lightsOn(); // Turn off our lights/
     
-    SmartDashboard.putData("Drive test", new DriveTest(m_robotDrive));
+    cmdTab.add("Drive test", new DriveTest(m_robotDrive));
+    cmdTab.add("Drive test rpm", new DriveTest(m_robotDrive));
     
     if (OIConstants.useXboxController) m_xboxController = new XboxController(OIConstants.kDriveControllerPort);
     else if (OIConstants.useSaitekController) m_saitekController = new SaitekX52Joystick(OIConstants.kDriveControllerPort);
@@ -134,11 +136,13 @@ public class RobotContainer {
         // To remove slew rate limiter remove the filter.calculate(), and filterRotation.calculate()
         .performDrive(
           filter.calculate(
-            -m_saitekController.getY() * (((-m_saitekController.getRawAxis(SaitekX52Joystick.Axis.kThrotle.value)+1)/2) * kDriveMultiplyer + kDriveMinSpeed)),
+            // -m_saitekController.getY() * (((-m_saitekController.getRawAxis(SaitekX52Joystick.Axis.kThrotle.value)+1)/2) * kDriveMultiplyer + kDriveMinSpeed)
+            -m_saitekController.getY() * (m_saitekController.getRawButton(SaitekX52Joystick.Button.kModeBlue.value) ? 1.0 : m_saitekController.getRawButton(SaitekX52Joystick.Button.kModeRed.value) ? .5 : .75)
+            ),
           filterRotation.calculate(
             kTurnLowSpeed * m_saitekController.getRawAxis(SaitekX52Joystick.Axis.kZRot.value)),
-          false, //Turns on semiautonomous ball acquire
-          false), //Turns on semiautonomous targeter on Left Trigger
+          m_saitekController.getRawButton(OIConstants.SaitekMappings.kSemiAutoBallSeek.value) || m_buttonBoard.getRawButton(OIConstants.ButtonBoxMappings.kSemiAutoBallSeek), //Turns on semiautonomous ball acquire
+          m_saitekController.getRawButton(OIConstants.SaitekMappings.kSemiAutoBallTarget.value) || m_buttonBoard.getRawButton(OIConstants.ButtonBoxMappings.kSemiAutoBallTarget)), //Turns on semiautonomous targeter on Left Trigger
         m_robotDrive).withName("DriveDefalutCommand"));    }
   }
 

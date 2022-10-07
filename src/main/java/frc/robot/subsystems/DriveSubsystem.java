@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ExternalFollower;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -36,6 +37,8 @@ public class DriveSubsystem extends SubsystemBase {
   private final DifferentialDrive m_drive;
 
   private final StatusManager status = StatusManager.getInstance();
+
+  private final AHRS m_gyro = new AHRS();
 
   /**
    * Creates a new DriveSubsystem.
@@ -98,6 +101,11 @@ public class DriveSubsystem extends SubsystemBase {
   tab.addNumber("LeftDriveS", ()->m_leftMotorSlave.getEncoder().getVelocity());
   tab.addNumber("RightDriveM", ()->m_rightMotor.getEncoder().getVelocity());
   tab.addNumber("RightDriveS", ()->m_rightMotorSlave.getEncoder().getVelocity());
+
+  Shuffleboard.getTab("Drive").addBoolean("Driving Straight ", ()->wasDrivingStraight);
+  Shuffleboard.getTab("Drive").addNumber("Driving Straight Angle", ()->wantedAngle);
+
+  
 }
 
   @Override
@@ -112,23 +120,23 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rot the commanded rotation
    */
 
-    public void performDrive(final double fwd, final double rot, final boolean semiAutonomousState, final boolean targetingState) {
-  
-      // decide who is in control and execute their drive operations
-      if(semiAutonomousState)
-      {
-        arcadeDrive(m_vision.ballAcquirePlan.getFwd(), m_vision.ballAcquirePlan.getRot(), false); // Again, our arcade drive is reversed for some reason, so we reverse this.
-        m_vision.ballAcquirePlan.statusLights();
-      }
-      else if (targetingState){
-        arcadeDrive(m_vision.ballShooterPlan.getFwd(), m_vision.ballShooterPlan.getRot(), false);
-        m_vision.ballShooterPlan.statusLights();
-      }
-      else
-      {
-        arcadeDrive(fwd, rot, true);
-        m_vision.statusLightsOff(); // Turn off status lights
-      }
+  public void performDrive(final double fwd, final double rot, final boolean semiAutonomousState, final boolean targetingState) {
+
+    // decide who is in control and execute their drive operations
+    if(semiAutonomousState)
+    {
+      arcadeDrive(m_vision.ballAcquirePlan.getFwd(), m_vision.ballAcquirePlan.getRot(), false); // Again, our arcade drive is reversed for some reason, so we reverse this.
+      m_vision.ballAcquirePlan.statusLights();
+    }
+    else if (targetingState){
+      arcadeDrive(m_vision.ballShooterPlan.getFwd(), m_vision.ballShooterPlan.getRot(), false);
+      m_vision.ballShooterPlan.statusLights();
+    }
+    else
+    {
+      arcadeDrive(fwd, rot, true);
+      m_vision.statusLightsOff(); // Turn off status lights
+    }
   }
 
   /**
@@ -137,9 +145,16 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fwd the commanded forward movement
    * @param rot the commanded rotation
    */
-public void arcadeDrive(final double fwd, final double rot, boolean squareInputs) {
-    m_drive.arcadeDrive(MathUtil.clamp(fwd, -1, 1), MathUtil.clamp(rot, -1, 1), squareInputs);
-  }
+  public void arcadeDrive(final double fwd, final double rot, boolean squareInputs) {
+      if (!wasDrivingStraight && rot == 0) {
+        wasDrivingStraight = true;
+        wantedAngle = m_gyro.getAngle();
+      } else if (rot != 0) {
+        wasDrivingStraight = false;
+        return;
+      }
+      drive_straight_gyro(MathUtil.clamp(fwd, -1, 1));
+    }
 
   /**
    * Controls the left and right sides of the drive directly with voltages.
@@ -156,5 +171,15 @@ public void arcadeDrive(final double fwd, final double rot, boolean squareInputs
   public void tankDrive(final double leftSpeed, final double rightSpeed) {
     // Instead of calling tankDrive, call set(ControlMode.Velocity, ...) on each master motor directly.
     m_drive.tankDrive(leftSpeed, rightSpeed);
+  }
+
+  private double kP = 0.05;
+  private boolean wasDrivingStraight;
+  private double wantedAngle;
+
+  public void drive_straight_gyro(double speed) {
+    double error = wantedAngle-m_gyro.getAngle();  // Our target angle is zero
+    double turn_power = kP * error;
+    arcadeDrive(speed, -turn_power, false);
   }
 }

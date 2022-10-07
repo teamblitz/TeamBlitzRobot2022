@@ -109,7 +109,7 @@ public class DriveSubsystem extends SubsystemBase {
   Shuffleboard.getTab("Drive").addNumber("Driving Straight Angle", ()->wantedAngle);
   Shuffleboard.getTab("Drive").addNumber("Gyro Angle", ()->m_gyro.getAngle());
 
-  kPValue = Shuffleboard.getTab("Drive").add("P", .01).getEntry();
+  kPValue = Shuffleboard.getTab("Drive").add("P", .008).getEntry();
   
 }
 
@@ -188,7 +188,7 @@ public class DriveSubsystem extends SubsystemBase {
   private double wantedAngle;
 
   public void drive_straight_gyro(double speed) {
-    kP = kPValue.getDouble(.01);
+    kP = kPValue.getDouble(.008);
     double error = wantedAngle-m_gyro.getAngle();  // Our target angle is zero
     double turn_power = kP * error;
     m_drive.arcadeDrive(speed, MathUtil.clamp(turn_power, -0.1, .1), false);

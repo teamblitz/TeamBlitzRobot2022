@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkMax.ExternalFollower;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -39,6 +40,8 @@ public class DriveSubsystem extends SubsystemBase {
   private final StatusManager status = StatusManager.getInstance();
 
   private final AHRS m_gyro = new AHRS();
+
+  private final NetworkTableEntry kPValue;
 
   /**
    * Creates a new DriveSubsystem.
@@ -104,7 +107,9 @@ public class DriveSubsystem extends SubsystemBase {
 
   Shuffleboard.getTab("Drive").addBoolean("Driving Straight ", ()->wasDrivingStraight);
   Shuffleboard.getTab("Drive").addNumber("Driving Straight Angle", ()->wantedAngle);
+  Shuffleboard.getTab("Drive").addNumber("Gyro Angle", ()->m_gyro.getAngle());
 
+  kPValue = Shuffleboard.getTab("Drive").add("P", .05).getEntry();
   
 }
 
@@ -145,16 +150,19 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fwd the commanded forward movement
    * @param rot the commanded rotation
    */
-  public void arcadeDrive(final double fwd, final double rot, boolean squareInputs) {
+  public void arcadeDrive(double fwd, double rot, boolean squareInputs) {
+    rot = MathUtil.applyDeadband(rot, 0.05);
+    if (fwd!=0){
       if (!wasDrivingStraight && rot == 0) {
-        wasDrivingStraight = true;
-        wantedAngle = m_gyro.getAngle();
-      } else if (rot != 0) {
-        wasDrivingStraight = false;
-        return;
-      }
-      drive_straight_gyro(MathUtil.clamp(fwd, -1, 1));
+          wasDrivingStraight = true;
+          wantedAngle = m_gyro.getAngle();
+        } else if (rot != 0) {
+          wasDrivingStraight = false;
+          return;
+        }
+        drive_straight_gyro(MathUtil.clamp(fwd, -1, 1));
     }
+  }
 
   /**
    * Controls the left and right sides of the drive directly with voltages.
@@ -178,6 +186,7 @@ public class DriveSubsystem extends SubsystemBase {
   private double wantedAngle;
 
   public void drive_straight_gyro(double speed) {
+    kP = kPValue.getDouble(.05);
     double error = wantedAngle-m_gyro.getAngle();  // Our target angle is zero
     double turn_power = kP * error;
     arcadeDrive(speed, -turn_power, false);

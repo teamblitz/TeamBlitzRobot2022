@@ -37,7 +37,7 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
     status.addMotor(m_shooter, "Shoot");
 
     Shuffleboard.getTab("test").addNumber("Shooter faults", m_shooter::getFaults);
-    Shuffleboard.getTab("Video").addNumber("Shooter rpm", ()->m_encoder.getVelocity());
+    Shuffleboard.getTab("Video").addNumber("Shooter rpm", ()->m_encoder.getVelocityConversionFactor());
   }
   // Enables Shooter Wheel
   public void start() {

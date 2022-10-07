@@ -109,7 +109,7 @@ public class DriveSubsystem extends SubsystemBase {
   Shuffleboard.getTab("Drive").addNumber("Driving Straight Angle", ()->wantedAngle);
   Shuffleboard.getTab("Drive").addNumber("Gyro Angle", ()->m_gyro.getAngle());
 
-  kPValue = Shuffleboard.getTab("Drive").add("P", .05).getEntry();
+  kPValue = Shuffleboard.getTab("Drive").add("P", .01).getEntry();
   
 }
 
@@ -152,16 +152,18 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void arcadeDrive(double fwd, double rot, boolean squareInputs) {
     rot = MathUtil.applyDeadband(rot, 0.05);
-    if (fwd!=0){
-      if (!wasDrivingStraight && rot == 0) {
-          wasDrivingStraight = true;
-          wantedAngle = m_gyro.getAngle();
-        } else if (rot != 0) {
-          wasDrivingStraight = false;
-          return;
-        }
-        drive_straight_gyro(MathUtil.clamp(fwd, -1, 1));
+
+    if (!wasDrivingStraight && rot == 0 && fwd !=0) {
+        wasDrivingStraight = true;
+        wantedAngle = m_gyro.getAngle();
+    } else if (rot != 0 || fwd==0){
+      wasDrivingStraight = false;
     }
+    if (wasDrivingStraight) {
+      drive_straight_gyro(MathUtil.clamp(fwd, -1, 1));
+      return;
+    }  
+    m_drive.arcadeDrive(MathUtil.clamp(fwd, -1, 1), MathUtil.clamp(rot, -1, 1));
   }
 
   /**
@@ -186,9 +188,9 @@ public class DriveSubsystem extends SubsystemBase {
   private double wantedAngle;
 
   public void drive_straight_gyro(double speed) {
-    kP = kPValue.getDouble(.05);
+    kP = kPValue.getDouble(.01);
     double error = wantedAngle-m_gyro.getAngle();  // Our target angle is zero
     double turn_power = kP * error;
-    arcadeDrive(speed, -turn_power, false);
+    m_drive.arcadeDrive(speed, MathUtil.clamp(turn_power, -0.1, .1), false);
   }
 }

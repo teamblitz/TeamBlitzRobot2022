@@ -60,7 +60,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable{
     if (Robot.isSimulation()) {
       System.out.println("Intake Start");
     }
-    m_intakeMotor.set(.75);
+    m_intakeMotor.set(1);
     status.logRevError(m_intakeMotor);
   }
 
@@ -76,7 +76,7 @@ public class IntakeSubsystem extends SubsystemBase implements AutoCloseable{
     if (Robot.isSimulation()) {
       System.out.println("Intake Reverse");
     }
-    m_intakeMotor.set(-.75);
+    m_intakeMotor.set(-1);
     status.logRevError(m_intakeMotor);
   }
 

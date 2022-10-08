@@ -151,7 +151,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rot the commanded rotation
    */
   public void arcadeDrive(double fwd, double rot, boolean squareInputs) {
-    rot = MathUtil.applyDeadband(rot, 0.10);
+    rot = MathUtil.applyDeadband(rot, 0.05);
 
     if (!wasDrivingStraight && rot == 0 && fwd !=0) {
         wasDrivingStraight = true;

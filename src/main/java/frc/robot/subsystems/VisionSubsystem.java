@@ -1,4 +1,4 @@
-6package frc.robot.subsystems;
+package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -211,7 +211,7 @@ public class VisionSubsystem extends SubsystemBase{
         private final double m_min_command = 0.05f;
         private final double m_maxHeadingError = 10.0;
         private final double m_maxOffsetFraction = 2.0;
-        private final double m_maxDriveSpeedFraction = 0.45; // how fast we allow the autodrive code to dictate we want to go
+        private final double m_maxDriveSpeedFraction = 0.30; // how fast we allow the autodrive code to dictate we want to go
 
         private final LimelightCamera m_limelight;
         // We do have this instantiated in the outer class. This will over-ride that instantation for within this class,
@@ -273,9 +273,9 @@ public class VisionSubsystem extends SubsystemBase{
                 driveSpeedFraction = Math.min(m_maxDriveSpeedFraction, driveSpeedFraction);
                 
                 // DON'T negate steering adjust because target camera faces the front
-                m_rot = m_autoRotationScaleFactor * steering_adjust * -1;
+                m_rot = m_autoRotationScaleFactor * steering_adjust * 1;
                 // -1 below flips the drive direction compared to BallAcquire which faces the rear instead of the front
-                m_fwd = m_autoMoveScaleFactor * driveSpeedFraction * driveDirection * -1;
+                m_fwd = m_autoMoveScaleFactor * driveSpeedFraction * driveDirection * 1;
 
                 // we could post the debug info to the Shuffleboard if we wanted
                 SmartDashboard.putNumber("AutoTarget", (m_autoRotationScaleFactor * driveSpeedFraction * -1));

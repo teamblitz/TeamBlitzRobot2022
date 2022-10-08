@@ -107,7 +107,7 @@ public class RobotContainer {
     setDefaultCommands();
     driveCamera = CameraServer.startAutomaticCapture();
     driveCamera.setResolution(320, 240);
-    m_vision.lightsOn(); // Turn off our lights/
+    m_vision.lightsOff(); // Turn off our lights/
     
     cmdTab.add("Drive test", new DriveTest(m_robotDrive));
     cmdTab.add("Drive test rpm", new DriveTest(m_robotDrive));
@@ -295,9 +295,9 @@ public class RobotContainer {
 
         NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight-target");
 
-        ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kSemiAutoBallTarget).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kSemiAutoBallTarget))
-        .whenActive(new InstantCommand(()->limelightTable.getEntry("ledMode").setNumber(3)))
-        .whenInactive(new InstantCommand(()->limelightTable.getEntry("ledMode").setNumber(1)));
+        // ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kSemiAutoBallTarget).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kSemiAutoBallTarget))
+        // .whenActive(new InstantCommand(()->limelightTable.getEntry("ledMode").setNumber(3)))
+        // .whenInactive(new InstantCommand(()->limelightTable.getEntry("ledMode").setNumber(1)));
       }
     }
 

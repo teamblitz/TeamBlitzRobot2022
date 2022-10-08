@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+6package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -125,11 +125,11 @@ public class VisionSubsystem extends SubsystemBase{
         // Should idealy be in constants.
         private final double m_autoRotationScaleFactor = 0.3;
         private final double m_autoMoveScaleFactor = 0.9;
-        private final double m_Kp = -0.1f; // Why are we using the float indicator here? this variable is a double.
+        private final double m_Kp = -0.1f;
         private final double m_min_command = 0.05f;
         private final double m_maxHeadingError = 10.0;
         private final double m_maxAreaFraction = 25.0;
-        private final double m_maxDriveSpeedFraction = 0.45; // how fast we allow the autodrive code to dictate we want to go
+        private final double m_maxDriveSpeedFraction = 0.30; // how fast we allow the autodrive code to dictate we want to go
 
         private final LimelightCamera m_limelight;
         // We do have this instantiated in the outer class. This will over-ride that instantation for within this class,

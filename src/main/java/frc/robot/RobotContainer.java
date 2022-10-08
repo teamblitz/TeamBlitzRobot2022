@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -98,12 +99,15 @@ public class RobotContainer {
 
   private final ShuffleboardTab cmdTab = Shuffleboard.getTab("Tests");
 
+  private final UsbCamera driveCamera;
+
   public RobotContainer() {
     configureSubsystems();
     buildCommands();
     setDefaultCommands();
-    CameraServer.startAutomaticCapture();
-    m_vision.lightsOff(); // Turn off our lights/
+    driveCamera = CameraServer.startAutomaticCapture();
+    driveCamera.setResolution(320, 240);
+    m_vision.lightsOn(); // Turn off our lights/
     
     cmdTab.add("Drive test", new DriveTest(m_robotDrive));
     cmdTab.add("Drive test rpm", new DriveTest(m_robotDrive));

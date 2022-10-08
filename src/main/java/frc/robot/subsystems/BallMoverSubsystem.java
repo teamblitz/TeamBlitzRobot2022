@@ -57,7 +57,7 @@ public class BallMoverSubsystem extends SubsystemBase {
     if (Robot.isSimulation()) {
       System.out.println("Ball Mover Start");
       }
-    set(.7);
+    set(.65);
   }
 
   private void set(double speed) {

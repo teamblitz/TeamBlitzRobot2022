@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -101,7 +103,7 @@ public class RobotContainer {
     buildCommands();
     setDefaultCommands();
     CameraServer.startAutomaticCapture();
-    m_vision.lightsOn(); // Turn off our lights/
+    m_vision.lightsOff(); // Turn off our lights/
     
     cmdTab.add("Drive test", new DriveTest(m_robotDrive));
     cmdTab.add("Drive test rpm", new DriveTest(m_robotDrive));
@@ -235,7 +237,7 @@ public class RobotContainer {
         .whenInactive(new InstantCommand(m_vision::lightsOff)); // Lights off
       } else if (OIConstants.useSaitekController) {
         
-        // Create xbox button mapping
+        // Create saitex button mapping
 
         // We can chain the the methods as any command binders will return the button they were called on.
         /* ***** --- Elevator Subsystem --- ***** */
@@ -286,6 +288,12 @@ public class RobotContainer {
         ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kSemiAutoBallSeek).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kSemiAutoBallSeek))
         .whenActive(new InstantCommand(m_vision::lightsOn)) // Lights on
         .whenInactive(new InstantCommand(m_vision::lightsOff)); // Lights off
+
+        NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight-target");
+
+        ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kSemiAutoBallTarget).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kSemiAutoBallTarget))
+        .whenActive(new InstantCommand(()->limelightTable.getEntry("ledMode").setNumber(3)))
+        .whenInactive(new InstantCommand(()->limelightTable.getEntry("ledMode").setNumber(1)));
       }
     }
 

@@ -16,7 +16,7 @@ public class DriveStraightWithDelay extends CommandBase {
 	private final double speed;
 	
 	private long startTime;
-	private boolean driveBack; // Do we need to drive back? if our ball detector was active recently then this won't activate as we got a ball
+	private boolean driveBack = true; // Do we need to drive back? if our ball detector was active recently then this won't activate as we got a ball
 	
 
 	public DriveStraightWithDelay(final DriveSubsystem driveSubsystem, InternalBallDetectorSubsystem internalBallDetectorSubsystem, final long duration, final double voltage, final long delay)
@@ -37,7 +37,7 @@ public class DriveStraightWithDelay extends CommandBase {
 	public void initialize() {
 		System.out.println("Starting Drive");
 		startTime = System.currentTimeMillis();
-		driveBack = internalBallDetectorSubsystem.lastSeen() < 7000; //If we haven't seen the ball via internal detector in 7 seconds we need to drive backwords as our bot didn't pick up the ball
+		// driveBack = internalBallDetectorSubsystem.lastSeen() < 7000; //If we haven't seen the ball via internal detector in 7 seconds we need to drive backwords as our bot didn't pick up the ball
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -45,14 +45,14 @@ public class DriveStraightWithDelay extends CommandBase {
 	public void execute() {
 		final long Cur_Time = System.currentTimeMillis();
         if ((Cur_Time - startTime > delay) && driveBack) {
-            driveSubsystem.tankDrive(speed, -speed);
+            driveSubsystem.arcadeDrive(speed, 0, false);
         }
 	}
 
     // Called when isFinished returns ture
 	@Override
     public void end(boolean interrupted) {
-        driveSubsystem.tankDrive(0, 0);
+        driveSubsystem.arcadeDrive(0, 0, false);
         System.out.println("Ending DriveStraitWith Delay");
     }
 

@@ -89,7 +89,7 @@ public class RobotContainer {
 
   
 
-  private final double kTurnLowSpeed = 0.45;
+  private final double kTurnLowSpeed = 0.50;
   private final double kTurnFullSpeed = .60;
 
   // Drive SlewRateLimiter
@@ -307,7 +307,7 @@ public class RobotContainer {
         new SeekBall(m_robotDrive, m_intakeRoller, m_vision, m_internalBallDetector, 500, 3000), //Time with no ball seen before ending, Total duration
         new Target(m_robotDrive, m_vision, 1000, 3000), // Not seen timeout, total duration.
         new Shoot(m_shooter, m_ballMover, 1000, 3000), //Warmup time, Total duration
-        new DriveStraightWithDelay(m_robotDrive, m_internalBallDetector, 500, .5, 0) // duration, speed, delay. 1000 worked at scrimage. keeping it at 2000 to be safe.
+        new DriveStraightWithDelay(m_robotDrive, m_internalBallDetector, 500, -.5, 0) // duration, speed, delay. 1000 worked at scrimage. keeping it at 2000 to be safe.
       );
     }
 

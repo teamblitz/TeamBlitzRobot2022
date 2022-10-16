@@ -58,16 +58,16 @@ public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable {
     private final SlewRateLimiter filter = new SlewRateLimiter(1.75);
 
 
-    private NetworkTableEntry ignoreTopLimit;
-    private NetworkTableEntry ignoreBottomLimit;
+    private final NetworkTableEntry ignoreTopLimit;
+    private final NetworkTableEntry ignoreBottomLimit;
 
 
     // Both of these default to 0
     double wantedSpeed; // The speed / direction we want
-    double applliedSpeed; // The current speed being applyed to the motors
+    double applliedSpeed; // The current speed being applied to the motors
 
 
-    // Should only be needed to be called directly durring unit tests, else just use the no args constructor
+    // Should only be needed to be called directly during unit tests, else just use the no args constructor
     public ElevatorSubsystem(WPI_TalonFX master, WPI_TalonFX slave, DigitalInput topLimitSwitch, DigitalInput bottomLimitSwitch) {
         m_master = master;
         m_slave = slave;

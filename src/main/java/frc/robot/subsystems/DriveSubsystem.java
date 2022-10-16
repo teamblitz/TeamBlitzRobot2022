@@ -121,7 +121,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         // decide who is in control and execute their drive operations
         if (semiAutonomousState) {
-            arcadeDrive(vision.ballAcquirePlan.getFwd(), vision.ballAcquirePlan.getRot(), false); // Again, our arcade drive is reversed for some reason, so we reverse this.
+            arcadeDrive(vision.ballAcquirePlan.getFwd(), vision.ballAcquirePlan.getRot(), false);
             vision.ballAcquirePlan.statusLights();
         } else if (targetingState) {
             arcadeDrive(vision.ballShooterPlan.getFwd(), vision.ballShooterPlan.getRot(), false);

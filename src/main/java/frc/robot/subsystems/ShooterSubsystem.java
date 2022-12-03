@@ -5,6 +5,7 @@ import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -20,6 +21,8 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
   private final RelativeEncoder m_encoder = m_shooter.getEncoder(SparkMaxRelativeEncoder.Type.kHallSensor, 42);
   
   private final StatusManager status = StatusManager.getInstance();
+
+  private final NetworkTableEntry speedEntry;
 
   public ShooterSubsystem() {
 
@@ -38,13 +41,14 @@ public class ShooterSubsystem extends SubsystemBase implements AutoCloseable {
 
     Shuffleboard.getTab("test").addNumber("Shooter faults", m_shooter::getFaults);
     Shuffleboard.getTab("Video").addNumber("Shooter rpm", ()->m_encoder.getVelocity());
+    speedEntry = Shuffleboard.getTab("Video").add("Shooter Speed", ShooterConstants.kSpeed).getEntry();
   }
   // Enables Shooter Wheel
   public void start() {
     if (Robot.isSimulation()) {
     System.out.println("Shooter Start");
     }
-    m_shooter.set(ShooterConstants.kSpeed);
+    m_shooter.set(speedEntry.getDouble(ShooterConstants.kSpeed));
     status.logRevError(m_shooter);
     SmartDashboard.putNumber("Firmwere", m_shooter.getFirmwareVersion());
   }

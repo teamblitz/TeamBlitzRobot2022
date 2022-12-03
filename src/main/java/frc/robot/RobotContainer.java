@@ -27,6 +27,7 @@ import frc.robot.commands.Target;
 import frc.robot.commands.drive.AquireBallCommand;
 import frc.robot.commands.drive.DriveDefaultCommand;
 import frc.robot.commands.drive.TargetCommand;
+import frc.robot.commands.elevator.ContinuouslyRunElevatorCommand;
 import frc.robot.commands.tests.DriveTest;
 import frc.robot.subsystems.*;
 import frc.robot.utils.ButtonBinder;
@@ -174,7 +175,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
         if (OIConstants.useXboxController) {
 
-            // Create saitek button mapping
+            // Create xbox button mapping
 
             // We can chain the methods as any command binders will return the button they were called on.
             /* ***** --- Elevator Subsystem --- ***** */
@@ -238,6 +239,9 @@ public class RobotContainer {
                     .whenActive(new InstantCommand(m_elevator::downElevator, m_elevator)) // Lower elevator
                     .whenInactive(new InstantCommand(m_elevator::stopElevator, m_elevator)); // Stop lowering elevator when button is released
 
+            ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kSemiAutoBallTarget)
+                    .toggleWhenActive(new ContinuouslyRunElevatorCommand(m_elevator));
+
             /* ***** --- Intake Subsystem --- ***** */
             ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kIntake).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kIntake))
                     .whileActiveOnce(intakeCommand); // Start intake
@@ -268,9 +272,9 @@ public class RobotContainer {
                     .whenActive(new InstantCommand(m_shooter::reverse, m_shooter)) // Reverse shooter
                     .whenInactive(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
 
-            ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kSemiAutoBallTarget).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kSemiAutoBallTarget))
-                    .whenActive(new InstantCommand(m_shooter::start, m_shooter)) // Start shooter
-                    .whenInactive(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
+        //     ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kSemiAutoBallTarget).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kSemiAutoBallTarget))
+        //             .whenActive(new InstantCommand(m_shooter::start, m_shooter)) // Start shooter
+        //             .whenInactive(new InstantCommand(m_shooter::stop, m_shooter)); // Stop shooter
 
             /* Ball Acquire Lighting */
             ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kSemiAutoBallSeek).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kSemiAutoBallSeek))
@@ -281,9 +285,9 @@ public class RobotContainer {
             ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kSemiAutoBallSeek).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kSemiAutoBallSeek))
                     .whileActiveOnce(new AquireBallCommand(m_robotDrive, m_vision));
 
-            /* Auto target */
-            ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kSemiAutoBallTarget).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kSemiAutoBallTarget))
-                    .whileActiveOnce(new TargetCommand(m_robotDrive, m_vision));
+        //     /* Auto target */
+        //     ButtonBinder.bindButton(m_saitekController, OIConstants.SaitekMappings.kSemiAutoBallTarget).or(ButtonBinder.bindButton(m_buttonBoard, OIConstants.ButtonBoxMappings.kSemiAutoBallTarget))
+        //             .whileActiveOnce(new TargetCommand(m_robotDrive, m_vision));
         }
     }
 

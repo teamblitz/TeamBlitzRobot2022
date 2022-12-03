@@ -172,11 +172,11 @@ public class ElevatorSubsystem extends SubsystemBase implements AutoCloseable {
         status.logCTREError(m_master);
     }
 
-    private boolean atTop() {
+    public boolean atTop() {
         return !m_toplimitSwitch.get() && !ignoreTopLimit.getBoolean(false);
     }
     
-    private boolean atBottom() {
+    public boolean atBottom() {
         return !m_bottomlimitSwitch.get() && !ignoreBottomLimit.getBoolean(false);
     }
 

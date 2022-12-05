@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-
 public class AquireBallCommand extends CommandBase {
     private final DriveSubsystem driveSubsystem;
     private final VisionSubsystem visionSubsystem;
@@ -19,7 +18,10 @@ public class AquireBallCommand extends CommandBase {
 
     @Override
     public void execute() {
-        driveSubsystem.arcadeDrive(visionSubsystem.ballAcquirePlan.getFwd(), visionSubsystem.ballAcquirePlan.getRot(), false);
+        driveSubsystem.arcadeDrive(
+                visionSubsystem.ballAcquirePlan.getFwd(),
+                visionSubsystem.ballAcquirePlan.getRot(),
+                false);
     }
 
     @Override

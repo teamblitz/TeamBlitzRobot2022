@@ -8,8 +8,8 @@ public class ContinuouslyRunElevatorCommand extends CommandBase {
     private final ElevatorSubsystem elevatorSubsystem;
 
     private boolean goingUp;
-    
-    public ContinuouslyRunElevatorCommand (ElevatorSubsystem elevatorSubsystem) {
+
+    public ContinuouslyRunElevatorCommand(ElevatorSubsystem elevatorSubsystem) {
         this.elevatorSubsystem = elevatorSubsystem;
     }
 
@@ -39,7 +39,7 @@ public class ContinuouslyRunElevatorCommand extends CommandBase {
     public void end(boolean interrupted) {
         elevatorSubsystem.stopElevator();
     }
-        
+
     @Override
     public boolean isFinished() {
         return false;

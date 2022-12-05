@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.DriveConstants.*;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
@@ -20,13 +21,10 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.StatusManager;
 
-import static frc.robot.Constants.DriveConstants.*;
-
-
 public class DriveSubsystem extends SubsystemBase {
 
     private final CANSparkMax leftMotor, leftMotorSlave, rightMotor, rightMotorSlave;
-    private final VisionSubsystem vision;
+    private final VisionSubsystem visionSubsystem;
 
     private final DifferentialDrive drive;
 
@@ -34,53 +32,50 @@ public class DriveSubsystem extends SubsystemBase {
 
     private final NetworkTableEntry kPValue;
 
-    /**
-     * Creates a new DriveSubsystem.
-     */
-    public DriveSubsystem(VisionSubsystem vision) {
+    /** Creates a new DriveSubsystem. */
+    public DriveSubsystem(VisionSubsystem visionSubsystem) {
 
-        this.vision = vision;
+        this.visionSubsystem = visionSubsystem;
         // *********** PUT NON-TUNABLE PARAMETERS BELOW THIS LINE **********
         /*
-          SPARK MAX controllers are initialized over CAN by constructing a CANSparkMax object
+         SPARK MAX controllers are initialized over CAN by constructing a CANSparkMax object
 
-          The CAN ID, which can be configured using the SPARK MAX Client, is passed as the
-          first parameter
+         The CAN ID, which can be configured using the SPARK MAX Client, is passed as the
+         first parameter
 
-          The motor type is passed as the second parameter. Motor type can either be:
-           com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless
-           com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushed
+         The motor type is passed as the second parameter. Motor type can either be:
+          com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushless
+          com.revrobotics.CANSparkMaxLowLevel.MotorType.kBrushed
 
-          The example below initializes four brushless motors with CAN IDs 1 and 2. Change
-          these parameters to match your setup
-         */
-        leftMotor = new CANSparkMax(kLeftMasterPort, MotorType.kBrushless);
-        leftMotorSlave = new CANSparkMax(kLeftSlavePort, MotorType.kBrushless);
-        rightMotor = new CANSparkMax(kRightMasterPort, MotorType.kBrushless);
-        rightMotorSlave = new CANSparkMax(kRightSlavePort, MotorType.kBrushless);
+         The example below initializes four brushless motors with CAN IDs 1 and 2. Change
+         these parameters to match your setup
+        */
+        leftMotor = new CANSparkMax(LEFT_MASTER_PORT, MotorType.kBrushless);
+        leftMotorSlave = new CANSparkMax(LEFT_SLAVE_PORT, MotorType.kBrushless);
+        rightMotor = new CANSparkMax(RIGHT_MASTER_PORT, MotorType.kBrushless);
+        rightMotorSlave = new CANSparkMax(RIGHT_SLAVE_PORT, MotorType.kBrushless);
 
         /*
-          The RestoreFactoryDefaults method can be used to reset the configuration parameters
-          in the SPARK MAX to their factory default state. If no argument is passed, these
-          parameters will not persist between power cycles
-         */
+         The RestoreFactoryDefaults method can be used to reset the configuration parameters
+         in the SPARK MAX to their factory default state. If no argument is passed, these
+         parameters will not persist between power cycles
+        */
         leftMotor.restoreFactoryDefaults();
         rightMotor.restoreFactoryDefaults();
         leftMotorSlave.restoreFactoryDefaults();
         rightMotorSlave.restoreFactoryDefaults();
 
-
         // left side
         // setup slave relationship on motors on same side
         leftMotor.follow(ExternalFollower.kFollowerDisabled, 0);
-        leftMotorSlave.follow(ExternalFollower.kFollowerSparkMax, kLeftMasterPort);
+        leftMotorSlave.follow(ExternalFollower.kFollowerSparkMax, LEFT_MASTER_PORT);
 
-
-        // If the robot doesn't go straight when we tell it to, set this to true. I have no clue why it stopped needing to be inverted, but it works now, and I am afraid to change it.
+        // If the robot doesn't go straight when we tell it to, set this to true. I have no clue why
+        // it stopped needing to be inverted, but it works now, and I am afraid to change it.
         leftMotor.setInverted(false);
         // right side
         rightMotor.follow(ExternalFollower.kFollowerDisabled, 0);
-        rightMotorSlave.follow(ExternalFollower.kFollowerSparkMax, kRightMasterPort);
+        rightMotorSlave.follow(ExternalFollower.kFollowerSparkMax, RIGHT_MASTER_PORT);
 
         drive = new DifferentialDrive(leftMotor, rightMotor);
 
@@ -90,7 +85,6 @@ public class DriveSubsystem extends SubsystemBase {
         status.addMotor(rightMotor, "rightDriveM");
         status.addMotor(leftMotorSlave, "leftDriveS");
         status.addMotor(rightMotorSlave, "rightDriveS");
-
 
         ShuffleboardTab tab = Shuffleboard.getTab("Motors");
         tab.addNumber("LeftDriveM", () -> leftMotor.getEncoder().getVelocity());
@@ -103,7 +97,6 @@ public class DriveSubsystem extends SubsystemBase {
         Shuffleboard.getTab("Drive").addNumber("Gyro Angle", gyro::getAngle);
 
         kPValue = Shuffleboard.getTab("Drive").add("P", .009).getEntry();
-
     }
 
     @Override
@@ -117,18 +110,28 @@ public class DriveSubsystem extends SubsystemBase {
      * @param fwd the commanded forward movement
      * @param rot the commanded rotation
      */
-    public void performDrive(final double fwd, final double rot, final boolean semiAutonomousState, final boolean targetingState) {
+    public void performDrive(
+            final double fwd,
+            final double rot,
+            final boolean semiAutonomousState,
+            final boolean targetingState) {
 
         // decide who is in control and execute their drive operations
         if (semiAutonomousState) {
-            arcadeDrive(vision.ballAcquirePlan.getFwd(), vision.ballAcquirePlan.getRot(), false);
-            vision.ballAcquirePlan.statusLights();
+            arcadeDrive(
+                    visionSubsystem.ballAcquirePlan.getFwd(),
+                    visionSubsystem.ballAcquirePlan.getRot(),
+                    false);
+            visionSubsystem.ballAcquirePlan.statusLights();
         } else if (targetingState) {
-            arcadeDrive(vision.ballShooterPlan.getFwd(), vision.ballShooterPlan.getRot(), false);
-            vision.ballShooterPlan.statusLights();
+            arcadeDrive(
+                    visionSubsystem.ballShooterPlan.getFwd(),
+                    visionSubsystem.ballShooterPlan.getRot(),
+                    false);
+            visionSubsystem.ballShooterPlan.statusLights();
         } else {
             arcadeDrive(fwd, rot, true);
-            vision.statusLightsOff(); // Turn off status lights
+            visionSubsystem.statusLightsOff(); // Turn off status lights
         }
     }
 
@@ -157,7 +160,7 @@ public class DriveSubsystem extends SubsystemBase {
     /**
      * Controls the left and right sides of the drive directly with voltages.
      *
-     * @param leftVolts  the commanded left output
+     * @param leftVolts the commanded left output
      * @param rightVolts the commanded right output
      */
     public void tankDriveVolts(double leftVolts, double rightVolts) {
@@ -176,7 +179,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void drive_straight_gyro(double speed) {
         kP = kPValue.getDouble(.009);
-        double error = wantedAngle - gyro.getAngle();  // Our target angle is zero
+        double error = wantedAngle - gyro.getAngle(); // Our target angle is zero
         double turn_power = kP * error;
         drive.arcadeDrive(speed, MathUtil.clamp(turn_power, -0.1, .1), false);
     }

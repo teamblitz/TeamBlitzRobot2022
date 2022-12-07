@@ -6,34 +6,96 @@
   <component name="ChangeListManager">
     <list default="true" id="e4b29837-2749-42d1-8ee6-86e56af39337" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/simgui.json" beforeDir="false" afterPath="$PROJECT_DIR$/simgui.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/_test/java/frc/robot/subsystems/ElevatorSubsystemTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/_test/java/frc/robot/subsystems/ElevatorSubsystemTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/_test/java/frc/robot/subsystems/IntakeSubsystemTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/_test/java/frc/robot/subsystems/IntakeSubsystemTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/_test/java/frc/robot/subsystems/ShooterSubsystemTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/_test/java/frc/robot/subsystems/ShooterSubsystemTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/_test/java/frc/robot/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/_test/java/frc/robot/utils/Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/Constants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/Robot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/Robot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/RobotContainer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/RobotContainer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/StatusManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/StatusManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/commands/DriveStraightWithDelay.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/commands/DriveStraightWithDelay.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/commands/SeekBall.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/commands/SeekBall.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/commands/Shoot.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/commands/Shoot.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/commands/Target.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/commands/Target.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/commands/drive/AquireBallCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/commands/drive/AquireBallCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/commands/drive/DriveDefaultCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/commands/drive/DriveDefaultCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/commands/drive/TargetCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/commands/drive/TargetCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/commands/elevator/ContinuouslyRunElevatorCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/commands/elevator/ContinuouslyRunElevatorCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/commands/tests/DriveRevTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/commands/tests/DriveRevTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/commands/tests/DriveTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/commands/tests/DriveTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/AutonomousSubsystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/AutonomousSubsystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/BallMoverSubsystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/BallMoverSubsystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/DriveSubsystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/DriveSubsystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/ElevatorSubsystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/ElevatorSubsystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/IntakeSubsystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/IntakeSubsystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/InternalBallDetectorSubsystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/InternalBallDetectorSubsystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/NavSubsystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/NavSubsystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/ShooterSubsystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/ShooterSubsystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/StatusLightSubsystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/StatusLightSubsystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/VisionSubsystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/subsystems/VisionSubsystem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/utils/ButtonBinder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/utils/ButtonBinder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/utils/ButtonBox.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/utils/ButtonBox.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/frc/robot/utils/SaitekX52Joystick.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/frc/robot/utils/SaitekX52Joystick.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view />
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="FRC v2 Command" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jrt://C:/Users/Public/wpilib/2022/jdk!/java.base/java/lang/Math.class" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Public/wpilib/2022/maven/edu/wpi/first/wpilibNewCommands/wpilibNewCommands-java/2022.4.1/wpilibNewCommands-java-2022.4.1-sources.jar!/edu/wpi/first/wpilibj2/command/CommandBase.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$PROJECT_DIR$/../../../../Public/wpilib/2022/maven/edu/wpi/first/wpilibj/wpilibj-java/2022.4.1/wpilibj-java-2022.4.1-sources.jar!/edu/wpi/first/wpilibj/drive/DifferentialDrive.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.revrobotics.frc/REVLib-java/2022.1.1/bef7293174b180fff596798e716d23e1721a69f5/REVLib-java-2022.1.1.jar!/com/revrobotics/CANSparkMax.class" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectId" id="2CVTCezbnE6r89c5yVlF41lIVs2" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;advanced.settings&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors.Color Scheme Font"
   }
-}</component>
-  <component name="RunManager" selected="Gradle.TeamBlitzRobot2022 [simulateJava]">
+}]]></component>
+  <component name="RunManager" selected="Gradle.TeamBlitzRobot2022 [spotlessApply]">
     <configuration name="TeamBlitzRobot2022 [build]" type="GradleRunConfiguration" factoryName="Gradle" nameIsGenerated="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -76,6 +138,27 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
+    <configuration name="TeamBlitzRobot2022 [spotlessApply]" type="GradleRunConfiguration" factoryName="Gradle" nameIsGenerated="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="spotlessApply" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
     <configuration name="TeamBlitzRobot2022 [test]" type="GradleRunConfiguration" factoryName="Gradle" nameIsGenerated="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -99,6 +182,7 @@
     </configuration>
     <list>
       <item itemvalue="Gradle.TeamBlitzRobot2022 [simulateJava]" />
+      <item itemvalue="Gradle.TeamBlitzRobot2022 [spotlessApply]" />
       <item itemvalue="Gradle.TeamBlitzRobot2022 [build]" />
       <item itemvalue="Gradle.TeamBlitzRobot2022 [test]" />
     </list>
@@ -114,10 +198,30 @@
       <workItem from="1658886312656" duration="308000" />
       <workItem from="1658886631056" duration="645000" />
       <workItem from="1659040579566" duration="648000" />
+      <workItem from="1665613872622" duration="22000" />
+      <workItem from="1665876315436" duration="9125000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="WpiLibVersionService">
+    <option name="lastChecked" value="20221015172523" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

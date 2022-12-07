@@ -26,5 +26,6 @@
     },
   ],
   "java.test.defaultConfig": "WPIlibUnitTests",
-  "files.autoSaveDelay": 600000
+  "files.autoSaveDelay": 600000,
+  "editor.tabCompletion": "on"
 }

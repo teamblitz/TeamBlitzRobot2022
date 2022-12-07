@@ -8,7 +8,6 @@ public class SaitekX52Joystick extends GenericHID {
     private final int kY = 1;
     private final int kTwist = 5;
 
-
     public enum Axis {
         kXAxis(0),
         kYAxis(1),
@@ -22,13 +21,10 @@ public class SaitekX52Joystick extends GenericHID {
         kZRot(5),
         kSlider(6);
 
-
-
-
         public final int value;
 
         Axis(int value) {
-            this.value=value;
+            this.value = value;
         }
     }
 
@@ -66,14 +62,15 @@ public class SaitekX52Joystick extends GenericHID {
         kThrotleKnobRight(25),
         kThrotleKnobDown(26),
         kThrotleKnobLeft(27),
+        kModeRed(28),
+        kModePink(29),
+        kModeBlue(30),
         kI(31);
-
-
 
         public final int value;
 
         Button(int value) {
-            this.value=value;
+            this.value = value;
         }
     }
 
@@ -84,7 +81,7 @@ public class SaitekX52Joystick extends GenericHID {
     public double getX() {
         return getRawAxis(kX);
     }
-    
+
     public double getY() {
         return getRawAxis(kY);
     }
@@ -92,7 +89,7 @@ public class SaitekX52Joystick extends GenericHID {
     public double getTwist() {
         return getRawAxis(kTwist);
     }
-    
+
     // public double getButton() {
     //     return getRawButton(button);
     // }

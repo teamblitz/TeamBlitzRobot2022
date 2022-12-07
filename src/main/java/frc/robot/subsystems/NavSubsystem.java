@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class NavSubsystem extends SubsystemBase {
 
     // public final AHRS gyro;
-    private Pose2d currentPos;
+  private Pose2d currentPos;
 
     // private final KalmanFilter filter = new KalmanFilter<>(states, outputs, plant, stateStdDevs,
     // measurementStdDevs, dtSeconds)
